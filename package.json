@@ -1,0 +1,33 @@
+{
+  "name": "itcb-testing",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "docker:build": "docker build -t playwright-tests .",
+    "docker:test": "docker run playwright-tests npm run test",
+    "test": "playwright test",
+    "report": "playwright show-report",
+    "codegen": "playwright codegen",
+    "chrome": "playwright test --project=chromium"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NetanelH2/ITCB-Testing.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NetanelH2/ITCB-Testing/issues"
+  },
+  "homepage": "https://github.com/NetanelH2/ITCB-Testing#readme",
+  "description": "",
+  "devDependencies": {
+    "@faker-js/faker": "^9.8.0",
+    "@playwright/test": "^1.52.0",
+    "@types/node": "^22.15.29",
+    "dotenv": "^16.5.0",
+    "typescript": "^5.8.3"
+  }
+}
