@@ -1,4 +1,6 @@
-import {test as base, type BrowserContext, type Page} from '@playwright/test'
+import type {BrowserContext, Page} from '@playwright/test'
+
+import {test as base} from '@playwright/test'
 
 interface PageFixtures {
   context: BrowserContext
