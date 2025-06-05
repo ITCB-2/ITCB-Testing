@@ -1,5 +1,4 @@
 import type {BrowserContext, Page} from '@playwright/test'
-
 import {test as base} from '@playwright/test'
 
 interface PageFixtures {
