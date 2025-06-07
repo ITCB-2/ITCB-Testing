@@ -1,7 +1,7 @@
 import type {Locator, Page} from '@playwright/test'
 import {expect} from '@playwright/test'
 
-type LocatorType = 'locator' | 'role' | 'label' | 'text'
+type stringOrRoleLocatorType = string | {role: string; name: string}
 
 export class BasePage {
   protected page: Page
@@ -9,60 +9,66 @@ export class BasePage {
   constructor(page: Page) {
     this.page = page
   }
-
-  // Handle different types of locators in one method
-  protected getElementType(
-    locator: string,
-    locatorType: LocatorType = 'locator',
-    roleOptions?: {name: string},
-  ): Locator {
-    // Default element is locator type
-    let element: Locator = this.page.locator(locator)
-
-    if (locatorType === 'role') {
-      if (!roleOptions?.name) {
-        throw new Error("Name option is required for 'role' locator")
+  private _findLocatorByString(locator: string): Locator {
+    // Try each method in sequence and return the first one that works
+    const strategies = [
+      () => this.page.locator(locator),
+      () => this.page.getByLabel(locator),
+      () => this.page.getByText(locator),
+    ]
+    for (const strategy of strategies) {
+      try {
+        return strategy()
+      } catch {
+        continue
       }
-      element = this.page.getByRole(locator as any, {
-        name: roleOptions?.name,
-      })
     }
-    if (locatorType === 'label') {
-      element = this.page.getByLabel(locator)
+    throw new Error(`Unable to find element with string locator: ${locator}`)
+  }
+
+  // Handle Generic Locator, byRole, byLabel, byText
+  private _extractLocator(locator: stringOrRoleLocatorType): Locator {
+    try {
+      // Try generic locator
+      if (typeof locator === 'string') {
+        return this._findLocatorByString(locator)
+        // Try role and name
+      } else if (
+        typeof locator === 'object' &&
+        locator !== null &&
+        'role' in locator &&
+        'name' in locator
+      ) {
+        const {role, name} = locator
+        return this.page.getByRole(role as any, {
+          name: name,
+        })
+      } else {
+        throw new Error(
+          `Locator "${locator}" is not a valid string or role object.`,
+        )
+      }
+    } catch {
+      throw new Error(`Unable to find element with locator: ${locator}`)
     }
-    if (locatorType === 'text') {
-      element = this.page.getByText(locator)
-    }
-    return element
   }
 
   protected async validateText(
-    locator: string,
+    locator: stringOrRoleLocatorType,
     text: string,
-    textType: 'string' | 'substring' = 'string',
-    locatorType: LocatorType = 'locator',
   ): Promise<void> {
-    const element: Locator = this.getElementType(locator, locatorType)
-
-    if (textType === 'string') {
-      await expect(element).toHaveText(text)
+    const extractedLocator = this._extractLocator(locator)
+    try {
+      await expect(extractedLocator).toHaveText(text)
+    } catch {
+      try {
+        await expect(extractedLocator).toContainText(text)
+      } catch (error) {
+        throw new Error(
+          `Element with locator "${locator}" does not contain text "${text}". Error: ${error}`,
+        )
+      }
     }
-    if (textType === 'substring') {
-      await expect(element).toContainText(text)
-    }
-  }
-
-  protected async clickOnElement(
-    locator: string,
-    locatorType: LocatorType = 'locator',
-    roleOptions?: {name: string},
-  ): Promise<void> {
-    const element: Locator = this.getElementType(
-      locator,
-      locatorType,
-      roleOptions,
-    )
-    await element.click()
   }
 
   protected async validateURL(expectedURL: string): Promise<void> {
@@ -72,12 +78,16 @@ export class BasePage {
   protected async gotoURL(url: string): Promise<void> {
     await this.page.goto(url)
   }
-  protected async fillInput(
-    locator: string,
-    text: string,
-    locatorType: LocatorType = 'locator',
+
+  protected async clickOnElement(
+    locator: stringOrRoleLocatorType,
   ): Promise<void> {
-    const element: Locator = this.getElementType(locator, locatorType)
-    await element.fill(text)
+    const extractedLocator: Locator = this._extractLocator(locator)
+    await extractedLocator.click()
+  }
+
+  protected async fillInput(locator: string, text: string): Promise<void> {
+    const extractedLocator: Locator = this._extractLocator(locator)
+    await extractedLocator.fill(text)
   }
 }

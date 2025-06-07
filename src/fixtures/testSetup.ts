@@ -1,9 +1,11 @@
+import {MainPage} from '@/pages/MainPage'
 import type {BrowserContext, Page} from '@playwright/test'
 import {test as base} from '@playwright/test'
 
 interface PageFixtures {
   context: BrowserContext
   page: Page
+  mainPage: MainPage
 }
 
 const test = base.extend<PageFixtures>({
@@ -15,6 +17,9 @@ const test = base.extend<PageFixtures>({
   page: async ({context}, use) => {
     const page = await context.newPage()
     await use(page)
+  },
+  mainPage: async ({page}, use) => {
+    await use(new MainPage(page))
   },
 })
 

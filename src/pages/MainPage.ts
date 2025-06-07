@@ -1,5 +1,6 @@
 import {BasePage} from '@/core/BasePage'
 import {BASE_URL} from '@/data/urls'
+import {mainPageLocators} from '@/locators/mainPageLocators'
 import {type Page} from '@playwright/test'
 
 export class MainPage extends BasePage {
@@ -8,6 +9,10 @@ export class MainPage extends BasePage {
   }
   async openMainPage(): Promise<void> {
     await this.page.goto(BASE_URL)
+    await this.validateText(
+      mainPageLocators.importantFactsTitle,
+      'עובדות שחשוב שתדע',
+    )
     //! I need to Assert עובדות שחשוב שתדע title in the main page with validateText method
   }
 }
