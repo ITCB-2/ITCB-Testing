@@ -9,6 +9,7 @@ export class BasePage {
   constructor(page: Page) {
     this.page = page
   }
+  // Find a locator by string, using multiple strategies
   private _findLocatorByString(locator: string): Locator {
     // Try each method in sequence and return the first one that works
     const strategies = [
@@ -25,7 +26,6 @@ export class BasePage {
     }
     throw new Error(`Unable to find element with string locator: ${locator}`)
   }
-
   // Handle Generic Locator, byRole, byLabel, byText
   private _extractLocator(locator: stringOrRoleLocatorType): Locator {
     try {
@@ -52,7 +52,7 @@ export class BasePage {
       throw new Error(`Unable to find element with locator: ${locator}`)
     }
   }
-
+  // Validate text of an element
   protected async validateText(
     locator: stringOrRoleLocatorType,
     text: string,
@@ -70,22 +70,22 @@ export class BasePage {
       }
     }
   }
-
+  // Validate URL of the page
   protected async validateURL(expectedURL: string): Promise<void> {
     await expect(this.page).toHaveURL(expectedURL)
   }
-
+  // Navigate to a specific URL
   protected async gotoURL(url: string): Promise<void> {
     await this.page.goto(url)
   }
-
+  // Click on an element
   protected async clickOnElement(
     locator: stringOrRoleLocatorType,
   ): Promise<void> {
     const extractedLocator: Locator = this._extractLocator(locator)
     await extractedLocator.click()
   }
-
+  // Fill an input field with text
   protected async fillInput(locator: string, text: string): Promise<void> {
     const extractedLocator: Locator = this._extractLocator(locator)
     await extractedLocator.fill(text)
