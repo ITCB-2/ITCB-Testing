@@ -13,6 +13,5 @@ export class MainPage extends BasePage {
       mainPageLocators.importantFactsTitle,
       'עובדות שחשוב שתדע',
     )
-    //! I need to Assert עובדות שחשוב שתדע title in the main page with validateText method
   }
 }
