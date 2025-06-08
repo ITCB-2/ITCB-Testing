@@ -3,4 +3,4 @@ export const mainPageLocators = {
     role: 'heading',
     name: 'עובדות שחשוב שתדע',
   },
-}
+} as const
