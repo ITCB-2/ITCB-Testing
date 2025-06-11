@@ -25,21 +25,17 @@ export class MainPage extends BasePage {
   async gotoDecisionMakersSharingPage(): Promise<void> {
     const {button, decisionMakersSharingLink} =
       mainPageLocators.menuLinks.whyISTQB
+    const {title} = decisionMakersSharingLocators
     await this.hoverOnElement(button)
     await this.clickOnElement(decisionMakersSharingLink)
-    await this.validateText(
-      decisionMakersSharingLocators.title,
-      'מקבלי החלטות משתפים',
-    )
+    await this.validateText(title, 'מקבלי החלטות משתפים')
   }
 
   async gotoMembersOfComunnitySharing(): Promise<void> {
     const {membersOfComunnitySharingLink} = mainPageLocators.menuLinks.whyISTQB
+    const {title} = membersOfComunnitySharingLocators
     await this.hoverOnElement(membersOfComunnitySharingLink)
     await this.clickOnElement(membersOfComunnitySharingLink)
-    await this.validateText(
-      membersOfComunnitySharingLocators.title,
-      'חברי הקהילה משתפים',
-    )
+    await this.validateText(title, 'חברי הקהילה משתפים')
   }
 }
