@@ -23,9 +23,10 @@ export class MainPage extends BasePage {
   }
 
   async gotoDecisionMakersSharingPage(): Promise<void> {
-    const {whyISTQB} = mainPageLocators.menuLinks
-    await this.hoverOnElement(whyISTQB.button)
-    await this.clickOnElement(whyISTQB.decisionMakersSharingLink)
+    const {button, decisionMakersSharingLink} =
+      mainPageLocators.menuLinks.whyISTQB
+    await this.hoverOnElement(button)
+    await this.clickOnElement(decisionMakersSharingLink)
     await this.validateText(
       decisionMakersSharingLocators.title,
       'מקבלי החלטות משתפים',
@@ -33,9 +34,10 @@ export class MainPage extends BasePage {
   }
 
   async gotoMembersOfComunnitySharing(): Promise<void> {
-    const {whyISTQB} = mainPageLocators.menuLinks
-    await this.hoverOnElement(whyISTQB.membersOfComunnitySharingLink)
-    await this.clickOnElement(whyISTQB.membersOfComunnitySharingLink)
+    const {membersOfComunnitySharingLink} = mainPageLocators.menuLinks.whyISTQB
+    await this.page.waitForLoadState('load')
+    await this.hoverOnElement(membersOfComunnitySharingLink)
+    await this.clickOnElement(membersOfComunnitySharingLink)
     await this.validateText(
       membersOfComunnitySharingLocators.title,
       'חברי הקהילה משתפים',

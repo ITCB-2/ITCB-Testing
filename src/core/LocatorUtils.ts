@@ -46,7 +46,9 @@ export class LocatorUtils {
         return this.page.getByRole(role as any, {name: name})
       }
     } catch {
-      throw new Error(`Unable to find element with locator: ${locator}`)
+      throw new Error(
+        `Unable to find element with locator: ${JSON.stringify(locator)}`,
+      )
     }
   }
 }
