@@ -27,7 +27,7 @@ export class MainPage extends BasePage {
     })
   }
 
-  async gotoDecisionMakersSharingPage(): Promise<void> {
+  async navigateToDecisionMakersSharingPage(): Promise<void> {
     await test.step('Navigate to Decision Makers Sharing Page', async () => {
       const {button, decisionMakersSharingLink} =
         MAIN_PAGE_LOCATORS.menuLinks.whyISTQB
@@ -40,7 +40,7 @@ export class MainPage extends BasePage {
     })
   }
 
-  async gotoMembersOfComunnitySharing(): Promise<void> {
+  async navigateTOMembersOfComunnitySharingPage(): Promise<void> {
     await test.step('Navigate to Members of Community Sharing Page', async () => {
       const {button, membersOfComunnitySharingLink} =
         MAIN_PAGE_LOCATORS.menuLinks.whyISTQB

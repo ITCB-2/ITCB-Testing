@@ -8,12 +8,12 @@ test.describe('Main Page Navigation Menu Tests', () => {
   test('should navigate to Decision Makers Sharing page and verify content', async ({
     mainPage,
   }) => {
-    await mainPage.gotoDecisionMakersSharingPage()
+    await mainPage.navigateToDecisionMakersSharingPage()
   })
 
   test('should navigate to Members of Community Sharing page and verify content', async ({
     mainPage,
   }) => {
-    await mainPage.gotoMembersOfComunnitySharing()
+    await mainPage.navigateTOMembersOfComunnitySharingPage()
   })
 })
