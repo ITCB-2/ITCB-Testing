@@ -35,7 +35,6 @@ export class MainPage extends BasePage {
 
   async gotoMembersOfComunnitySharing(): Promise<void> {
     const {membersOfComunnitySharingLink} = mainPageLocators.menuLinks.whyISTQB
-    await this.page.waitForLoadState('load')
     await this.hoverOnElement(membersOfComunnitySharingLink)
     await this.clickOnElement(membersOfComunnitySharingLink)
     await this.validateText(
