@@ -5,7 +5,7 @@ test.describe('Main Page Navigation Menu Tests', () => {
     await mainPage.openMainPage()
   })
 
-  test.only('should navigate to Decision Makers Sharing page and verify content', async ({
+  test('should navigate to Decision Makers Sharing page and verify content', async ({
     mainPage,
   }) => {
     await mainPage.gotoDecisionMakersSharingPage()

@@ -1,8 +1,9 @@
 import {BasePage} from '@/core/BasePage'
 import {BASE_URL} from '@/data/urls'
-import {decisionMakersSharingLocators} from '@/locators/decisionMakersSharingLocators'
-import {mainPageLocators} from '@/locators/mainPageLocators'
-import {membersOfComunnitySharingLocators} from '@/locators/membersOfComunnitySharingLocators'
+import test from '@/fixtures/testSetup'
+import {DECISION_MAKERS_SHARING_PAGE_LOCATORS} from '@/locators/Decision_Makers_Sharing'
+import {MAIN_PAGE_LOCATORS} from '@/locators/Main_Page'
+import {MEMBERS_OF_COMMUNITY_SHARING_PAGE_LOCATORS} from '@/locators/Members_Of_Comunnity_Sharing'
 import {expect, type Page} from '@playwright/test'
 
 export class MainPage extends BasePage {
@@ -10,32 +11,44 @@ export class MainPage extends BasePage {
     super(page)
   }
   async openMainPage(): Promise<void> {
-    await this.page.goto(BASE_URL)
-    await this.pressOkToCookies()
-    await this.validateText(mainPageLocators.title, 'עובדות שחשוב שתדע')
+    await test.step('Open Main Page', async () => {
+      await this.page.goto(BASE_URL)
+      await this.pressOkToCookies()
+      await this.validateText(MAIN_PAGE_LOCATORS.title, 'עובדות שחשוב שתדע')
+    })
   }
 
   async pressOkToCookies(): Promise<void> {
-    await this.clickOnElement(mainPageLocators.acceptCookiesButton)
-    await expect(
-      this.extractLocator(mainPageLocators.acceptCookiesButton),
-    ).not.toBeVisible()
+    await test.step('Accept Cookies', async () => {
+      await this.clickOnElement(MAIN_PAGE_LOCATORS.acceptCookiesButton)
+      await expect(
+        this.extractLocator(MAIN_PAGE_LOCATORS.acceptCookiesButton),
+      ).not.toBeVisible()
+    })
   }
 
   async gotoDecisionMakersSharingPage(): Promise<void> {
-    const {button, decisionMakersSharingLink} =
-      mainPageLocators.menuLinks.whyISTQB
-    const {title} = decisionMakersSharingLocators
-    await this.hoverOnElement(button)
-    await this.clickOnElement(decisionMakersSharingLink)
-    await this.validateText(title, 'מקבלי החלטות משתפים')
+    await test.step('Navigate to Decision Makers Sharing Page', async () => {
+      const {button, decisionMakersSharingLink} =
+        MAIN_PAGE_LOCATORS.menuLinks.whyISTQB
+      const {title} = DECISION_MAKERS_SHARING_PAGE_LOCATORS
+      await this.hoverOnElement(button)
+      await this.validateVisibility(decisionMakersSharingLink)
+      await this.clickOnElement(decisionMakersSharingLink)
+      // Wait for the section to be visible after scrolling
+      await this.validateText(title, 'מקבלי ההחלטות משתפים')
+    })
   }
 
   async gotoMembersOfComunnitySharing(): Promise<void> {
-    const {membersOfComunnitySharingLink} = mainPageLocators.menuLinks.whyISTQB
-    const {title} = membersOfComunnitySharingLocators
-    await this.hoverOnElement(membersOfComunnitySharingLink)
-    await this.clickOnElement(membersOfComunnitySharingLink)
-    await this.validateText(title, 'חברי הקהילה משתפים')
+    await test.step('Navigate to Members of Community Sharing Page', async () => {
+      const {button, membersOfComunnitySharingLink} =
+        MAIN_PAGE_LOCATORS.menuLinks.whyISTQB
+      const {title} = MEMBERS_OF_COMMUNITY_SHARING_PAGE_LOCATORS
+      await this.hoverOnElement(button)
+      await this.clickOnElement(membersOfComunnitySharingLink)
+      // Wait for the section to be visible after scrolling
+      await this.validateText(title, 'חברי הקהילה משתפים')
+    })
   }
 }

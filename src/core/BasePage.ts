@@ -51,10 +51,19 @@ export class BasePage extends LocatorUtils {
     const extractedLocator: Locator = this.extractLocator(locator)
     await extractedLocator.fill(text)
   }
+  // Hover on an element
   protected async hoverOnElement(
     locator: stringOrRoleLocatorType,
   ): Promise<void> {
     const extractedLocator: Locator = this.extractLocator(locator)
     await extractedLocator.hover()
+  }
+
+  // Validate that an element is visible
+  protected async validateVisibility(
+    locator: stringOrRoleLocatorType,
+  ): Promise<void> {
+    const extractedLocator = this.extractLocator(locator)
+    await expect(extractedLocator).toBeVisible()
   }
 }

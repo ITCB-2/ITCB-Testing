@@ -1,4 +1,4 @@
-export const mainPageLocators = {
+export const MAIN_PAGE_LOCATORS = {
   title: {
     role: 'heading',
     name: 'עובדות שחשוב שתדע',
