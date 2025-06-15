@@ -2,11 +2,10 @@ name: Playwright Tests
 on:
   schedule:
     - cron: '*/5 * * * *' # Run tests every minute
-  # push:
-  #   branches: [main, master]
-  # pull_request:
-  #   branches: [main, master]
-  workflow_dispatch: # Manual trigger for testing
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
 
 jobs:
   test:
