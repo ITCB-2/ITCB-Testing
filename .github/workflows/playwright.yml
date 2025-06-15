@@ -1,12 +1,12 @@
 name: Playwright Tests
 on:
   schedule:
-    - cron: '* * * * *' # Run tests every minute
+    - cron: '*/1 * * * *' # Run tests every minute
   # push:
   #   branches: [main, master]
   # pull_request:
   #   branches: [main, master]
-  # workflow_dispatch: # Manual trigger only - can be run from GitHub Actions tab
+  workflow_dispatch: # Manual trigger for testing
 
 jobs:
   test:
