@@ -6,7 +6,7 @@ on:
   #   branches: [main, master]
   # pull_request:
   #   branches: [main, master]
-  workflow_dispatch: # Manual trigger only - can be run from GitHub Actions tab
+  # workflow_dispatch: # Manual trigger only - can be run from GitHub Actions tab
 
 jobs:
   test:
