@@ -1,5 +1,7 @@
 name: Playwright Tests
 on:
+  schedule:
+    - cron: '* * * * *' # Run tests every minute
   # push:
   #   branches: [main, master]
   # pull_request:
