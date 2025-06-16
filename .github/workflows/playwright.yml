@@ -1,17 +1,22 @@
 # GitHub Actions workflow for running Playwright end-to-end tests
 name: Playwright Tests
 
+# ******* WORKFLOW TEMPORARILY DISABLED *******
 # Define when this workflow should run
 on:
-  schedule:
-    # Run tests automatically every 5 minutes using cron syntax
-    - cron: '*/5 * * * *'
-  push:
-    # Run tests when code is pushed to main or master branches
-    branches: [main, master]
-  pull_request:
-    # Run tests when pull requests are opened/updated on main or master branches
-    branches: [main, master]
+  # Manual trigger only - workflow is effectively disabled for automatic runs
+  workflow_dispatch: # ** Remove this line when resuming automatic runs **
+
+# COMMENTED OUT - Uncomment these sections to resume automatic workflow execution:
+# schedule:
+#   # Run tests automatically every 5 minutes using cron syntax
+#   - cron: '*/5 * * * *'
+# push:
+#   # Run tests when code is pushed to main or master branches
+#   branches: [main, master]
+# pull_request:
+#   # Run tests when pull requests are opened/updated on main or master branches
+#   branches: [main, master]
 
 # Concurrency control - only cancel scheduled runs, not push/PR runs
 concurrency:
