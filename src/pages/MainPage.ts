@@ -27,9 +27,10 @@ export class MainPage extends BasePage {
   }
   async openMainPage(): Promise<void> {
     await test.step('Open Main Page', async () => {
+      const{importantFactsTitle} = MAIN_PAGE_LOCATORS.importantFactsSection
       await this.page.goto(BASE_URL)
       await this.pressOkToCookies()
-      await this.validateText(MAIN_PAGE_LOCATORS.title, 'עובדות שחשוב שתדע')
+      await this.validateText(importantFactsTitle, 'עובדות שחשוב שתדע')
     })
   }
 
@@ -269,6 +270,21 @@ export class MainPage extends BasePage {
       await this.clickOnElement(ourPartnersLink)
       await this.pressOkToCookies()
       await this.validateText(title, 'מרכזי הדרכה מוסמכים')
+    })
+  }
+
+  async validateContactOnMainPage(): Promise<void> {
+    await test.step('Validate Contact on Main Page', async () => {
+      const {ITCBLogo}= MAIN_PAGE_LOCATORS
+      const {allFactsLink} = MAIN_PAGE_LOCATORS.importantFactsSection;
+      const {ourCertificationsTitle,allCertificationsLink} = MAIN_PAGE_LOCATORS.ourCertificationsSection;
+      const {decisionMakersSharingTitle} = MAIN_PAGE_LOCATORS.decisionMakersSharingSection;
+      await this.validateVisibility(allFactsLink);
+      await this.validateVisibility(ITCBLogo);
+     await this.validateText(ourCertificationsTitle, 'ההסמכות שלנו');
+     await this.validateVisibility(allCertificationsLink);
+      await this.validateText(decisionMakersSharingTitle, 'מקבלי ההחלטות משתפים');
+      
     })
   }
 }

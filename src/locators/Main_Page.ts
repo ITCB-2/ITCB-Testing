@@ -1,4 +1,8 @@
 export const MAIN_PAGE_LOCATORS = {
+  ITCBLogo:{
+    role: 'img',
+    name: 'Logo',
+  },
   title: {
     role: 'heading',
     name: 'עובדות שחשוב שתדע',
@@ -131,4 +135,31 @@ export const MAIN_PAGE_LOCATORS = {
     },
     contactUsLink: {parent: '#navbarScroll', role: 'link', name: 'צור קשר'},
   },
+  importantFactsSection:{
+    importantFactsTitle: {
+       role: 'heading',
+      name: 'עובדות שחשוב שתדע',
+    },
+    allFactsLink:{
+      role: 'link',
+      name: 'לכל העובדות',
+    }
+  },
+  ourCertificationsSection: {
+ourCertificationsTitle:{
+  role: 'heading',
+  name: 'ההסמכות שלנו, הקריירה שלך',
+    },
+    allCertificationsLink: {
+      role: 'link',
+      name: 'לכל ההסמכות',
+    },
+  },
+  decisionMakersSharingSection:{
+    decisionMakersSharingTitle: {
+      role: 'heading',
+      name: 'מקבלי ההחלטות משתפים',
+    },
+    
+  }
 } as const

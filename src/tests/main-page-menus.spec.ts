@@ -29,7 +29,7 @@ test.describe('Main Page - Why ISTQB Menu Tests', () => {
   })
 })
 
-test.describe('Main Page - **SEPERATE EACH MENU TO ITS test.describe (Test Set** Menu Tests', () => {
+test.describe('Main Page - ISTQBContent Menu Tests', () => {
   test.beforeEach(async ({mainPage}) => {
     await mainPage.openMainPage()
   })
@@ -43,7 +43,14 @@ test.describe('Main Page - **SEPERATE EACH MENU TO ITS test.describe (Test Set**
   }) => {
     await mainPage.navigateToSyllabusInfoPage()
   })
-  test('should navigate to Useful Links page and verify content', async ({
+  
+})
+
+test.describe('Main Page - testingInIsrael Menu Tests', () => {
+  test.beforeEach(async ({mainPage}) => {
+    await mainPage.openMainPage()
+  })
+test('should navigate to Useful Links page and verify content', async ({
     mainPage,
   }) => {
     await mainPage.navigateToUsefulLinksPage()
@@ -68,7 +75,14 @@ test.describe('Main Page - **SEPERATE EACH MENU TO ITS test.describe (Test Set**
   }) => {
     await mainPage.navigateToTipsPage()
   })
-  test('should navigate to Important Facts page and verify content', async ({
+  
+})
+
+test.describe('Main Page - additionalInformation Menu Tests', () => {
+  test.beforeEach(async ({mainPage}) => {
+    await mainPage.openMainPage()
+  })
+test('should navigate to Important Facts page and verify content', async ({
     mainPage,
   }) => {
     await mainPage.navigateToImportantFactsPage()
@@ -83,7 +97,14 @@ test.describe('Main Page - **SEPERATE EACH MENU TO ITS test.describe (Test Set**
   }) => {
     await mainPage.navigateToInternationalConferencesPage()
   })
-  test('should navigate to ITCB About Us page and verify URL', async ({
+  
+})
+
+test.describe('Main Page - aboutITCB Menu Tests', () => {
+  test.beforeEach(async ({mainPage}) => {
+    await mainPage.openMainPage()
+  })
+test('should navigate to ITCB About Us page and verify URL', async ({
     mainPage,
   }) => {
     await mainPage.navigateToAboutUsPage()
