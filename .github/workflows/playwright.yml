@@ -31,14 +31,6 @@ jobs:
       # Base URL for tests, stored securely in repository secrets
       BASE_URL: ${{ secrets.BASE_URL }}
     steps:
-      # Skip duplicate actions to prevent redundant workflow runs
-      - uses: fkirc/skip-duplicate-actions@v5
-        with:
-          # Cancel other workflows of the same type that are currently running
-          cancel_others: 'true'
-          # Skip this workflow if an identical one completed successfully recently
-          skip_after_successful_duplicate: 'true'
-
       # Check out the repository code to the runner
       - uses: actions/checkout@v4
 
