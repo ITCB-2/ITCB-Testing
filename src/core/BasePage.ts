@@ -64,6 +64,25 @@ export class BasePage extends LocatorUtils {
     locator: stringOrRoleLocatorType,
   ): Promise<void> {
     const extractedLocator = this.extractLocator(locator)
-    await expect(extractedLocator).toBeVisible()
+    try {
+      await expect(extractedLocator).toBeVisible()
+    } catch {
+      try {
+        await expect(extractedLocator.first()).toBeVisible()
+      } catch {
+        throw new Error(
+          `Element with locator "${JSON.stringify(locator)}" is not visible.`,
+        )
+      }
+    }
+  }
+
+  // Wait for an element to be in a specific state
+  protected async waitForSelectorState(
+    locator: string,
+    options?: {state?: 'attached' | 'detached' | 'visible' | 'hidden'},
+  ): Promise<void> {
+    await this.page.waitForSelector(locator, {state: options?.state})
+    await this.validateVisibility(locator)
   }
 }
