@@ -8,7 +8,7 @@ export const MAIN_PAGE_LOCATORS = {
     name: 'הבנתי!',
   },
   menuLinks: {
-    registerToTestLink:{
+    registerToTestLink: {
       parent: '#navbarScroll',
       role: 'link',
       name: 'הרשמה למבחן',
@@ -25,56 +25,47 @@ export const MAIN_PAGE_LOCATORS = {
         role: 'link',
         name: 'חברי הקהילה משתפים',
       },
-      ourCertificationsLink:{
-        parent:'#navbarScroll',
-        role:'link',
-        name:'ההסמכות שלנו',
-        
+      ourCertificationsLink: {
+        parent: '#navbarScroll',
+        role: 'link',
+        name: 'ההסמכות שלנו',
       },
       howToPrepareToISTQBTestLink: {
         parent: '#navbarScroll',
         role: 'link',
         name: 'איך להתכונן למבחן ISTQB®',
-        
-      }
+      },
     },
 
     ISTQBContent: {
-      button:{ parent: '#navbarScroll', role: 'button', name: 'תכני ®ISTQB',
-      },
-      SyllabusAndSampleExamsLink:{
+      button: {parent: '#navbarScroll', role: 'button', name: 'תכני ®ISTQB'},
+      SyllabusAndSampleExamsLink: {
         parent: '#navbarScroll',
         role: 'link',
         name: 'סילבוסים ובחינות לדוגמה',
-        
       },
       termsGlossaryLink: {
         parent: '#navbarScroll',
         role: 'link',
         name: 'מילון מונחים',
-        
       },
       listOfCertifiedTestersLink: {
         parent: '#navbarScroll',
         role: 'link',
         name: 'רשימת מוסמכים',
-        
-        
       },
-      syllabusInfoLink:{
+      syllabusInfoLink: {
         parent: '#navbarScroll',
         role: 'link',
         name: 'כל מה שרציתם לדעת על סילבוס CTFL',
-        
       },
     },
-    testingInIsael:{
+    testingInIsael: {
       button: {parent: '#navbarScroll', role: 'button', name: 'בדיקות בישראל'},
       usefulLinksLink: {
         parent: '#navbarScroll',
         role: 'link',
         name: 'קישורים שימושיים',
-        
       },
       ITCBMagazineLink: {
         parent: '#navbarScroll',
@@ -91,15 +82,15 @@ export const MAIN_PAGE_LOCATORS = {
         role: 'link',
         name: 'סיכומי אירועים',
       },
-      tipsLink:{
+      tipsLink: {
         parent: '#navbarScroll',
         role: 'link',
         name: 'טיפים',
-      }
+      },
     },
     additionalInformation: {
-      button:{ parent: '#navbarScroll', role: 'button', name: 'מידע נוסף'},
-      importantFactsLink:{
+      button: {parent: '#navbarScroll', role: 'button', name: 'מידע נוסף'},
+      importantFactsLink: {
         parent: '#navbarScroll',
         role: 'link',
         name: 'עובדות שחשוב שתדעו',
@@ -113,34 +104,31 @@ export const MAIN_PAGE_LOCATORS = {
         parent: '#navbarScroll',
         role: 'link',
         name: 'כנסים בינלאומיים',
-      }
-
+      },
     },
-    aboutITCB:{
-      button:{ parent: '#navbarScroll', role: 'button', name: 'אודות ®ITCB'},
-      aboutUsLink:{
+    aboutITCB: {
+      button: {parent: '#navbarScroll', role: 'button', name: 'אודות ®ITCB'},
+      aboutUsLink: {
         parent: '#navbarScroll',
         role: 'link',
         name: 'קצת עלינו',
       },
-      boardOfDirectorsLink:{
+      boardOfDirectorsLink: {
         parent: '#navbarScroll',
         role: 'link',
         name: 'הוועד המנהל',
       },
-      advisoryBoardLink:{
+      advisoryBoardLink: {
         parent: '#navbarScroll',
         role: 'link',
         name: 'הוועד המייעץ',
       },
-      ourPartnersLink:{
+      ourPartnersLink: {
         parent: '#navbarScroll',
         role: 'link',
         name: 'השותפים שלנו',
-      }
-      
+      },
     },
-    contactUsLink:{ parent: '#navbarScroll', role: 'link', name: 'צור קשר'},
-    
+    contactUsLink: {parent: '#navbarScroll', role: 'link', name: 'צור קשר'},
   },
 } as const
