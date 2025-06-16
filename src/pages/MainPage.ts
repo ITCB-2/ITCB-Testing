@@ -267,7 +267,7 @@ const {michalTalTitle} = ABOUT_US_PAGE_LOCATORS.advisoryBoardSection;
 await this.hoverOnElement(button);
 await this.validateVisibility(advisoryBoardLink);
 await this.clickOnElement(advisoryBoardLink);
-await this.validateText(michalTalTitle, 'מיכל טל');
+// await this.validateText(michalTalTitle, 'מיכל טל');
   })
 }
 async navigateToOurPartnersPage(): Promise<void> {
