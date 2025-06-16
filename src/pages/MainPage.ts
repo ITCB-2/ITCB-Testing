@@ -4,13 +4,13 @@ import test from '@/fixtures/testSetup'
 import {DECISION_MAKERS_SHARING_PAGE_LOCATORS} from '@/locators/Decision_Makers_Sharing'
 import {EVENTS_SUMMARIES_PAGE_LOCATORS} from '@/locators/Events_Summaries'
 import {HOW_TO_PREPARE_TO_ISTQB_PAGE_LOCATOR} from '@/locators/How_To_Prepare_To_ISTQB'
-import {IMPORTTANT_FACTS_PAGE_LOCATORS} from '@/locators/Important_Facts'
+import {IMPORTANT_FACTS_PAGE_LOCATORS} from '@/locators/Important_Facts'
 import {INTERNATIONAL_CONFERENCES_PAGE_LOCATORS} from '@/locators/International_Conferences'
 import {ITCB_MAGAZINE_PAGE_LOCATORS} from '@/locators/ITCB_Magazine'
 import {LIST_OF_CERTIFIED_TESTERS_PAGE_LOCATORS} from '@/locators/List_Of_Certified_Testers'
 import {MAIN_PAGE_LOCATORS} from '@/locators/Main_Page'
-import {MEMBERS_OF_COMMUNITY_SHARING_PAGE_LOCATORS} from '@/locators/Members_Of_Comunnity_Sharing'
-import {OUR_CERTIFACTIONS_PAGE_LOCATOR} from '@/locators/Our_Certifactions'
+import {MEMBERS_OF_COMMUNITY_SHARING_PAGE_LOCATORS} from '@/locators/Members_Of_Community_Sharing'
+import {OUR_CERTIFICATIONS_PAGE_LOCATOR} from '@/locators/Our_Certification'
 import {OUR_PARTNERS_PAGE_LOCATORS} from '@/locators/Our_Partners'
 import {PODCASTS_PAGE_LOCATORS} from '@/locators/Podcasts'
 import {QUESTIONS_AND_ANSWERS_PAGE_LOCATORS} from '@/locators/Questions_And_Answers'
@@ -64,13 +64,13 @@ export class MainPage extends BasePage {
     })
   }
 
-  async navigateTOMembersOfComunnitySharingPage(): Promise<void> {
+  async navigateTOMembersOfCommunitySharingPage(): Promise<void> {
     await test.step('Navigate to Members of Community Sharing Page', async () => {
-      const {button, membersOfComunnitySharingLink} =
+      const {button, membersOfCommunitySharingLink} =
         MAIN_PAGE_LOCATORS.menuLinks.whyISTQB
       const {title} = MEMBERS_OF_COMMUNITY_SHARING_PAGE_LOCATORS
       await this.hoverOnElement(button)
-      await this.clickOnElement(membersOfComunnitySharingLink)
+      await this.clickOnElement(membersOfCommunitySharingLink)
       // Wait for the section to be visible after scrolling
       await this.validateText(title, 'חברי הקהילה משתפים')
     })
@@ -80,7 +80,7 @@ export class MainPage extends BasePage {
     await test.step('Navigate to Our Certifications Page', async () => {
       const {button, ourCertificationsLink} =
         MAIN_PAGE_LOCATORS.menuLinks.whyISTQB
-      const {title} = OUR_CERTIFACTIONS_PAGE_LOCATOR
+      const {title} = OUR_CERTIFICATIONS_PAGE_LOCATOR
       await this.hoverOnElement(button)
       await this.validateVisibility(ourCertificationsLink)
       await this.clickOnElement(ourCertificationsLink)
@@ -155,7 +155,7 @@ export class MainPage extends BasePage {
   async navigateToUsefulLinksPage(): Promise<void> {
     await test.step('Navigate to Useful Links page', async () => {
       const {button, usefulLinksLink} =
-        MAIN_PAGE_LOCATORS.menuLinks.testingInIsael
+        MAIN_PAGE_LOCATORS.menuLinks.testingInIsrael
       const {title} = USEFUL_LINKS_LOCATORS
       await this.hoverOnElement(button)
       await this.validateVisibility(usefulLinksLink)
@@ -166,7 +166,7 @@ export class MainPage extends BasePage {
   async navigateToITCBMagazinePage(): Promise<void> {
     await test.step('Navigate to ITCB Magazine page', async () => {
       const {button, ITCBMagazineLink} =
-        MAIN_PAGE_LOCATORS.menuLinks.testingInIsael
+        MAIN_PAGE_LOCATORS.menuLinks.testingInIsrael
       const {viewAllMagazineIssuesLink} = ITCB_MAGAZINE_PAGE_LOCATORS
       await this.hoverOnElement(button)
       await this.validateVisibility(ITCBMagazineLink)
@@ -177,20 +177,21 @@ export class MainPage extends BasePage {
   }
   async navigateToPodcastsPage(): Promise<void> {
     await test.step('Navigate to Podcasts page', async () => {
-      const {button, podcatsLink} = MAIN_PAGE_LOCATORS.menuLinks.testingInIsael
-      const {officalPodcastLink} = PODCASTS_PAGE_LOCATORS
+      const {button, podcastsLink} =
+        MAIN_PAGE_LOCATORS.menuLinks.testingInIsrael
+      const {officialPodcastLink} = PODCASTS_PAGE_LOCATORS
       await this.hoverOnElement(button)
-      await this.validateVisibility(podcatsLink)
-      await this.clickOnElement(podcatsLink)
+      await this.validateVisibility(podcastsLink)
+      await this.clickOnElement(podcastsLink)
       await this.pressOkToCookies()
-      await this.validateVisibility(officalPodcastLink)
-      await this.validateText(officalPodcastLink, 'דף הפודקאסט הרישמי שלנו')
+      await this.validateVisibility(officialPodcastLink)
+      await this.validateText(officialPodcastLink, 'דף הפודקאסט הרישמי שלנו')
     })
   }
   async navigateToEventsSummariesPage(): Promise<void> {
     await test.step('navigate to Events Summaries page', async () => {
       const {button, eventsSummariesLink} =
-        MAIN_PAGE_LOCATORS.menuLinks.testingInIsael
+        MAIN_PAGE_LOCATORS.menuLinks.testingInIsrael
       const {title} = EVENTS_SUMMARIES_PAGE_LOCATORS
       await this.hoverOnElement(button)
       await this.validateVisibility(eventsSummariesLink)
@@ -201,7 +202,7 @@ export class MainPage extends BasePage {
   }
   async navigateToTipsPage(): Promise<void> {
     await test.step('Navigate to Tips page', async () => {
-      const {button, tipsLink} = MAIN_PAGE_LOCATORS.menuLinks.testingInIsael
+      const {button, tipsLink} = MAIN_PAGE_LOCATORS.menuLinks.testingInIsrael
       const {title} = TIPS_PAGE_LOCATORS
       await this.hoverOnElement(button)
       await this.validateVisibility(tipsLink)
@@ -217,7 +218,7 @@ export class MainPage extends BasePage {
     await test.step('navigate to Important Facts page', async () => {
       const {button, importantFactsLink} =
         MAIN_PAGE_LOCATORS.menuLinks.additionalInformation
-      const {title} = IMPORTTANT_FACTS_PAGE_LOCATORS
+      const {title} = IMPORTANT_FACTS_PAGE_LOCATORS
       await this.hoverOnElement(button)
       await this.validateVisibility(importantFactsLink)
       await this.clickOnElement(importantFactsLink)

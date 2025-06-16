@@ -4,7 +4,7 @@ export const PODCASTS_PAGE_LOCATORS = {
     name: 'פודקאסטים',
     exact: true,
   },
-  officalPodcastLink: {
+  officialPodcastLink: {
     role: 'link',
     name: 'דף הפודקאסט הרישמי שלנו',
   },

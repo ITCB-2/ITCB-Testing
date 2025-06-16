@@ -1,6 +1,6 @@
 import test from '@/fixtures/testSetup'
 
-test.describe('Main Page Navigation Menu Tests', () => {
+test.describe('Main Page - Why ISTQB Menu Tests', () => {
   test.beforeEach(async ({mainPage}) => {
     await mainPage.openMainPage()
   })
@@ -13,7 +13,7 @@ test.describe('Main Page Navigation Menu Tests', () => {
   test('should navigate to Members of Community Sharing page and verify content', async ({
     mainPage,
   }) => {
-    await mainPage.navigateTOMembersOfComunnitySharingPage()
+    await mainPage.navigateTOMembersOfCommunitySharingPage()
   })
 
   test('should navigate to Our Certifications page and verify content', async ({
@@ -26,6 +26,12 @@ test.describe('Main Page Navigation Menu Tests', () => {
     mainPage,
   }) => {
     await mainPage.navigateToHowToPrepareToISTQBTestPage()
+  })
+})
+
+test.describe('Main Page - **SEPERATE EACH MENU TO ITS test.describe (Test Set** Menu Tests', () => {
+  test.beforeEach(async ({mainPage}) => {
+    await mainPage.openMainPage()
   })
   test('should navigate to Terms Glossary page and verify content', async ({
     mainPage,
@@ -42,7 +48,7 @@ test.describe('Main Page Navigation Menu Tests', () => {
   }) => {
     await mainPage.navigateToUsefulLinksPage()
   })
-  test('shoud navigate to ITCB Magazine page and verify content', async ({
+  test('should navigate to ITCB Magazine page and verify content', async ({
     mainPage,
   }) => {
     await mainPage.navigateToITCBMagazinePage()
@@ -57,7 +63,9 @@ test.describe('Main Page Navigation Menu Tests', () => {
   }) => {
     await mainPage.navigateToEventsSummariesPage()
   })
-  test('shoud navigate to Tips page and verify content', async ({mainPage}) => {
+  test('should navigate to Tips page and verify content', async ({
+    mainPage,
+  }) => {
     await mainPage.navigateToTipsPage()
   })
   test('should navigate to Important Facts page and verify content', async ({
@@ -70,7 +78,7 @@ test.describe('Main Page Navigation Menu Tests', () => {
   }) => {
     await mainPage.navigateToQuestionsAndAnswersPage()
   })
-  test('should navigate to Internation Conferences page and verify content', async ({
+  test('should navigate to international Conferences page and verify content', async ({
     mainPage,
   }) => {
     await mainPage.navigateToInternationalConferencesPage()

@@ -20,7 +20,7 @@ export const MAIN_PAGE_LOCATORS = {
         role: 'link',
         name: 'מקבלי החלטות משתפים',
       },
-      membersOfComunnitySharingLink: {
+      membersOfCommunitySharingLink: {
         parent: '#navbarScroll',
         role: 'link',
         name: 'חברי הקהילה משתפים',
@@ -60,7 +60,7 @@ export const MAIN_PAGE_LOCATORS = {
         name: 'כל מה שרציתם לדעת על סילבוס CTFL',
       },
     },
-    testingInIsael: {
+    testingInIsrael: {
       button: {parent: '#navbarScroll', role: 'button', name: 'בדיקות בישראל'},
       usefulLinksLink: {
         parent: '#navbarScroll',
@@ -72,7 +72,7 @@ export const MAIN_PAGE_LOCATORS = {
         role: 'link',
         name: 'מגזין "עולם הבדיקות"',
       },
-      podcatsLink: {
+      podcastsLink: {
         parent: '#navbarScroll',
         role: 'link',
         name: 'פודקאסטים',

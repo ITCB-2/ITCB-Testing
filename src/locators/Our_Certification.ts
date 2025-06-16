@@ -1,4 +1,4 @@
-export const OUR_CERTIFACTIONS_PAGE_LOCATOR = {
+export const OUR_CERTIFICATIONS_PAGE_LOCATOR = {
   title: {
     role: 'heading',
     name: 'ההסמכות שלנו, הקריירה שלך',
