@@ -1,6 +1,6 @@
 import test from '@/fixtures/testSetup'
 
-test.describe('Main Page - Why ISTQB Menu Tests', () => {
+test.describe.only('Main Page - Why ISTQB Menu Tests', () => {
   test.beforeEach(async ({mainPage}) => {
     await mainPage.openMainPage()
   })
