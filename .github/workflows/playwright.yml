@@ -13,12 +13,12 @@ on:
     # Run tests when pull requests are opened/updated on main or master branches
     branches: [main, master]
 
-# Concurrency control to prevent multiple workflow runs from interfering
+# Concurrency control - only cancel scheduled runs, not push/PR runs
 concurrency:
-  # Create a single concurrency group for all runs of this workflow
-  group: ${{ github.workflow }}
-  # Cancel in-progress runs when a new one starts, prioritizing newer runs
-  cancel-in-progress: true
+  # Create separate concurrency groups for different trigger types
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+  # Only cancel in-progress runs for scheduled jobs, not for push/PR
+  cancel-in-progress: ${{ github.event_name == 'schedule' }}
 
 jobs:
   test:
