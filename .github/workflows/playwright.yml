@@ -15,10 +15,10 @@ on:
 
 # Concurrency control to prevent multiple workflow runs from interfering
 concurrency:
-  # Create unique concurrency groups: different for scheduled vs push/PR events
-  group: ${{ github.workflow }}-${{ github.event_name == 'schedule' && 'scheduled' || github.ref }}
-  # Only cancel scheduled runs if there's a conflict, let push/PR runs complete
-  cancel-in-progress: ${{ github.event_name == 'schedule' }}
+  # Create a single concurrency group for all runs of this workflow
+  group: ${{ github.workflow }}
+  # Cancel in-progress runs when a new one starts, prioritizing newer runs
+  cancel-in-progress: true
 
 jobs:
   test:
@@ -31,6 +31,14 @@ jobs:
       # Base URL for tests, stored securely in repository secrets
       BASE_URL: ${{ secrets.BASE_URL }}
     steps:
+      # Skip duplicate actions to prevent redundant workflow runs
+      - uses: fkirc/skip-duplicate-actions@v5
+        with:
+          # Cancel other workflows of the same type that are currently running
+          cancel_others: 'true'
+          # Skip this workflow if an identical one completed successfully recently
+          skip_after_successful_duplicate: 'true'
+
       # Check out the repository code to the runner
       - uses: actions/checkout@v4
 
@@ -62,7 +70,3 @@ jobs:
           path: playwright-report/
           # Keep artifacts for 30 days before automatic deletion
           retention-days: 30
-      - uses: fkirc/skip-duplicate-actions@v5
-        with:
-          cancel_others: 'true'
-          skip_after_successful_duplicate: 'true'
