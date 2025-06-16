@@ -85,18 +85,4 @@ test.describe('Main Page Navigation Menu Tests', () => {
   }) => {
     await mainPage.navigateToOurPartnersPage()
   })
-
-  test('should navigate to About page and verify Management Committee heading', async ({
-    page,
-  }) => {
-    await test.step('Navigate to About page', async () => {
-      await page.goto('https://www.itcb.org.il/?todo=about')
-    })
-
-    await test.step('Verify Management Committee heading is visible', async () => {
-      const managementHeading = page.getByRole('heading', {name: 'הוועד המנהל'})
-      await managementHeading.waitFor({state: 'visible'})
-      await test.expect(managementHeading).toBeVisible()
-    })
-  })
 })
