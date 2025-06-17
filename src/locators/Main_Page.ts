@@ -6,7 +6,7 @@ export const MAIN_PAGE_LOCATORS = {
   title: {
     role: 'heading',
     name: 'עובדות שחשוב שתדע',
-  },
+  },  
   acceptCookiesButton: {
     role: 'button',
     name: 'הבנתי!',
