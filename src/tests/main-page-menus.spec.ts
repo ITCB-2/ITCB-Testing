@@ -46,7 +46,7 @@ test.describe('Main Page - ISTQBContent Menu Tests', () => {
   
 })
 
-test.describe('Main Page - testingInIsrael Menu Tests', () => {
+test.describe('Main Page - testing In Israel Menu Tests', () => {
   test.beforeEach(async ({mainPage}) => {
     await mainPage.openMainPage()
   })
@@ -78,7 +78,7 @@ test('should navigate to Useful Links page and verify content', async ({
   
 })
 
-test.describe('Main Page - additionalInformation Menu Tests', () => {
+test.describe('Main Page - additional Information Menu Tests', () => {
   test.beforeEach(async ({mainPage}) => {
     await mainPage.openMainPage()
   })
