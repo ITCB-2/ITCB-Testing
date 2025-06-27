@@ -1,279 +1,326 @@
 export const MAIN_PAGE_LOCATORS = {
-  ITCBLogo:{
-    role: 'img',
-    name: 'Logo',
+  ITCBLogo: {
+    role: "img",
+    name: "Logo",
   },
   title: {
-    role: 'heading',
-    name: 'עובדות שחשוב שתדע',
-  },  
+    role: "heading",
+    name: "עובדות שחשוב שתדע",
+  },
   acceptCookiesButton: {
-    role: 'button',
-    name: 'הבנתי!',
+    role: "button",
+    name: "הבנתי!",
   },
   menuLinks: {
     registerToTestLink: {
-      parent: '#navbarScroll',
-      role: 'link',
-      name: 'הרשמה למבחן',
+      parent: "#navbarScroll",
+      role: "link",
+      name: "הרשמה למבחן",
     },
     whyISTQB: {
-      button: {parent: '#navbarScroll', role: 'button', name: 'למה ®ISTQB?'},
+      button: { parent: "#navbarScroll", role: "button", name: "למה ®ISTQB?" },
       decisionMakersSharingLink: {
-        parent: '#navbarScroll',
-        role: 'link',
-        name: 'מקבלי החלטות משתפים',
+        parent: "#navbarScroll",
+        role: "link",
+        name: "מקבלי החלטות משתפים",
       },
       membersOfCommunitySharingLink: {
-        parent: '#navbarScroll',
-        role: 'link',
-        name: 'חברי הקהילה משתפים',
+        parent: "#navbarScroll",
+        role: "link",
+        name: "חברי הקהילה משתפים",
       },
       ourCertificationsLink: {
-        parent: '#navbarScroll',
-        role: 'link',
-        name: 'ההסמכות שלנו',
+        parent: "#navbarScroll",
+        role: "link",
+        name: "ההסמכות שלנו",
       },
       howToPrepareToISTQBTestLink: {
-        parent: '#navbarScroll',
-        role: 'link',
-        name: 'איך להתכונן למבחן ISTQB®',
+        parent: "#navbarScroll",
+        role: "link",
+        name: "איך להתכונן למבחן ISTQB®",
       },
     },
 
     ISTQBContent: {
-      button: {parent: '#navbarScroll', role: 'button', name: 'תכני ®ISTQB'},
+      button: { parent: "#navbarScroll", role: "button", name: "תכני ®ISTQB" },
       SyllabusAndSampleExamsLink: {
-        parent: '#navbarScroll',
-        role: 'link',
-        name: 'סילבוסים ובחינות לדוגמה',
+        parent: "#navbarScroll",
+        role: "link",
+        name: "סילבוסים ובחינות לדוגמה",
       },
       termsGlossaryLink: {
-        parent: '#navbarScroll',
-        role: 'link',
-        name: 'מילון מונחים',
+        parent: "#navbarScroll",
+        role: "link",
+        name: "מילון מונחים",
       },
       listOfCertifiedTestersLink: {
-        parent: '#navbarScroll',
-        role: 'link',
-        name: 'רשימת מוסמכים',
+        parent: "#navbarScroll",
+        role: "link",
+        name: "רשימת מוסמכים",
       },
       syllabusInfoLink: {
-        parent: '#navbarScroll',
-        role: 'link',
-        name: 'כל מה שרציתם לדעת על סילבוס CTFL',
+        parent: "#navbarScroll",
+        role: "link",
+        name: "כל מה שרציתם לדעת על סילבוס CTFL",
       },
     },
     testingInIsrael: {
-      button: {parent: '#navbarScroll', role: 'button', name: 'בדיקות בישראל'},
+      button: {
+        parent: "#navbarScroll",
+        role: "button",
+        name: "בדיקות בישראל",
+      },
       usefulLinksLink: {
-        parent: '#navbarScroll',
-        role: 'link',
-        name: 'קישורים שימושיים',
+        parent: "#navbarScroll",
+        role: "link",
+        name: "קישורים שימושיים",
       },
       ITCBMagazineLink: {
-        parent: '#navbarScroll',
-        role: 'link',
+        parent: "#navbarScroll",
+        role: "link",
         name: 'מגזין "עולם הבדיקות"',
       },
       podcastsLink: {
-        parent: '#navbarScroll',
-        role: 'link',
-        name: 'פודקאסטים',
+        parent: "#navbarScroll",
+        role: "link",
+        name: "פודקאסטים",
       },
       eventsSummariesLink: {
-        parent: '#navbarScroll',
-        role: 'link',
-        name: 'סיכומי אירועים',
+        parent: "#navbarScroll",
+        role: "link",
+        name: "סיכומי אירועים",
       },
       tipsLink: {
-        parent: '#navbarScroll',
-        role: 'link',
-        name: 'טיפים',
+        parent: "#navbarScroll",
+        role: "link",
+        name: "טיפים",
       },
     },
     additionalInformation: {
-      button: {parent: '#navbarScroll', role: 'button', name: 'מידע נוסף'},
+      button: { parent: "#navbarScroll", role: "button", name: "מידע נוסף" },
       importantFactsLink: {
-        parent: '#navbarScroll',
-        role: 'link',
-        name: 'עובדות שחשוב שתדעו',
+        parent: "#navbarScroll",
+        role: "link",
+        name: "עובדות שחשוב שתדעו",
       },
       questionsAndAnswersLink: {
-        parent: '#navbarScroll',
-        role: 'link',
-        name: 'שאלות ותשובות',
+        parent: "#navbarScroll",
+        role: "link",
+        name: "שאלות ותשובות",
       },
       internationalConferencesLink: {
-        parent: '#navbarScroll',
-        role: 'link',
-        name: 'כנסים בינלאומיים',
+        parent: "#navbarScroll",
+        role: "link",
+        name: "כנסים בינלאומיים",
       },
     },
     aboutITCB: {
-      button: {parent: '#navbarScroll', role: 'button', name: 'אודות ®ITCB'},
+      button: { parent: "#navbarScroll", role: "button", name: "אודות ®ITCB" },
       aboutUsLink: {
-        parent: '#navbarScroll',
-        role: 'link',
-        name: 'קצת עלינו',
+        parent: "#navbarScroll",
+        role: "link",
+        name: "קצת עלינו",
       },
       boardOfDirectorsLink: {
-        parent: '#navbarScroll',
-        role: 'link',
-        name: 'הוועד המנהל',
+        parent: "#navbarScroll",
+        role: "link",
+        name: "הוועד המנהל",
       },
       advisoryBoardLink: {
-        parent: '#navbarScroll',
-        role: 'link',
-        name: 'הוועד המייעץ',
+        parent: "#navbarScroll",
+        role: "link",
+        name: "הוועד המייעץ",
       },
       ourPartnersLink: {
-        parent: '#navbarScroll',
-        role: 'link',
-        name: 'השותפים שלנו',
+        parent: "#navbarScroll",
+        role: "link",
+        name: "השותפים שלנו",
       },
     },
-    contactUsLink: {parent: '#navbarScroll', role: 'link', name: 'צור קשר'},
+    contactUsLink: { parent: "#navbarScroll", role: "link", name: "צור קשר" },
   },
-  importantFactsSection:{
-    importantFactsTitle: {
-       role: 'heading',
-      name: 'עובדות שחשוב שתדע',
+  sliderSection: {
+    slidersTitles: {
+      slider1Title: {
+        role: "heading",
+        name: "אנו גאים להציג את אפליקצית ®",
+      },
+      slider2Title: {
+        role: "heading",
+        name: "אבן דרך עולמית באיכות תוכנה: מעל מיליון הסמכות ISTQB",
+      },
+      slider3Title: {
+        role: "heading",
+        name: "מקומות בהם איכות פוגשת מצוינות כנסים עולמיים לבדוקי תוכנה!!!",
+      },
+      slider4Title: {
+        role: "heading",
+        name: "אצלנו תצליח בהייטק, זה בדוק!",
+      },
+      slider5Title: {
+        role: "heading",
+        name: "עמותת ITCB",
+      },
     },
-    allFactsLink:{
-      role: 'link',
-      name: 'לכל העובדות',
-    }
+    slidersBtns: {
+      slider1Btn: {
+        role: "button",
+        name: "01",
+      },
+      slider2Btn: {
+        role: "button",
+        name: "02",
+      },
+      slider3Btn: {
+        role: "button",
+        name: "03",
+      },
+      slider4Btn: {
+        role: "button",
+        name: "04",
+      },
+      slider5Btn: {
+        role: "button",
+        name: "05",
+      },
+    },
+  },
+  importantFactsSection: {
+    importantFactsTitle: {
+      role: "heading",
+      name: "עובדות שחשוב שתדע",
+    },
+    allFactsLink: {
+      role: "link",
+      name: "לכל העובדות",
+    },
   },
   ourCertificationsSection: {
-ourCertificationsTitle:{
-  role: 'heading',
-  name: 'ההסמכות שלנו, הקריירה שלך',
+    ourCertificationsTitle: {
+      role: "heading",
+      name: "ההסמכות שלנו, הקריירה שלך",
     },
     allCertificationsLink: {
-      role: 'link',
-      name: 'לכל ההסמכות',
+      role: "link",
+      name: "לכל ההסמכות",
     },
   },
-  decisionMakersSharingSection:{
+  decisionMakersSharingSection: {
     decisionMakersSharingTitle: {
-      role: 'heading',
-      name: 'מקבלי ההחלטות משתפים',
+      role: "heading",
+      name: "מקבלי ההחלטות משתפים",
     },
-    
   },
-  bottomMenuLinks:{
+  bottomMenuLinks: {
     whyISTQB: {
       decisionMakersSharingLink: {
-        role: 'link',
-        name: 'מקבלי החלטות משתפים',
-        parent: 'footer'
+        role: "link",
+        name: "מקבלי החלטות משתפים",
+        parent: "footer",
       },
       membersOfCommunitySharingLink: {
-        role: 'link',
-        name: 'חברי הקהילה משתפים',
-        parent: 'footer'
+        role: "link",
+        name: "חברי הקהילה משתפים",
+        parent: "footer",
       },
       ourCertificationsLink: {
-        role: 'link',
-        name: 'ההסמכות שלנו',
-        parent: 'footer'
+        role: "link",
+        name: "ההסמכות שלנו",
+        parent: "footer",
       },
       howToPrepareToISTQBTestLink: {
-        role: 'link',
-        name: 'איך להתכונן למבחן ISTQB®',
-        parent: 'footer'
+        role: "link",
+        name: "איך להתכונן למבחן ISTQB®",
+        parent: "footer",
       },
     },
-    ISTQBContent:{
-      SyllabusAndSampleExamsLink:{
-        role: 'link',
-        name: 'סילבוסים ובחינות לדוגמה',
-        parent: 'footer'
+    ISTQBContent: {
+      SyllabusAndSampleExamsLink: {
+        role: "link",
+        name: "סילבוסים ובחינות לדוגמה",
+        parent: "footer",
       },
-      termsGlossaryLink:{
-        role: 'link',
-        name: 'מילון מונחים',
-        parent: 'footer'
+      termsGlossaryLink: {
+        role: "link",
+        name: "מילון מונחים",
+        parent: "footer",
       },
       listOfCertifiedTestersLink: {
-        role: 'link',
-        name: 'רשימת מוסמכים',
-        parent: 'footer'
+        role: "link",
+        name: "רשימת מוסמכים",
+        parent: "footer",
       },
       syllabusInfoLink: {
-        role: 'link',
-        name: 'כל מה שרציתם לדעת על סילבוס CTFL',
-        parent: 'footer'
-      }
-
+        role: "link",
+        name: "כל מה שרציתם לדעת על סילבוס CTFL",
+        parent: "footer",
+      },
     },
-    testingInIsrael:{
+    testingInIsrael: {
       usefulLinksLink: {
-        role: 'link',
-        name: 'קישורים שימושיים',
-        parent: 'footer'
+        role: "link",
+        name: "קישורים שימושיים",
+        parent: "footer",
       },
       ITCBMagazineLink: {
-        role: 'link',
+        role: "link",
         name: 'מגזין "עולם הבדיקות"',
-        parent: 'footer'
+        parent: "footer",
       },
       podcastsLink: {
-        role: 'link',
-        name: 'פודקאסטים',
-        parent: 'footer'
+        role: "link",
+        name: "פודקאסטים",
+        parent: "footer",
       },
       eventsSummariesLink: {
-        role: 'link',
-        name: 'סיכומי אירועים',
-        parent: 'footer'
+        role: "link",
+        name: "סיכומי אירועים",
+        parent: "footer",
       },
       tipsLink: {
-        role: 'link',
-        name: 'טיפים',
-        parent: 'footer'
-      }
+        role: "link",
+        name: "טיפים",
+        parent: "footer",
+      },
     },
     additionalInformation: {
       importantFactsLink: {
-        role: 'link',
-        name: 'עובדות שחשוב שתדעו',
-        parent: 'footer'
+        role: "link",
+        name: "עובדות שחשוב שתדעו",
+        parent: "footer",
       },
       questionsAndAnswersLink: {
-        role: 'link',
-        name: 'שאלות ותשובות',
-        parent: 'footer'
+        role: "link",
+        name: "שאלות ותשובות",
+        parent: "footer",
       },
       internationalConferencesLink: {
-        role: 'link',
-        name: 'כנסים בינלאומיים',
-        parent: 'footer'
+        role: "link",
+        name: "כנסים בינלאומיים",
+        parent: "footer",
       },
     },
     aboutITCB: {
       aboutUsLink: {
-        role: 'link',
-        name: 'קצת עלינו',
-        parent: 'footer'
+        role: "link",
+        name: "קצת עלינו",
+        parent: "footer",
       },
       boardOfDirectorsLink: {
-        role: 'link',
-        name: 'הוועד המנהל',
-        parent: 'footer'
+        role: "link",
+        name: "הוועד המנהל",
+        parent: "footer",
       },
       advisoryBoardLink: {
-        role: 'link',
-        name: 'הוועד המייעץ',
-        parent: 'footer'
+        role: "link",
+        name: "הוועד המייעץ",
+        parent: "footer",
       },
       ourPartnersLink: {
-        role: 'link',
-        name: 'השותפים שלנו',
-        parent: 'footer'
+        role: "link",
+        name: "השותפים שלנו",
+        parent: "footer",
       },
     },
-
   },
-} as const
+} as const;
