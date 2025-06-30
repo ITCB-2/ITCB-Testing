@@ -19,6 +19,13 @@ This is a Playwright test automation framework built with TypeScript using the P
 - **Format Check**: Prettier validation
 - **TypeScript Check**: Compilation validation
 
+## Automated Code Quality
+
+This project automatically fixes code quality issues:
+
+- **Pre-commit**: Auto-fixes formatting and linting before each commit
+- **Pre-push**: Final validation and fixes before pushing to remote
+
 ## Available Commands
 
 ```bash
