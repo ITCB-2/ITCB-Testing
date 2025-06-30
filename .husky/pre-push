@@ -1,0 +1,11 @@
+echo "� Auto-fixing any remaining issues..."
+
+# Auto-fix all files before push
+npm run fix
+
+echo "🔍 Running final quality check..."
+
+# Full quality validation
+npm run check
+
+echo "✅ Pre-push checks completed successfully!"
