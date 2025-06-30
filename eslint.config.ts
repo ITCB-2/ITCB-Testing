@@ -1,10 +1,13 @@
 import eslint from '@eslint/js'
 import tseslint from '@typescript-eslint/eslint-plugin'
 import tsparser from '@typescript-eslint/parser'
+import prettierConfig from 'eslint-config-prettier'
 import playwright from 'eslint-plugin-playwright'
+import prettierPlugin from 'eslint-plugin-prettier'
 
 export default [
   eslint.configs.recommended,
+  prettierConfig,
   {
     files: ['**/*.ts'],
     languageOptions: {
@@ -19,6 +22,7 @@ export default [
     plugins: {
       '@typescript-eslint': tseslint,
       playwright,
+      prettier: prettierPlugin,
     },
     rules: {
       // Disable rules that conflict with TypeScript strict mode
@@ -48,6 +52,9 @@ export default [
       'playwright/no-skipped-test': 'warn',
       'playwright/no-useless-await': 'error',
       'playwright/prefer-web-first-assertions': 'error',
+
+      // Prettier integration
+      'prettier/prettier': 'error',
     },
   },
   {

@@ -43,14 +43,13 @@ test.describe('Main Page - ISTQBContent Menu Tests', () => {
   }) => {
     await mainPage.navigateToSyllabusInfoPage()
   })
-  
 })
 
 test.describe('Main Page - testing In Israel Menu Tests', () => {
   test.beforeEach(async ({mainPage}) => {
     await mainPage.openMainPage()
   })
-test('should navigate to Useful Links page and verify content', async ({
+  test('should navigate to Useful Links page and verify content', async ({
     mainPage,
   }) => {
     await mainPage.navigateToUsefulLinksPage()
@@ -75,14 +74,13 @@ test('should navigate to Useful Links page and verify content', async ({
   }) => {
     await mainPage.navigateToTipsPage()
   })
-  
 })
 
 test.describe('Main Page - additional Information Menu Tests', () => {
   test.beforeEach(async ({mainPage}) => {
     await mainPage.openMainPage()
   })
-test('should navigate to Important Facts page and verify content', async ({
+  test('should navigate to Important Facts page and verify content', async ({
     mainPage,
   }) => {
     await mainPage.navigateToImportantFactsPage()
@@ -97,14 +95,13 @@ test('should navigate to Important Facts page and verify content', async ({
   }) => {
     await mainPage.navigateToInternationalConferencesPage()
   })
-  
 })
 
 test.describe('Main Page - aboutITCB Menu Tests', () => {
   test.beforeEach(async ({mainPage}) => {
     await mainPage.openMainPage()
   })
-test('should navigate to ITCB About Us page and verify URL', async ({
+  test('should navigate to ITCB About Us page and verify URL', async ({
     mainPage,
   }) => {
     await mainPage.navigateToAboutUsPage()
