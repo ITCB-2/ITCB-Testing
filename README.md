@@ -1,4 +1,4 @@
-# ITCB Testing - Playwright Test Automation Framework
+# ITCB Testing Project - Playwright Test Automation Framework
 
 ## Overview
 
