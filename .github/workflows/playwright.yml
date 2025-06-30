@@ -1,69 +1,31 @@
-# GitHub Actions workflow for running Playwright end-to-end tests
 name: Playwright Tests
-
-# ******* WORKFLOW TEMPORARILY DISABLED *******
-# Define when this workflow should run
 on:
-  # Manual trigger only - workflow is effectively disabled for automatic runs
-  workflow_dispatch: # ** Remove this line when resuming automatic runs **
-
-# COMMENTED OUT - Uncomment these sections to resume automatic workflow execution:
-# schedule:
-#   # Run tests automatically every 5 minutes using cron syntax
-#   - cron: '*/5 * * * *'
-# push:
-#   # Run tests when code is pushed to main or master branches
-#   branches: [main, master]
-# pull_request:
-#   # Run tests when pull requests are opened/updated on main or master branches
-#   branches: [main, master]
-
-# Concurrency control - only cancel scheduled runs, not push/PR runs
-concurrency:
-  # Create separate concurrency groups for different trigger types
-  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
-  # Only cancel in-progress runs for scheduled jobs, not for push/PR
-  cancel-in-progress: ${{ github.event_name == 'schedule' }}
-
+  workflow_run:
+    workflows: ['Code Quality Check']
+    types:
+      - completed
+    branches: [main, master]
 jobs:
   test:
-    # Set maximum runtime to prevent hanging workflows
     timeout-minutes: 60
-    # Use the latest Ubuntu runner for consistent environment
     runs-on: ubuntu-latest
-    # Environment variables available to all steps
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     env:
-      # Base URL for tests, stored securely in repository secrets
       BASE_URL: ${{ secrets.BASE_URL }}
     steps:
-      # Check out the repository code to the runner
       - uses: actions/checkout@v4
-
-      # Set up Node.js environment with the latest LTS version
       - uses: actions/setup-node@v4
         with:
           node-version: lts/*
-
-      # Install project dependencies using npm ci for faster, reliable installs
       - name: Install dependencies
         run: npm ci
-
-      # Install Playwright browsers and system dependencies needed for testing
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
-
-      # Execute the Playwright test suite
       - name: Run Playwright tests
         run: npx playwright test
-
-      # Upload test results and reports as artifacts for review
       - uses: actions/upload-artifact@v4
-        # Run this step even if tests fail, but not if workflow was cancelled
         if: ${{ !cancelled() }}
         with:
-          # Name of the artifact that will appear in the Actions UI
           name: playwright-report
-          # Path to the generated test reports
           path: playwright-report/
-          # Keep artifacts for 30 days before automatic deletion
           retention-days: 30
