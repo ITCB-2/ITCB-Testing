@@ -1,6 +1,5 @@
 import {LocatorUtils} from '@/core/LocatorUtils'
-import type {Locator, Page} from '@playwright/test'
-import {expect} from '@playwright/test'
+import {expect, type Locator, type Page} from '@playwright/test'
 
 type stringOrRoleLocatorType =
   | string

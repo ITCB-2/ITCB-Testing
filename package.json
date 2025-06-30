@@ -9,7 +9,10 @@
     "test": "playwright test",
     "report": "playwright show-report",
     "codegen": "playwright codegen",
-    "chrome": "playwright test --project=chromium"
+    "chrome": "playwright test --project=chromium",
+    "lint": "eslint src/**/*.ts --no-warn-ignored",
+    "lint:fix": "eslint src/**/*.ts --fix --no-warn-ignored",
+    "lint:check": "eslint src/**/*.ts --max-warnings 0 --no-warn-ignored"
   },
   "repository": {
     "type": "git",
@@ -27,6 +30,11 @@
     "@faker-js/faker": "^9.8.0",
     "@playwright/test": "^1.52.0",
     "@types/node": "^22.15.29",
+    "@typescript-eslint/eslint-plugin": "^8.35.0",
+    "@typescript-eslint/parser": "^8.35.0",
+    "eslint": "^9.30.0",
+    "eslint-plugin-playwright": "^2.2.0",
+    "jiti": "^2.4.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
   },
