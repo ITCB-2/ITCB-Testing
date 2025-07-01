@@ -448,14 +448,12 @@ export class MainPage extends BasePage {
   }
   async slide1Verification(): Promise<void> {
     await test.step('Verify Slide 1', async () => {
-      await this.page.goto('https://www.itcb.org.il/#slide-1')
       const {slider1Btn, slider2Btn} =
         MAIN_PAGE_LOCATORS.sliderSection.slidersBtns
       const {slider1Title} = MAIN_PAGE_LOCATORS.sliderSection.slidersTitles
+      await this.gotoURL('https://www.itcb.org.il/#slide-1')
       await this.pressOkToCookies()
-      const slider = this.page.getByRole(slider1Title.role, {
-        name: slider1Title.name,
-      })
+      const slider = this.extractLocator(slider1Title)
       await expect(slider).toBeVisible({timeout: 60000})
       const box = await slider.boundingBox()
       if (box) {
@@ -476,14 +474,12 @@ export class MainPage extends BasePage {
   }
   async slide2Verification(): Promise<void> {
     await test.step('Verify Slide 2', async () => {
-      await this.page.goto('https://www.itcb.org.il/#slide-2')
+      await this.gotoURL('https://www.itcb.org.il/#slide-2')
       const {slider1Btn, slider3Btn} =
         MAIN_PAGE_LOCATORS.sliderSection.slidersBtns
       const {slider2Title} = MAIN_PAGE_LOCATORS.sliderSection.slidersTitles
       await this.pressOkToCookies()
-      const slider2 = this.page.getByRole(slider2Title.role, {
-        name: slider2Title.name,
-      })
+      const slider2 = this.extractLocator(slider2Title)
       await expect(slider2).toBeVisible({timeout: 60000})
       const box2 = await slider2.boundingBox()
       if (box2) {
@@ -505,15 +501,13 @@ export class MainPage extends BasePage {
   }
   async slide3Verification(): Promise<void> {
     await test.step('Verify Slide 3', async () => {
-      await this.page.goto('https://www.itcb.org.il/#slide-3')
+      await this.gotoURL('https://www.itcb.org.il/#slide-3')
       const {slider2Btn, slider4Btn} =
         MAIN_PAGE_LOCATORS.sliderSection.slidersBtns
       const {slider3Title} = MAIN_PAGE_LOCATORS.sliderSection.slidersTitles
       await this.pressOkToCookies()
 
-      const slider3 = this.page.getByRole(slider3Title.role, {
-        name: slider3Title.name,
-      })
+      const slider3 = this.extractLocator(slider3Title)
       await expect(slider3).toBeVisible({timeout: 60000})
       const box3 = await slider3.boundingBox()
       if (box3) {
@@ -534,14 +528,12 @@ export class MainPage extends BasePage {
   }
   async slide4Verification(): Promise<void> {
     await test.step('Verify Slide 4', async () => {
-      await this.page.goto('https://www.itcb.org.il/#slide-4')
+      await this.gotoURL('https://www.itcb.org.il/#slide-4')
       const {slider3Btn, slider5Btn} =
         MAIN_PAGE_LOCATORS.sliderSection.slidersBtns
       const {slider4Title} = MAIN_PAGE_LOCATORS.sliderSection.slidersTitles
       await this.pressOkToCookies()
-      const slider4 = this.page.getByRole(slider4Title.role, {
-        name: slider4Title.name,
-      })
+      const slider4 = this.extractLocator(slider4Title)
       await expect(slider4).toBeVisible({timeout: 60000})
       const box4 = await slider4.boundingBox()
       if (box4) {
@@ -560,14 +552,12 @@ export class MainPage extends BasePage {
   }
   async slide5Verification(): Promise<void> {
     await test.step('Verify Slide 5', async () => {
-      await this.page.goto('https://www.itcb.org.il/#slide-5')
+      await this.gotoURL('https://www.itcb.org.il/#slide-5')
       const {slider5Btn, slider4Btn} =
         MAIN_PAGE_LOCATORS.sliderSection.slidersBtns
       const {slider5Title} = MAIN_PAGE_LOCATORS.sliderSection.slidersTitles
       await this.pressOkToCookies()
-      const slider5 = this.page.getByRole(slider5Title.role, {
-        name: slider5Title.name,
-      })
+      const slider5 = this.extractLocator(slider5Title)
       await expect(slider5).toBeVisible({timeout: 60000})
       const box5 = await slider5.boundingBox()
       if (box5) {
