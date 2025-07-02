@@ -90,7 +90,7 @@ test.describe('Main Page - additional Information Bottom Menu Tests', () => {
     await mainPage.navigateToInternationalConferencesPageBottomMenu()
   })
 })
-test.describe.only('Main Page - aboutITCB Bottom Menu Tests', () => {
+test.describe('Main Page - aboutITCB Bottom Menu Tests', () => {
   test.describe.configure({timeout: 60 * 1000})
   test.beforeEach(async ({mainPage}) => {
     await mainPage.openMainPage()
@@ -100,7 +100,7 @@ test.describe.only('Main Page - aboutITCB Bottom Menu Tests', () => {
   }) => {
     await mainPage.navigateToAboutUsPageBottomMenu()
   })
-  test('should navigate to Board of Directors page through the bottom menu and verify content', async ({
+  test.only('should navigate to Board of Directors page through the bottom menu and verify content', async ({
     mainPage,
   }) => {
     await mainPage.navigateToBoardOfDirectorsPageBottomMenu()
