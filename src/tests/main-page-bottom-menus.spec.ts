@@ -100,7 +100,7 @@ test.describe('Main Page - aboutITCB Bottom Menu Tests', () => {
   }) => {
     await mainPage.navigateToAboutUsPageBottomMenu()
   })
-  test.only('should navigate to Board of Directors page through the bottom menu and verify content', async ({
+  test('should navigate to Board of Directors page through the bottom menu and verify content', async ({
     mainPage,
   }) => {
     await mainPage.navigateToBoardOfDirectorsPageBottomMenu()
