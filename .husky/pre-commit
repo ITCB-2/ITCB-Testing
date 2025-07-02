@@ -1,6 +1,3 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
 echo "� Auto-fixing code issues..."
 # Auto-fix formatting and linting
 npm run fix
