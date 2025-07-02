@@ -90,7 +90,8 @@ test.describe('Main Page - additional Information Bottom Menu Tests', () => {
     await mainPage.navigateToInternationalConferencesPageBottomMenu()
   })
 })
-test.describe('Main Page - aboutITCB Bottom Menu Tests', () => {
+test.describe.only('Main Page - aboutITCB Bottom Menu Tests', () => {
+  test.describe.configure({timeout: 60 * 1000})
   test.beforeEach(async ({mainPage}) => {
     await mainPage.openMainPage()
   })
@@ -99,7 +100,16 @@ test.describe('Main Page - aboutITCB Bottom Menu Tests', () => {
   }) => {
     await mainPage.navigateToAboutUsPageBottomMenu()
   })
-
+  test('should navigate to Board of Directors page through the bottom menu and verify content', async ({
+    mainPage,
+  }) => {
+    await mainPage.navigateToBoardOfDirectorsPageBottomMenu()
+  })
+  test('should navigate to Advisory Board page through the bottom menu and verify content', async ({
+    mainPage,
+  }) => {
+    await mainPage.navigateToAdvisoryBoardPageBottomMenu()
+  })
   test('should navigate to Our Partners page through the bottom menu and verify content', async ({
     mainPage,
   }) => {

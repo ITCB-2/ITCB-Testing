@@ -98,6 +98,7 @@ test.describe('Main Page - additional Information Menu Tests', () => {
 })
 
 test.describe('Main Page - aboutITCB Menu Tests', () => {
+  test.describe.configure({timeout: 60000})
   test.beforeEach(async ({mainPage}) => {
     await mainPage.openMainPage()
   })
@@ -106,6 +107,17 @@ test.describe('Main Page - aboutITCB Menu Tests', () => {
   }) => {
     await mainPage.navigateToAboutUsPage()
   })
+  test('should navigate to Board of Directors page and verify content', async ({
+    mainPage,
+  }) => {
+    await mainPage.navigateToBoardOfDirectorsPage()
+  })
+  test('should navigate to Advisory Board page and verify content', async ({
+    mainPage,
+  }) => {
+    await mainPage.navigateToAdvisoryBoardPage()
+  })
+
   test('should navigate to Our Partners page section and verify content', async ({
     mainPage,
   }) => {

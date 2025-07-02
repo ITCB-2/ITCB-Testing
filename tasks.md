@@ -31,6 +31,6 @@ Bot protection handling:
 
 Element location issues in specific pages:
 
-- should navigate to board of directors page section
-- should navigate to adversy board page section
-- should navigate to list of certicate testers
+- should navigate to board of directors page section - fixed
+- should navigate to adversy board page section - fixed
+- should navigate to list of certicate testers - fixed

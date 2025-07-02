@@ -10,9 +10,9 @@
     "pre-commit": "lint-staged",
     "prepare": "husky",
     "lint:check": "eslint src/**/*.ts --max-warnings 0 --no-warn-ignored",
-    "format:check": "prettier --check 'src/**/*.ts'",
+    "format:check": "prettier --check src/**/*.ts",
     "check": "npm run lint:check && npm run format:check && npx tsc --noEmit",
-    "fix": "prettier --write 'src/**/*.ts' && eslint src/**/*.ts --fix --no-warn-ignored"
+    "fix": "prettier --write src/**/*.ts && eslint src/**/*.ts --fix --no-warn-ignored"
   },
   "repository": {
     "type": "git",

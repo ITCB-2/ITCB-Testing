@@ -1,6 +1,7 @@
 import {BasePage} from '@/core/BasePage'
 import {BASE_URL} from '@/data/urls'
 import test from '@/fixtures/testSetup'
+import {ABOUT_US_PAGE_LOCATORS} from '@/locators/About_Us'
 import {DECISION_MAKERS_SHARING_PAGE_LOCATORS} from '@/locators/Decision_Makers_Sharing'
 import {EVENTS_SUMMARIES_PAGE_LOCATORS} from '@/locators/Events_Summaries'
 import {HOW_TO_PREPARE_TO_ISTQB_PAGE_LOCATOR} from '@/locators/How_To_Prepare_To_ISTQB'
@@ -40,6 +41,8 @@ export class MainPage extends BasePage {
       ).not.toBeVisible()
     })
   }
+  //top menus navigation
+
   //צריך להבין איך לעבור את ההגנת בוטים
   async navigateToRegisterToTestPage(): Promise<void> {
     await test.step('Navigate to Register To Test Page', async () => {
@@ -249,11 +252,62 @@ export class MainPage extends BasePage {
   async navigateToAboutUsPage(): Promise<void> {
     await test.step('navigate to About Us page', async () => {
       const {button, aboutUsLink} = MAIN_PAGE_LOCATORS.menuLinks.aboutITCB
+
       await this.hoverOnElement(button)
       await this.validateVisibility(aboutUsLink)
       await this.clickOnElement(aboutUsLink)
-      await this.pressOkToCookies()
+      const pageContent = this.page.getByText('ITCB® - Israel Testing')
+
       await this.validateURL('https://www.itcb.org.il/?todo=about')
+      await expect(pageContent).toContainText('ITCB® - Israel Testing')
+    })
+  }
+  async navigateToBoardOfDirectorsPage(): Promise<void> {
+    await test.step('Navigate to Board of Directors page', async () => {
+      const {button, boardOfDirectorsLink} =
+        MAIN_PAGE_LOCATORS.menuLinks.aboutITCB
+      const {boardOfDirectorsTitle} = ABOUT_US_PAGE_LOCATORS
+      await this.hoverOnElement(button)
+      await this.validateVisibility(boardOfDirectorsLink)
+
+      const pagePromise = this.page.context().waitForEvent('page')
+
+      await this.clickOnElement(boardOfDirectorsLink)
+
+      // Get the new page that was opened
+      const newPage = await pagePromise
+      await newPage.waitForLoadState()
+
+      // Create locator based on role/name
+      const locator = newPage.getByRole(boardOfDirectorsTitle.role, {
+        name: boardOfDirectorsTitle.name,
+      })
+      await expect(locator).toBeVisible({timeout: 10000})
+      await expect(locator).toHaveText('הוועד המנהל')
+    })
+  }
+  async navigateToAdvisoryBoardPage(): Promise<void> {
+    await test.step('Navigate to Advisory Board page', async () => {
+      const {button, advisoryBoardLink} = MAIN_PAGE_LOCATORS.menuLinks.aboutITCB
+      const {advisoryBoardTitle} = ABOUT_US_PAGE_LOCATORS.advisoryBoardSection
+      await this.hoverOnElement(button)
+      await this.validateVisibility(advisoryBoardLink)
+
+      // Wait for new page before clicking
+      const pagePromise = this.page.context().waitForEvent('page')
+
+      await this.clickOnElement(advisoryBoardLink)
+
+      // Get the new page that was opened
+      const newPage = await pagePromise
+      await newPage.waitForLoadState()
+
+      // Create locator based on role/name
+      const locator = newPage.getByRole(advisoryBoardTitle.role, {
+        name: advisoryBoardTitle.name,
+      })
+      await expect(locator).toBeVisible({timeout: 10000})
+      await expect(locator).toHaveText('הוועד המייעץ')
     })
   }
   async navigateToOurPartnersPage(): Promise<void> {
@@ -263,7 +317,6 @@ export class MainPage extends BasePage {
       await this.hoverOnElement(button)
       await this.validateVisibility(ourPartnersLink)
       await this.clickOnElement(ourPartnersLink)
-      await this.pressOkToCookies()
       await this.validateText(title, 'מרכזי הדרכה מוסמכים')
     })
   }
@@ -286,6 +339,7 @@ export class MainPage extends BasePage {
       )
     })
   }
+  //bottom menus navigation
   async navigateToDecisionMakersSharingPageBottomMenu(): Promise<void> {
     await test.step('Navigate to Decision Makers Sharing Page through bottom menu', async () => {
       const {decisionMakersSharingLink} =
@@ -434,7 +488,59 @@ export class MainPage extends BasePage {
       const {aboutUsLink} = MAIN_PAGE_LOCATORS.bottomMenuLinks.aboutITCB
       await this.validateVisibility(aboutUsLink)
       await this.clickOnElement(aboutUsLink)
+      const pageContent = this.page.getByText('ITCB® - Israel Testing')
       await this.validateURL('https://www.itcb.org.il/?todo=about')
+      await expect(pageContent).toContainText('ITCB® - Israel Testing')
+    })
+  }
+  async navigateToBoardOfDirectorsPageBottomMenu(): Promise<void> {
+    await test.step('Navigate to Board of Directors page through bottom menu', async () => {
+      const {boardOfDirectorsLink} =
+        MAIN_PAGE_LOCATORS.bottomMenuLinks.aboutITCB
+      const {boardOfDirectorsTitle} = ABOUT_US_PAGE_LOCATORS
+      await this.validateVisibility(boardOfDirectorsLink)
+
+      // Wait for new page before clicking
+      const pagePromise = this.page.context().waitForEvent('page')
+
+      await this.clickOnElement(boardOfDirectorsLink)
+
+      // Get the new page that was opened
+      const newPage = await pagePromise
+      await newPage.waitForLoadState()
+
+      // Create locator based on role/name
+      const locator = newPage.getByRole(boardOfDirectorsTitle.role, {
+        name: boardOfDirectorsTitle.name,
+      })
+
+      await expect(locator).toBeVisible({timeout: 10000})
+      await expect(locator).toHaveText('הוועד המנהל')
+    })
+  }
+  async navigateToAdvisoryBoardPageBottomMenu(): Promise<void> {
+    await test.step('Navigate to Advisory Board page through bottom menu', async () => {
+      const {advisoryBoardLink} = MAIN_PAGE_LOCATORS.bottomMenuLinks.aboutITCB
+      const {advisoryBoardTitle} = ABOUT_US_PAGE_LOCATORS.advisoryBoardSection
+
+      await this.validateVisibility(advisoryBoardLink)
+
+      // Wait for new page before clicking
+      const pagePromise = this.page.context().waitForEvent('page')
+
+      await this.clickOnElement(advisoryBoardLink)
+
+      // Get the new page that was opened
+      const newPage = await pagePromise
+      await newPage.waitForLoadState()
+
+      // Create locator based on role/name
+      const locator = newPage.getByRole(advisoryBoardTitle.role, {
+        name: advisoryBoardTitle.name,
+      })
+
+      await expect(locator).toBeVisible({timeout: 10000})
+      await expect(locator).toHaveText('הוועד המייעץ')
     })
   }
   async navigateToOurPartnersPageBottomMenu(): Promise<void> {

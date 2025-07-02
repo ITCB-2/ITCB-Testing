@@ -1,4 +1,8 @@
 export const ABOUT_US_PAGE_LOCATORS = {
+  mainTitle: {
+    role: 'heading',
+    name: 'אודות ®ITCB',
+  },
   boardOfDirectorsTitle: {
     role: 'heading',
     name: 'הוועד המנהל',

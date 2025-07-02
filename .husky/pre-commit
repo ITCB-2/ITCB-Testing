@@ -1,11 +1,10 @@
-echo "� Auto-fixing code issues..."
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
 
+echo "� Auto-fixing code issues..."
 # Auto-fix formatting and linting
 npm run fix
-
 echo "🔍 Running quality checks..."
-
 # Run lint-staged for staged files
 npm run pre-commit
-
 echo "✅ Pre-commit checks completed successfully!"
