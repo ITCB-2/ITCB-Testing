@@ -1,4 +1,5 @@
 #!/bin/sh
+
 # Auto-fix all files before push
 echo "🔧 Auto-fixing any remaining issues..."
 npm run fix

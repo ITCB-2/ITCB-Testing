@@ -1,4 +1,6 @@
-echo "� Auto-fixing code issues..."
+#!/bin/sh
+
+echo "🔧 Auto-fixing code issues..."
 # Auto-fix formatting and linting
 npm run fix
 echo "🔍 Running quality checks..."
