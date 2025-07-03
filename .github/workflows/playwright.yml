@@ -1,15 +1,29 @@
-name: Playwright Tests
+name: Playwright Tests (Disabled)
+
 on:
-  workflow_run:
-    workflows: ['Code Quality Check']
-    types:
-      - completed
-    branches: [main, master]
+  # Disabled workflow - uncomment below to re-enable
+  # workflow_run:
+  #   workflows: ['Code Quality Check']
+  #   types:
+  #     - completed
+  #   branches: [main, master]
+
+  # Manual trigger only (optional - remove if you don't want any triggers)
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Reason for running tests manually'
+        required: false
+        default: 'Manual test run'
+
 jobs:
   test:
     timeout-minutes: 120
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    # Disabled condition - workflow won't run even if triggered
+    if: false
+    # Original condition (commented out):
+    # if: ${{ github.event.workflow_run.conclusion == 'success' }}
     env:
       BASE_URL: ${{ secrets.BASE_URL }}
     steps:
