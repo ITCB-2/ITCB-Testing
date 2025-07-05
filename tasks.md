@@ -26,7 +26,9 @@ Bot protection handling:
 
 - should navigate to register to test page
 - should navigate to contact page
+
   Mobile phone verification flow:
+
 - should navigate to sylabus and exampels tests
 
 Element location issues in specific pages:
