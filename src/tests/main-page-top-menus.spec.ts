@@ -5,27 +5,27 @@ test.describe('Main Page - Why ISTQB Menu Tests', () => {
     await mainPage.openMainPage()
   })
   test('should navigate to Decision Makers Sharing page and verify content', async ({
-    mainPage,
+    topMenuMainPage,
   }) => {
-    await mainPage.navigateToDecisionMakersSharingPage()
+    await topMenuMainPage.navigateToDecisionMakersSharingPage()
   })
 
   test('should navigate to Members of Community Sharing page and verify content', async ({
-    mainPage,
+    topMenuMainPage,
   }) => {
-    await mainPage.navigateTOMembersOfCommunitySharingPage()
+    await topMenuMainPage.navigateTOMembersOfCommunitySharingPage()
   })
 
   test('should navigate to Our Certifications page and verify content', async ({
-    mainPage,
+    topMenuMainPage,
   }) => {
-    await mainPage.navigateToOurCertificationsPage()
+    await topMenuMainPage.navigateToOurCertificationsPage()
   })
 
   test('should navigate to How To Prepare To ISTQB Test page and verify content', async ({
-    mainPage,
+    topMenuMainPage,
   }) => {
-    await mainPage.navigateToHowToPrepareToISTQBTestPage()
+    await topMenuMainPage.navigateToHowToPrepareToISTQBTestPage()
   })
 })
 
@@ -34,14 +34,14 @@ test.describe('Main Page - ISTQBContent Menu Tests', () => {
     await mainPage.openMainPage()
   })
   test('should navigate to Terms Glossary page and verify content', async ({
-    mainPage,
+    topMenuMainPage,
   }) => {
-    await mainPage.navigateToTermsGlossaryPage()
+    await topMenuMainPage.navigateToTermsGlossaryPage()
   })
   test('should navigate to Syllabus Info page and verify content', async ({
-    mainPage,
+    topMenuMainPage,
   }) => {
-    await mainPage.navigateToSyllabusInfoPage()
+    await topMenuMainPage.navigateToSyllabusInfoPage()
   })
 })
 
@@ -50,29 +50,29 @@ test.describe('Main Page - testing In Israel Menu Tests', () => {
     await mainPage.openMainPage()
   })
   test('should navigate to Useful Links page and verify content', async ({
-    mainPage,
+    topMenuMainPage,
   }) => {
-    await mainPage.navigateToUsefulLinksPage()
+    await topMenuMainPage.navigateToUsefulLinksPage()
   })
   test('should navigate to ITCB Magazine page and verify content', async ({
-    mainPage,
+    topMenuMainPage,
   }) => {
-    await mainPage.navigateToITCBMagazinePage()
+    await topMenuMainPage.navigateToITCBMagazinePage()
   })
   test('should navigate to Podcasts page and verify content', async ({
-    mainPage,
+    topMenuMainPage,
   }) => {
-    await mainPage.navigateToPodcastsPage()
+    await topMenuMainPage.navigateToPodcastsPage()
   })
   test('should navigate to Events Summaries page and verify content', async ({
-    mainPage,
+    topMenuMainPage,
   }) => {
-    await mainPage.navigateToEventsSummariesPage()
+    await topMenuMainPage.navigateToEventsSummariesPage()
   })
   test('should navigate to Tips page and verify content', async ({
-    mainPage,
+    topMenuMainPage,
   }) => {
-    await mainPage.navigateToTipsPage()
+    await topMenuMainPage.navigateToTipsPage()
   })
 })
 
@@ -81,19 +81,19 @@ test.describe('Main Page - additional Information Menu Tests', () => {
     await mainPage.openMainPage()
   })
   test('should navigate to Important Facts page and verify content', async ({
-    mainPage,
+    topMenuMainPage,
   }) => {
-    await mainPage.navigateToImportantFactsPage()
+    await topMenuMainPage.navigateToImportantFactsPage()
   })
   test('should navigate to Questions and Answers page and verify content', async ({
-    mainPage,
+    topMenuMainPage,
   }) => {
-    await mainPage.navigateToQuestionsAndAnswersPage()
+    await topMenuMainPage.navigateToQuestionsAndAnswersPage()
   })
   test('should navigate to international Conferences page and verify content', async ({
-    mainPage,
+    topMenuMainPage,
   }) => {
-    await mainPage.navigateToInternationalConferencesPage()
+    await topMenuMainPage.navigateToInternationalConferencesPage()
   })
 })
 
@@ -103,24 +103,24 @@ test.describe('Main Page - aboutITCB Menu Tests', () => {
     await mainPage.openMainPage()
   })
   test('should navigate to ITCB About Us page and verify URL', async ({
-    mainPage,
+    topMenuMainPage,
   }) => {
-    await mainPage.navigateToAboutUsPage()
+    await topMenuMainPage.navigateToAboutUsPage()
   })
   test('should navigate to Board of Directors page and verify content', async ({
-    mainPage,
+    topMenuMainPage,
   }) => {
-    await mainPage.navigateToBoardOfDirectorsPage()
+    await topMenuMainPage.navigateToBoardOfDirectorsPage()
   })
   test('should navigate to Advisory Board page and verify content', async ({
-    mainPage,
+    topMenuMainPage,
   }) => {
-    await mainPage.navigateToAdvisoryBoardPage()
+    await topMenuMainPage.navigateToAdvisoryBoardPage()
   })
 
   test('should navigate to Our Partners page section and verify content', async ({
-    mainPage,
+    topMenuMainPage,
   }) => {
-    await mainPage.navigateToOurPartnersPage()
+    await topMenuMainPage.navigateToOurPartnersPage()
   })
 })

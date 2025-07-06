@@ -8,3 +8,4 @@
 - [x] Fix element location - "board of directors page section"
 - [x] Fix element location - "adversy board page section"
 - [x] Fix element location - "list of certificate testers"
+- [] navigateToListOfCertifiedTestersPage need to work on that

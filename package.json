@@ -4,6 +4,9 @@
   "main": "index.js",
   "scripts": {
     "test": "playwright test",
+    "test:chrome": "playwright test --project=chromium",
+    "test:debug": "playwright test --project=chromium --debug",
+    "test:headed": "playwright test --project=chromium --headed",
     "report": "playwright show-report",
     "codegen": "playwright codegen",
     "pre-commit": "lint-staged",
