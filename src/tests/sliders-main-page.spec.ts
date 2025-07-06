@@ -1,5 +1,5 @@
 import test from '@/fixtures/testSetup'
-test.describe.serial.only('Sliders Main Page Tests', () => {
+test.describe.serial('Sliders Main Page Tests', () => {
   test.describe.configure({timeout: 60000})
 
   test('should validate the first slider', async ({slidersMainPage}) => {
