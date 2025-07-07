@@ -38,5 +38,4 @@ export const MAIN_PAGE_LOCATORS = {
       name: 'מקבלי ההחלטות משתפים',
     },
   },
-  bottomMenuLinks: {},
 } as const
