@@ -1,5 +1,6 @@
 import {MainPage} from '@/pages/MainPage'
 import test from '@/fixtures/testSetup'
+import {BOTTOM_MENU_MAIN_PAGE_LOCATORS} from '@/locators/Bottom_Menu_Main_Page'
 import {ABOUT_US_PAGE_LOCATORS} from '@/locators/About_Us'
 import {DECISION_MAKERS_SHARING_PAGE_LOCATORS} from '@/locators/Decision_Makers_Sharing'
 import {EVENTS_SUMMARIES_PAGE_LOCATORS} from '@/locators/Events_Summaries'
@@ -7,7 +8,6 @@ import {HOW_TO_PREPARE_TO_ISTQB_PAGE_LOCATOR} from '@/locators/How_To_Prepare_To
 import {IMPORTANT_FACTS_PAGE_LOCATORS} from '@/locators/Important_Facts'
 import {INTERNATIONAL_CONFERENCES_PAGE_LOCATORS} from '@/locators/International_Conferences'
 import {ITCB_MAGAZINE_PAGE_LOCATORS} from '@/locators/ITCB_Magazine'
-import {MAIN_PAGE_LOCATORS} from '@/locators/Main_Page'
 import {MEMBERS_OF_COMMUNITY_SHARING_PAGE_LOCATORS} from '@/locators/Members_Of_Community_Sharing'
 import {OUR_CERTIFICATIONS_PAGE_LOCATOR} from '@/locators/Our_Certification'
 import {OUR_PARTNERS_PAGE_LOCATORS} from '@/locators/Our_Partners'
@@ -27,7 +27,7 @@ export class BottomMenuMainPage extends MainPage {
   async navigateToDecisionMakersSharingPageBottomMenu(): Promise<void> {
     await test.step('Navigate to Decision Makers Sharing Page through bottom menu', async () => {
       const {decisionMakersSharingLink} =
-        MAIN_PAGE_LOCATORS.bottomMenuLinks.whyISTQB
+        BOTTOM_MENU_MAIN_PAGE_LOCATORS.whyISTQB
       const {title} = DECISION_MAKERS_SHARING_PAGE_LOCATORS
       await this.validateVisibility(decisionMakersSharingLink)
       await this.clickOnElement(decisionMakersSharingLink)
@@ -37,7 +37,7 @@ export class BottomMenuMainPage extends MainPage {
   async navigateToMembersOfCommunitySharingPageBottomMenu(): Promise<void> {
     await test.step('Navigate to Members of Community Sharing Page through bottom menu', async () => {
       const {membersOfCommunitySharingLink} =
-        MAIN_PAGE_LOCATORS.bottomMenuLinks.whyISTQB
+        BOTTOM_MENU_MAIN_PAGE_LOCATORS.whyISTQB
       const {title} = MEMBERS_OF_COMMUNITY_SHARING_PAGE_LOCATORS
       await this.validateVisibility(membersOfCommunitySharingLink)
       await this.clickOnElement(membersOfCommunitySharingLink)
@@ -46,8 +46,7 @@ export class BottomMenuMainPage extends MainPage {
   }
   async navigateToOurCertificationsPageBottomMenu(): Promise<void> {
     await test.step('Navigate to Our Certifications Page through bottom menu', async () => {
-      const {ourCertificationsLink} =
-        MAIN_PAGE_LOCATORS.bottomMenuLinks.whyISTQB
+      const {ourCertificationsLink} = BOTTOM_MENU_MAIN_PAGE_LOCATORS.whyISTQB
       const {title} = OUR_CERTIFICATIONS_PAGE_LOCATOR
       await this.validateVisibility(ourCertificationsLink)
       await this.clickOnElement(ourCertificationsLink)
@@ -57,7 +56,7 @@ export class BottomMenuMainPage extends MainPage {
   async navigateToHowToPrepareToISTQBTestPageBottomMenu(): Promise<void> {
     await test.step('Navigate to How To Prepare To ISTQB Test Page through bottom menu', async () => {
       const {howToPrepareToISTQBTestLink} =
-        MAIN_PAGE_LOCATORS.bottomMenuLinks.whyISTQB
+        BOTTOM_MENU_MAIN_PAGE_LOCATORS.whyISTQB
       const {title} = HOW_TO_PREPARE_TO_ISTQB_PAGE_LOCATOR
       await this.validateVisibility(howToPrepareToISTQBTestLink)
       await this.clickOnElement(howToPrepareToISTQBTestLink)
@@ -67,8 +66,7 @@ export class BottomMenuMainPage extends MainPage {
   //istqb content bottom menu navigation
   async navigateToTermsGlossaryPageBottomMenu(): Promise<void> {
     await test.step('Navigate to Terms Glossary page through bottom menu', async () => {
-      const {termsGlossaryLink} =
-        MAIN_PAGE_LOCATORS.bottomMenuLinks.ISTQBContent
+      const {termsGlossaryLink} = BOTTOM_MENU_MAIN_PAGE_LOCATORS.ISTQBContent
       const {ISTQBGlossaryAdvancedSearchTitle} = TERMS_GLOSSARY_PAGE_LOCATORS
       await this.validateVisibility(termsGlossaryLink)
       await this.clickOnElement(termsGlossaryLink)
@@ -80,7 +78,7 @@ export class BottomMenuMainPage extends MainPage {
   }
   async navigateToSyllabusInfoPageBottomMenu(): Promise<void> {
     await test.step('Navigate to Syllabus Info page through bottom menu', async () => {
-      const {syllabusInfoLink} = MAIN_PAGE_LOCATORS.bottomMenuLinks.ISTQBContent
+      const {syllabusInfoLink} = BOTTOM_MENU_MAIN_PAGE_LOCATORS.ISTQBContent
       const {title} = SYLLABUS_INFO_PAGE_LOCATORS
       await this.validateVisibility(syllabusInfoLink)
       await this.clickOnElement(syllabusInfoLink)
@@ -90,8 +88,7 @@ export class BottomMenuMainPage extends MainPage {
   //testing in israel bottom menu navigation
   async navigateToUsefulLinksPageBottomMenu(): Promise<void> {
     await test.step('Navigate to Useful Links page through bottom menu', async () => {
-      const {usefulLinksLink} =
-        MAIN_PAGE_LOCATORS.bottomMenuLinks.testingInIsrael
+      const {usefulLinksLink} = BOTTOM_MENU_MAIN_PAGE_LOCATORS.testingInIsrael
       const {title} = USEFUL_LINKS_LOCATORS
       await this.validateVisibility(usefulLinksLink)
       await this.clickOnElement(usefulLinksLink)
@@ -100,8 +97,7 @@ export class BottomMenuMainPage extends MainPage {
   }
   async navigateToITCBMagazinePageBottomMenu(): Promise<void> {
     await test.step('Navigate to ITCB Magazine page through bottom menu', async () => {
-      const {ITCBMagazineLink} =
-        MAIN_PAGE_LOCATORS.bottomMenuLinks.testingInIsrael
+      const {ITCBMagazineLink} = BOTTOM_MENU_MAIN_PAGE_LOCATORS.testingInIsrael
       const {viewAllMagazineIssuesLink} = ITCB_MAGAZINE_PAGE_LOCATORS
       await this.validateVisibility(ITCBMagazineLink)
       await this.clickOnElement(ITCBMagazineLink)
@@ -110,7 +106,7 @@ export class BottomMenuMainPage extends MainPage {
   }
   async navigateToPodcastsPageBottomMenu(): Promise<void> {
     await test.step('Navigate to Podcasts page through bottom menu', async () => {
-      const {podcastsLink} = MAIN_PAGE_LOCATORS.bottomMenuLinks.testingInIsrael
+      const {podcastsLink} = BOTTOM_MENU_MAIN_PAGE_LOCATORS.testingInIsrael
       const {officialPodcastLink} = PODCASTS_PAGE_LOCATORS
       await this.validateVisibility(podcastsLink)
       await this.clickOnElement(podcastsLink)
@@ -120,7 +116,7 @@ export class BottomMenuMainPage extends MainPage {
   async navigateToEventsSummariesPageBottomMenu(): Promise<void> {
     await test.step('Navigate to Events Summaries page through bottom menu', async () => {
       const {eventsSummariesLink} =
-        MAIN_PAGE_LOCATORS.bottomMenuLinks.testingInIsrael
+        BOTTOM_MENU_MAIN_PAGE_LOCATORS.testingInIsrael
       const {title} = EVENTS_SUMMARIES_PAGE_LOCATORS
       await this.validateVisibility(eventsSummariesLink)
       await this.clickOnElement(eventsSummariesLink)
@@ -129,7 +125,7 @@ export class BottomMenuMainPage extends MainPage {
   }
   async navigateToTipsPageBottomMenu(): Promise<void> {
     await test.step('Navigate to Tips page through bottom menu', async () => {
-      const {tipsLink} = MAIN_PAGE_LOCATORS.bottomMenuLinks.testingInIsrael
+      const {tipsLink} = BOTTOM_MENU_MAIN_PAGE_LOCATORS.testingInIsrael
       const {title} = TIPS_PAGE_LOCATORS
       await this.validateVisibility(tipsLink)
       await this.clickOnElement(tipsLink)
@@ -143,7 +139,7 @@ export class BottomMenuMainPage extends MainPage {
   async navigateToImportantFactsPageBottomMenu(): Promise<void> {
     await test.step('Navigate to Important Facts page through bottom menu', async () => {
       const {importantFactsLink} =
-        MAIN_PAGE_LOCATORS.bottomMenuLinks.additionalInformation
+        BOTTOM_MENU_MAIN_PAGE_LOCATORS.additionalInformation
       const {title} = IMPORTANT_FACTS_PAGE_LOCATORS
       await this.validateVisibility(importantFactsLink)
       await this.clickOnElement(importantFactsLink)
@@ -153,7 +149,7 @@ export class BottomMenuMainPage extends MainPage {
   async navigateToQuestionsAndAnswersPageBottomMenu(): Promise<void> {
     await test.step('Navigate to Questions and Answers page through bottom menu', async () => {
       const {questionsAndAnswersLink} =
-        MAIN_PAGE_LOCATORS.bottomMenuLinks.additionalInformation
+        BOTTOM_MENU_MAIN_PAGE_LOCATORS.additionalInformation
       const {title} = QUESTIONS_AND_ANSWERS_PAGE_LOCATORS
       await this.validateVisibility(questionsAndAnswersLink)
       await this.clickOnElement(questionsAndAnswersLink)
@@ -163,7 +159,7 @@ export class BottomMenuMainPage extends MainPage {
   async navigateToInternationalConferencesPageBottomMenu(): Promise<void> {
     await test.step('Navigate to International Conferences page through bottom menu', async () => {
       const {internationalConferencesLink} =
-        MAIN_PAGE_LOCATORS.bottomMenuLinks.additionalInformation
+        BOTTOM_MENU_MAIN_PAGE_LOCATORS.additionalInformation
       const {title} = INTERNATIONAL_CONFERENCES_PAGE_LOCATORS
       await this.validateVisibility(internationalConferencesLink)
       await this.clickOnElement(internationalConferencesLink)
@@ -173,7 +169,7 @@ export class BottomMenuMainPage extends MainPage {
   // aboutITCB bottom menu navigation
   async navigateToAboutUsPageBottomMenu(): Promise<void> {
     await test.step('Navigate to About Us page through bottom menu', async () => {
-      const {aboutUsLink} = MAIN_PAGE_LOCATORS.bottomMenuLinks.aboutITCB
+      const {aboutUsLink} = BOTTOM_MENU_MAIN_PAGE_LOCATORS.aboutITCB
       await this.validateVisibility(aboutUsLink)
       await this.clickOnElement(aboutUsLink)
       const pageContent = this.page.getByText('ITCB® - Israel Testing')
@@ -183,8 +179,7 @@ export class BottomMenuMainPage extends MainPage {
   }
   async navigateToBoardOfDirectorsPageBottomMenu(): Promise<void> {
     await test.step('Navigate to Board of Directors page through bottom menu', async () => {
-      const {boardOfDirectorsLink} =
-        MAIN_PAGE_LOCATORS.bottomMenuLinks.aboutITCB
+      const {boardOfDirectorsLink} = BOTTOM_MENU_MAIN_PAGE_LOCATORS.aboutITCB
       const {boardOfDirectorsTitle} = ABOUT_US_PAGE_LOCATORS
       await this.validateVisibility(boardOfDirectorsLink)
 
@@ -208,7 +203,7 @@ export class BottomMenuMainPage extends MainPage {
   }
   async navigateToAdvisoryBoardPageBottomMenu(): Promise<void> {
     await test.step('Navigate to Advisory Board page through bottom menu', async () => {
-      const {advisoryBoardLink} = MAIN_PAGE_LOCATORS.bottomMenuLinks.aboutITCB
+      const {advisoryBoardLink} = BOTTOM_MENU_MAIN_PAGE_LOCATORS.aboutITCB
       const {advisoryBoardTitle} = ABOUT_US_PAGE_LOCATORS.advisoryBoardSection
 
       await this.validateVisibility(advisoryBoardLink)
@@ -233,7 +228,7 @@ export class BottomMenuMainPage extends MainPage {
   }
   async navigateToOurPartnersPageBottomMenu(): Promise<void> {
     await test.step('Navigate to Our Partners page through bottom menu', async () => {
-      const {ourPartnersLink} = MAIN_PAGE_LOCATORS.bottomMenuLinks.aboutITCB
+      const {ourPartnersLink} = BOTTOM_MENU_MAIN_PAGE_LOCATORS.aboutITCB
       const {title} = OUR_PARTNERS_PAGE_LOCATORS
       await this.validateVisibility(ourPartnersLink)
       await this.clickOnElement(ourPartnersLink)
