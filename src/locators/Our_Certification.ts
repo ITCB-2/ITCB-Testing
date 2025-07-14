@@ -3,56 +3,80 @@ export const OUR_CERTIFICATIONS_PAGE_LOCATOR = {
     role: 'heading',
     name: 'ההסמכות שלנו, הקריירה שלך',
   },
-  entryLevelTestingProfessionalbox: {
-    boxTitle: 'p:has-text("מקצוען בדיקות בתחילת קריירה")',
-    boxImage: {
-      role: 'img',
-      name: 'מקצוען בדיקות בתחילת קריירה',
+  tabsMenu: {
+    entryLevelTabBtns: {
+      role: 'button',
+      name: 'מקצוען בדיקות בתחילת קרירה',
     },
-    readMoreButton: 'a:has-text("קרא עוד") >> nth=0',
-  },
-  testLeadBox: {
-    boxTitle: 'p:has-text("מוביל בדיקות")',
-    boxImage: {
-      role: 'img',
+    testLeadTab: {
+      role: 'button',
       name: 'מוביל בדיקות',
     },
-    readMoreButton: 'a:has-text("קרא עוד") >> nth=1',
-  },
-  expertTesterBox: {
-    boxTitle: 'p:has-text("בודק מומחה")',
-    boxImage: {
-      role: 'img',
+    expertTesterTab: {
+      role: 'button',
       name: 'בודק מומחה',
     },
-    readMoreButton: 'a:has-text("קרא עוד") >> nth=2',
-  },
-  TestingCertificationForDevelopersBox: {
-    boxTitle: 'p:has-text("הסמכת בדיקות למפתחים")',
-    boxImage: {
-      role: 'img',
+    testingCertificationForDevelopersTab: {
+      role: 'button',
       name: 'הסמכת בדיקות למפתחים',
     },
-    readMoreButton: 'a:has-text("קרא עוד") >> nth=3',
   },
-  readMoreSection: {
-    foundationLevelBox: {
-      boxTitle: 'h3:has-text("Foundation Level") >> nth=0',
+  boxes: [
+    {
+      name: 'entryLevelTestingProfessional',
+      boxTitleLocator: 'p:has-text("מקצוען בדיקות בתחילת קריירה")',
+      titleText: 'מקצוען בדיקות בתחילת קריירה',
+      boxImageLocator: {
+        role: 'img',
+        name: 'מקצוען בדיקות בתחילת קריירה',
+      },
+      readMoreButton: 'a:has-text("קרא עוד") >> nth=0',
+      subBoxTitle: 'h3:has-text("Agile Tester Foundation level") >> nth=0',
+      subBoxText: 'Agile Tester Foundation level',
     },
-    AgileTesterFoundationLevelBox: {
-      boxTitle: 'h3:has-text("Agile Tester Foundation level") >> nth=0',
-    },
-    managersBox: {
-      boxTitle: {
+
+    {
+      name: 'testLead',
+      boxTitleLocator: 'p:has-text("מוביל בדיקות")',
+      titleText: 'מוביל בדיקות',
+      boxImageLocator: {
+        role: 'img',
+        name: 'מוביל בדיקות',
+      },
+      readMoreButton: 'a:has-text("קרא עוד") >> nth=1',
+      subBoxTitle: {
         role: 'heading',
         name: 'מנהלים (ATM)',
       },
+      subBoxText: 'מנהלים (ATM)',
     },
-    analystsBox: {
-      boxTitle: {
+
+    {
+      name: 'expertTester',
+      boxTitleLocator: 'p:has-text("בודק מומחה")',
+      titleText: 'בודק מומחה',
+      boxImageLocator: {
+        role: 'img',
+        name: 'בודק מומחה',
+      },
+      readMoreButton: 'a:has-text("קרא עוד") >> nth=2',
+      subBoxTitle: {
         role: 'heading',
         name: 'אנליסטים (ATA)',
       },
+      subBoxText: 'אנליסטים (ATA)',
     },
-  },
+    {
+      name: 'testingCertificationForDevelopers',
+      boxTitleLocator: 'p:has-text("הסמכת בדיקות למפתחים")',
+      titleText: 'הסמכת בדיקות למפתחים',
+      boxImageLocator: {
+        role: 'img',
+        name: 'הסמכת בדיקות למפתחים',
+      },
+      readMoreButton: 'a:has-text("קרא עוד") >> nth=3',
+      subBoxTitle: 'h3:has-text("Foundation Level") >> nth=0',
+      subBoxText: 'Foundation Level',
+    },
+  ],
 } as const
