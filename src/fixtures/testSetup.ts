@@ -2,6 +2,10 @@ import {MainPage} from '@/pages/MainPage'
 import {TopMenuMainPage} from '@/pages/TopMenuMainPage'
 import {BottomMenuMainPage} from '../pages/BottomMenuMainPage'
 import {SlidersMainPage} from '../pages/SlidersMainPage'
+import {ImportantFactsPage} from '../pages/ImportantFactsPage'
+import {OurCertificationPage} from '../pages/OurCertificationPage'
+import {DecisionMakerPage} from '../pages/DesicionMakerPage'
+import {CommunityMembersSharingPage} from '../pages/CommunityMembersSharingPage'
 import {test as base, type BrowserContext, type Page} from '@playwright/test'
 
 interface PageFixtures {
@@ -11,6 +15,10 @@ interface PageFixtures {
   topMenuMainPage: TopMenuMainPage
   bottomMenuMainPage: BottomMenuMainPage
   slidersMainPage: SlidersMainPage
+  importantFactsPage: ImportantFactsPage
+  ourCertificationPage: OurCertificationPage
+  decisionMakerPage: DecisionMakerPage
+  communityMembersSharingPage: CommunityMembersSharingPage
 }
 
 const test = base.extend<PageFixtures>({
@@ -34,6 +42,18 @@ const test = base.extend<PageFixtures>({
   },
   slidersMainPage: async ({page}, use) => {
     await use(new SlidersMainPage(page))
+  },
+  importantFactsPage: async ({page}, use) => {
+    await use(new ImportantFactsPage(page))
+  },
+  ourCertificationPage: async ({page}, use) => {
+    await use(new OurCertificationPage(page))
+  },
+  decisionMakerPage: async ({page}, use) => {
+    await use(new DecisionMakerPage(page))
+  },
+  communityMembersSharingPage: async ({page}, use) => {
+    await use(new CommunityMembersSharingPage(page))
   },
 })
 
