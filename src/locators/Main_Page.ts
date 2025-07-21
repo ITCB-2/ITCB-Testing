@@ -37,5 +37,7 @@ export const MAIN_PAGE_LOCATORS = {
       role: 'heading',
       name: 'מקבלי ההחלטות משתפים',
     },
+    decisionMakersSharingLink:
+      'a[href*="recommendations"][href*="type=1"]:not(footer a):not(nav a)',
   },
 } as const
