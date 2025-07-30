@@ -6,4 +6,4 @@ export const communityMembersSharingBoxes = [
   'מיכאל טיבין',
   'מור אבזיז',
   'עומר פיליפ',
-]
+] as const

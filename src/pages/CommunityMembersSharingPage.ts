@@ -1,7 +1,7 @@
+import {BasePage} from '@/core/BasePage'
 import test from '@/fixtures/testSetup'
 import {COMMUNITY_MEMBERS_SHARING_PAGE_LOCATORS} from '@/locators/Community_Members_Sharing_Page'
 import {type Page} from '@playwright/test'
-import {BasePage} from '../core/BasePage'
 
 export class CommunityMembersSharingPage extends BasePage {
   constructor(page: Page) {

@@ -1,7 +1,7 @@
+import {BasePage} from '@/core/BasePage'
 import test from '@/fixtures/testSetup'
-import {type Page} from '@playwright/test'
-import {BasePage} from '../core/BasePage'
 import {DECISION_MAKERS_SHARING_PAGE_LOCATORS} from '@/locators/Decision_Makers_Sharing'
+import {type Page} from '@playwright/test'
 
 export class DecisionMakerPage extends BasePage {
   constructor(page: Page) {

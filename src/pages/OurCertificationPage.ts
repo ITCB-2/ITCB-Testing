@@ -1,7 +1,7 @@
+import {BasePage} from '@/core/BasePage'
 import test from '@/fixtures/testSetup'
-import {type Page} from '@playwright/test'
-import {BasePage} from '../core/BasePage'
 import {OUR_CERTIFICATIONS_PAGE_LOCATOR} from '@/locators/Our_Certification'
+import {type Page} from '@playwright/test'
 
 export class OurCertificationPage extends BasePage {
   constructor(page: Page) {

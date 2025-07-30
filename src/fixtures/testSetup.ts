@@ -1,11 +1,11 @@
+import {BottomMenuMainPage} from '@/pages/BottomMenuMainPage'
+import {CommunityMembersSharingPage} from '@/pages/CommunityMembersSharingPage'
+import {DecisionMakerPage} from '@/pages/DesicionMakerPage'
+import {ImportantFactsPage} from '@/pages/ImportantFactsPage'
 import {MainPage} from '@/pages/MainPage'
+import {OurCertificationPage} from '@/pages/OurCertificationPage'
+import {SlidersMainPage} from '@/pages/SlidersMainPage'
 import {TopMenuMainPage} from '@/pages/TopMenuMainPage'
-import {BottomMenuMainPage} from '../pages/BottomMenuMainPage'
-import {SlidersMainPage} from '../pages/SlidersMainPage'
-import {ImportantFactsPage} from '../pages/ImportantFactsPage'
-import {OurCertificationPage} from '../pages/OurCertificationPage'
-import {DecisionMakerPage} from '../pages/DesicionMakerPage'
-import {CommunityMembersSharingPage} from '../pages/CommunityMembersSharingPage'
 import {test as base, type BrowserContext, type Page} from '@playwright/test'
 
 interface PageFixtures {
