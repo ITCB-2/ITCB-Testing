@@ -1,6 +1,6 @@
 import {BasePage} from '@/core/BasePage'
 import test from '@/fixtures/testSetup'
-// import {findItemByProperty} from '@/helpers/arrayUtils'
+import {findItemByProperty} from '@/helpers/arrayUtils'
 import {IMPORTANT_FACTS_PAGE_LOCATORS} from '@/locators/Important_Facts'
 import {type Page} from '@playwright/test'
 
@@ -10,18 +10,8 @@ export class ImportantFactsPage extends BasePage {
   }
   async validateImportantFact(factName: string): Promise<void> {
     await test.step(`Validate Important Fact ${factName}`, async () => {
-      // const fact = findItemByProperty(
-      //   IMPORTANT_FACTS_PAGE_LOCATORS.facts,
-      //   'name',
-      //   factName,
-      // )
-
-      const fact = IMPORTANT_FACTS_PAGE_LOCATORS.facts.find(
-        (f) => f.name === factName,
-      )
-      if (!fact) {
-        throw new Error(`Fact with name "${factName}" not found`)
-      }
+      const {facts} = IMPORTANT_FACTS_PAGE_LOCATORS
+      const fact = findItemByProperty(facts, 'name', factName)
 
       await this.validateText(fact.locator, fact.text)
     })
