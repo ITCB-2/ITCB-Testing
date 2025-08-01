@@ -3,6 +3,7 @@ import {BASE_URL} from '@/data/urls'
 import test from '@/fixtures/testSetup'
 import {IMPORTANT_FACTS_PAGE_LOCATORS} from '@/locators/Important_Facts'
 import {MAIN_PAGE_LOCATORS} from '@/locators/Main_Page'
+import {OUR_CERTIFICATIONS_PAGE_LOCATOR} from '@/locators/Our_Certification'
 import {expect, type Page} from '@playwright/test'
 
 export class MainPage extends BasePage {
@@ -45,15 +46,7 @@ export class MainPage extends BasePage {
       )
     })
   }
-  async validateFacts(
-    locator: string,
-    text: string,
-    name: string,
-  ): Promise<void> {
-    await test.step(`Validate ${name}`, async () => {
-      await this.validateText(locator, text)
-    })
-  }
+
   async clickOnAllFactsButton(): Promise<void> {
     await test.step('Click on All Facts Button and Validate Facts Page Content', async () => {
       const {allFactsLink} = MAIN_PAGE_LOCATORS.importantFactsSection
@@ -71,32 +64,15 @@ export class MainPage extends BasePage {
     })
   }
 
-  async validateBoxTitleAndImage(
-    boxTitleLocator: string,
-    titleText: string,
-    boxImageLocator: string | {role: string; name: string},
-    name: string,
-  ): Promise<void> {
-    await test.step(`Validate Box Title and Image of ${name}`, async () => {
-      await this.validateText(boxTitleLocator, titleText)
-      await this.validateVisibility(boxImageLocator)
-    })
-  }
-
-  async clickOnReadMoreButton(
-    readMoreButton: string,
-    name: string,
-  ): Promise<void> {
-    await test.step(`Click on ${name} Read More Button `, async () => {
-      await this.clickOnElement(readMoreButton)
-    })
-  }
-  async validateReadMoreSection(
-    subBoxTitle: string | {role: string; name: string},
-    subBoxText: string,
-  ): Promise<void> {
-    await test.step(`Validate ${subBoxTitle} Read More Section`, async () => {
-      await this.validateText(subBoxTitle, subBoxText)
+  async clickOnReadMoreButton(boxName: string): Promise<void> {
+    await test.step(`Click on ${boxName} Read More Button `, async () => {
+      const box = OUR_CERTIFICATIONS_PAGE_LOCATOR.boxes.find(
+        (b) => b.name === boxName,
+      )
+      if (!box) {
+        throw new Error(`Box with name "${boxName}" not found`)
+      }
+      await this.clickOnElement(box.readMoreButton)
     })
   }
 
@@ -108,12 +84,12 @@ export class MainPage extends BasePage {
       await this.clickOnElement(decisionMakersSharingLink)
     })
   }
-  async validateDecisionMakersSharingBoxContent(
-    img: {role: string; name: string},
-    name: string,
-  ): Promise<void> {
-    await test.step(`Validate ${name} Box Content`, async () => {
-      await this.validateVisibility(img)
+  async clickOnCommunityMembersSharingButton(): Promise<void> {
+    await test.step('Click on Community Members Sharing Button', async () => {
+      const {communityMembersSharingLink} =
+        MAIN_PAGE_LOCATORS.communityMembersSharingSection
+
+      await this.clickOnElement(communityMembersSharingLink)
     })
   }
 }

@@ -1,53 +1,63 @@
+import {factNames} from '@/data/importantFactsPageData'
+import {boxesNames} from '@/data/ourCertificationPageData'
+import {decisionMakerBoxes} from '@/data/decisionMakerPageData'
+import {communityMembersSharingBoxes} from '@/data/communityMembersSharingPageData'
 import test from '@/fixtures/testSetup'
-import {IMPORTANT_FACTS_PAGE_LOCATORS} from '@/locators/Important_Facts'
-import {OUR_CERTIFICATIONS_PAGE_LOCATOR} from '@/locators/Our_Certification'
-import {DECISION_MAKERS_SHARING_PAGE_LOCATORS} from '@/locators/Decision_Makers_Sharing'
 test.describe('Main Page - Buttons Tests', () => {
   test.beforeEach(async ({mainPage}) => {
     await mainPage.openMainPage()
   })
 
-  IMPORTANT_FACTS_PAGE_LOCATORS.facts.forEach(({locator, text, name}) => {
-    test(`Validate All Facts button - Important fact #${name}`, async ({
+  factNames.forEach((factName) => {
+    test(`Validate All Facts button - Important fact #${factName}`, async ({
       mainPage,
+      importantFactsPage,
     }) => {
       await mainPage.clickOnAllFactsButton()
-      await mainPage.validateFacts(locator, text, name)
+      await importantFactsPage.validateImportantFact(factName)
     })
   })
 
-  OUR_CERTIFICATIONS_PAGE_LOCATOR.boxes.forEach(
-    ({boxTitleLocator, boxImageLocator, name, titleText}) => {
-      test(`Validate View All Certifications button and validate: ${name} content`, async ({
-        mainPage,
-      }) => {
-        await mainPage.clickOnViewAllCertificationsButton()
-        await mainPage.validateBoxTitleAndImage(
-          boxTitleLocator,
-          titleText,
-          boxImageLocator,
-          name,
-        )
-      })
-    },
-  )
-  OUR_CERTIFICATIONS_PAGE_LOCATOR.boxes.forEach(
-    ({readMoreButton, name, subBoxTitle, subBoxText}) => {
-      test(`Validate Read More button on ${name} box`, async ({mainPage}) => {
-        await mainPage.clickOnReadMoreButton(readMoreButton, name)
-        await mainPage.validateReadMoreSection(subBoxTitle, subBoxText)
-      })
-    },
-  )
+  boxesNames.forEach((boxName) => {
+    test(`Validate View All Certifications button and validate: ${boxName} content`, async ({
+      mainPage,
+      ourCertificationPage,
+    }) => {
+      await mainPage.clickOnViewAllCertificationsButton()
+      await ourCertificationPage.validateBoxTitleAndBoxImage(boxName)
+    })
+  })
+  boxesNames.forEach((boxName) => {
+    test(`Validate Read More button on ${boxName} box`, async ({
+      mainPage,
+      ourCertificationPage,
+    }) => {
+      await mainPage.clickOnReadMoreButton(boxName)
+      await ourCertificationPage.validateReadMoreSection(boxName)
+    })
+  })
 
-  DECISION_MAKERS_SHARING_PAGE_LOCATORS.desictionMakersSharingboxes.forEach(
-    ({img, name}) => {
-      test(`Validate decision makers sharing button and validate ${name} content`, async ({
-        mainPage,
-      }) => {
-        await mainPage.clickOnDecisionMakersSharingButton()
-        await mainPage.validateDecisionMakersSharingBoxContent(img, name)
-      })
-    },
-  )
+  decisionMakerBoxes.forEach((decisionMakerBox) => {
+    test(`Validate decision makers sharing button and validate ${decisionMakerBox} content`, async ({
+      mainPage,
+      decisionMakerPage,
+    }) => {
+      await mainPage.clickOnDecisionMakersSharingButton()
+      await decisionMakerPage.validateDecisionMakersSharingBoxContent(
+        decisionMakerBox,
+      )
+    })
+  })
+
+  communityMembersSharingBoxes.forEach((boxName) => {
+    test(`Click on Community Members Sharing Button and validate ${boxName} content`, async ({
+      mainPage,
+      communityMembersSharingPage,
+    }) => {
+      await mainPage.clickOnCommunityMembersSharingButton()
+      await communityMembersSharingPage.validateCommunityMembersSharingBoxImg(
+        boxName,
+      )
+    })
+  })
 })

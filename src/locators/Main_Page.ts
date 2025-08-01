@@ -40,4 +40,12 @@ export const MAIN_PAGE_LOCATORS = {
     decisionMakersSharingLink:
       'a[href*="recommendations"][href*="type=1"]:not(footer a):not(nav a)',
   },
+  communityMembersSharingSection: {
+    communityMembersSharingTitle: {
+      role: 'heading',
+      name: 'חברי הקהילה משתפים',
+    },
+    communityMembersSharingLink:
+      'a[href*="recommendations"][href*="type=0"]:not(footer a):not(nav a)',
+  },
 } as const
