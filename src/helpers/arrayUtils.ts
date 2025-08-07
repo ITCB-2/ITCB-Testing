@@ -1,7 +1,7 @@
-export const findItemByProperty = <T>(
+export const findItemByProperty = <T, K extends keyof T>(
   array: readonly T[],
-  propertyName: keyof T,
-  expectedValue: unknown,
+  propertyName: K,
+  expectedValue: T[K],
 ): T => {
   const foundItem: T | undefined = array.find(
     (item) => item[propertyName] === expectedValue,

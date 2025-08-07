@@ -1,20 +1,22 @@
-import {factNames} from '@/data/importantFactsPageData'
-import {boxesNames} from '@/data/ourCertificationPageData'
-import {decisionMakerBoxes} from '@/data/decisionMakerPageData'
 import {communityMembersSharingBoxes} from '@/data/communityMembersSharingPageData'
+import {decisionMakerBoxes} from '@/data/decisionMakerPageData'
+import {boxesNames} from '@/data/ourCertificationPageData'
 import test from '@/fixtures/testSetup'
+import {IMPORTANT_FACTS_PAGE_LOCATORS} from '../locators/Important_Facts'
+
 test.describe('Main Page - Buttons Tests', () => {
   test.beforeEach(async ({mainPage}) => {
     await mainPage.openMainPage()
   })
+  const {facts} = IMPORTANT_FACTS_PAGE_LOCATORS
 
-  factNames.forEach((factName) => {
-    test(`Validate All Facts button - Important fact #${factName}`, async ({
+  facts.forEach((fact) => {
+    test(`Validate All Facts button - Important fact #${fact.name}`, async ({
       mainPage,
       importantFactsPage,
     }) => {
       await mainPage.clickOnAllFactsButton()
-      await importantFactsPage.validateImportantFact(factName)
+      await importantFactsPage.validateImportantFact(fact.name)
     })
   })
 
