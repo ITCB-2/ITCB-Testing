@@ -3,7 +3,7 @@ export const DECISION_MAKERS_SHARING_PAGE_LOCATORS = {
     role: 'heading',
     name: 'מקבלי ההחלטות משתפים',
   },
-  desictionMakersSharingboxes: [
+  decisionMakersSharingBoxes: [
     {
       name: 'kobiYonasiBox',
       img: {

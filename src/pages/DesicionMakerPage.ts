@@ -1,26 +1,27 @@
 import {BasePage} from '@/core/BasePage'
 import test from '@/fixtures/testSetup'
+import {findItemByProperty} from '@/helpers/arrayUtils'
 import {DECISION_MAKERS_SHARING_PAGE_LOCATORS} from '@/locators/Decision_Makers_Sharing'
 import {type Page} from '@playwright/test'
+
+type DecisionMakerBoxName =
+  (typeof DECISION_MAKERS_SHARING_PAGE_LOCATORS.decisionMakersSharingBoxes)[number]['name']
 
 export class DecisionMakerPage extends BasePage {
   constructor(page: Page) {
     super(page)
   }
   async validateDecisionMakersSharingBoxContent(
-    decisionMakerBox: string,
+    decisionMakerBox: DecisionMakerBoxName,
   ): Promise<void> {
+    const {decisionMakersSharingBoxes} = DECISION_MAKERS_SHARING_PAGE_LOCATORS
     await test.step(`Validate ${decisionMakerBox} Box Content`, async () => {
-      const dsBox =
-        DECISION_MAKERS_SHARING_PAGE_LOCATORS.desictionMakersSharingboxes.find(
-          (db) => db.name === decisionMakerBox,
-        )
-      if (!dsBox) {
-        throw new Error(
-          `Decision Maker Box with name "${decisionMakerBox}" not found`,
-        )
-      }
-      await this.validateVisibility(dsBox.img)
+      const decisionMakersSharingBox = findItemByProperty(
+        decisionMakersSharingBoxes,
+        'name',
+        decisionMakerBox,
+      )
+      await this.validateVisibility(decisionMakersSharingBox.img)
     })
   }
 }

@@ -1,8 +1,8 @@
-import {communityMembersSharingBoxes} from '@/data/communityMembersSharingPageData'
-import {decisionMakerBoxes} from '@/data/decisionMakerPageData'
-import {boxesNames} from '@/data/ourCertificationPageData'
 import test from '@/fixtures/testSetup'
-import {IMPORTANT_FACTS_PAGE_LOCATORS} from '../locators/Important_Facts'
+import {COMMUNITY_MEMBERS_SHARING_PAGE_LOCATORS} from '@/locators/Community_Members_Sharing_Page'
+import {DECISION_MAKERS_SHARING_PAGE_LOCATORS} from '@/locators/Decision_Makers_Sharing'
+import {IMPORTANT_FACTS_PAGE_LOCATORS} from '@/locators/Important_Facts'
+import {OUR_CERTIFICATIONS_PAGE_LOCATOR} from '@/locators/Our_Certification'
 
 test.describe('Main Page - Buttons Tests', () => {
   test.beforeEach(async ({mainPage}) => {
@@ -19,6 +19,9 @@ test.describe('Main Page - Buttons Tests', () => {
       await importantFactsPage.validateImportantFact(fact.name)
     })
   })
+
+  const {boxes} = OUR_CERTIFICATIONS_PAGE_LOCATOR
+  const boxesNames = boxes.map((box) => box.name)
 
   boxesNames.forEach((boxName) => {
     test(`Validate View All Certifications button and validate: ${boxName} content`, async ({
@@ -38,20 +41,28 @@ test.describe('Main Page - Buttons Tests', () => {
       await ourCertificationPage.validateReadMoreSection(boxName)
     })
   })
+  const {decisionMakersSharingBoxes} = DECISION_MAKERS_SHARING_PAGE_LOCATORS
+  const decisionMakerNames = decisionMakersSharingBoxes.map(
+    (maker) => maker.name,
+  )
 
-  decisionMakerBoxes.forEach((decisionMakerBox) => {
-    test(`Validate decision makers sharing button and validate ${decisionMakerBox} content`, async ({
+  decisionMakerNames.forEach((decisionMakerName) => {
+    test(`Validate decision makers sharing button and validate ${decisionMakerName} content`, async ({
       mainPage,
       decisionMakerPage,
     }) => {
       await mainPage.clickOnDecisionMakersSharingButton()
       await decisionMakerPage.validateDecisionMakersSharingBoxContent(
-        decisionMakerBox,
+        decisionMakerName,
       )
     })
   })
+  const {communityMembersSharingBoxes} = COMMUNITY_MEMBERS_SHARING_PAGE_LOCATORS
+  const communityMemberNames = communityMembersSharingBoxes.map(
+    (box) => box.name,
+  )
 
-  communityMembersSharingBoxes.forEach((boxName) => {
+  communityMemberNames.forEach((boxName) => {
     test(`Click on Community Members Sharing Button and validate ${boxName} content`, async ({
       mainPage,
       communityMembersSharingPage,
