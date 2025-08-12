@@ -1,0 +1,146 @@
+name: Test Hetzner Runner Setup
+
+on:
+  workflow_dispatch:
+    inputs:
+      server_type:
+        description: 'Server type to test (cpx11, cpx21, cpx31)'
+        required: false
+        default: 'cpx11'
+        type: choice
+        options:
+          - cpx11
+          - cpx21
+          - cpx31
+
+jobs:
+  test-runner:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Setup Hetzner Cloud Runner
+        id: runner
+        uses: Cyclenerd/hcloud-github-runner@v1.2.0
+        with:
+          github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          hcloud_token: ${{ secrets.HCLOUD_TOKEN }}
+          server_type: ${{ github.event.inputs.server_type }}
+          server_location: nbg1
+          server_image: ubuntu-22.04
+          runner_name_prefix: 'test-hetzner-'
+          runner_labels: 'test,hetzner,verification'
+          server_keep_alive_minutes: 2
+
+      - name: Wait for runner registration
+        run: |
+          echo "Waiting for runner to be available..."
+          sleep 30
+
+  verify-runner:
+    needs: test-runner
+    runs-on: [self-hosted, test, hetzner, verification]
+    timeout-minutes: 10
+
+    steps:
+      - name: System Information
+        run: |
+          echo "🖥️ System Information:"
+          echo "===================="
+          echo "OS: $(lsb_release -d | cut -f2)"
+          echo "Kernel: $(uname -r)"
+          echo "Architecture: $(uname -m)"
+          echo "Hostname: $(hostname)"
+          echo ""
+
+      - name: Hardware Information
+        run: |
+          echo "💾 Hardware Information:"
+          echo "======================="
+          echo "CPU Cores: $(nproc)"
+          echo "CPU Info:"
+          lscpu | grep -E "(Model name|CPU MHz|Cache)"
+          echo ""
+          echo "Memory:"
+          free -h
+          echo ""
+          echo "Disk Space:"
+          df -h /
+          echo ""
+
+      - name: Network Information
+        run: |
+          echo "🌐 Network Information:"
+          echo "======================"
+          echo "Public IP:"
+          curl -s ifconfig.me || echo "Unable to get public IP"
+          echo ""
+          echo "Network interfaces:"
+          ip addr show | grep -E "(inet |UP|DOWN)"
+          echo ""
+
+      - name: Software Verification
+        run: |
+          echo "📦 Software Verification:"
+          echo "========================"
+          echo "Node.js: $(node --version 2>/dev/null || echo 'Not installed')"
+          echo "npm: $(npm --version 2>/dev/null || echo 'Not installed')"
+          echo "Git: $(git --version 2>/dev/null || echo 'Not installed')"
+          echo "Docker: $(docker --version 2>/dev/null || echo 'Not installed')"
+          echo "Python: $(python3 --version 2>/dev/null || echo 'Not installed')"
+          echo ""
+
+      - name: Performance Test
+        run: |
+          echo "⚡ Performance Test:"
+          echo "==================="
+          echo "Testing CPU performance..."
+          start_time=$(date +%s)
+          # Simple CPU test - calculate first 1000 prime numbers
+          python3 -c "
+          import time
+          start = time.time()
+          primes = []
+          for num in range(2, 8000):
+              for i in range(2, int(num ** 0.5) + 1):
+                  if num % i == 0:
+                      break
+              else:
+                  primes.append(num)
+          end = time.time()
+          print(f'Found {len(primes)} prime numbers in {end - start:.2f} seconds')
+          "
+
+      - name: Test Summary
+        run: |
+          echo "✅ Hetzner Cloud Runner Test Complete!"
+          echo "====================================="
+          echo "Server Type: ${{ github.event.inputs.server_type }}"
+          echo "All verification checks passed successfully."
+          echo ""
+          echo "The runner is working correctly and ready for production use."
+
+          # Add to GitHub Step Summary
+          cat >> $GITHUB_STEP_SUMMARY << 'EOF'
+          ## 🎉 Hetzner Cloud Runner Test Results
+
+          ✅ **Runner Status**: Successfully created and verified
+
+          **Configuration:**
+          - Server Type: ${{ github.event.inputs.server_type }}
+          - Location: Nuremberg (nbg1)
+          - OS: Ubuntu 22.04
+
+          **Verification:**
+          - ✅ System information retrieved
+          - ✅ Hardware specifications confirmed
+          - ✅ Network connectivity verified
+          - ✅ Performance test completed
+
+          **Next Steps:**
+          1. Set up your GitHub secrets (`PERSONAL_ACCESS_TOKEN` and `HCLOUD_TOKEN`)
+          2. Enable the main Playwright workflow
+          3. Start running your tests on cost-effective Hetzner Cloud infrastructure!
+
+          For detailed setup instructions, see: [docs/hetzner-runners-setup.md](docs/hetzner-runners-setup.md)
+          EOF

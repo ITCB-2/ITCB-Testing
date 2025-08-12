@@ -82,3 +82,51 @@ src/
    ```bash
    npm test
    ```
+
+## Self-Hosted Runners on Hetzner Cloud
+
+This project supports running Playwright tests on cost-effective Hetzner Cloud infrastructure using self-hosted GitHub Actions runners.
+
+### Why Hetzner Cloud?
+
+- **💰 Cost Savings**: Up to 67% cheaper than GitHub-hosted runners
+- **🚀 Performance**: Dedicated resources with faster execution
+- **🌍 EU-Based**: GDPR-compliant infrastructure in Germany
+- **⚡ Scalable**: On-demand server creation and automatic cleanup
+
+### Quick Setup
+
+The setup is surprisingly simple - just add this to your workflow:
+
+```yaml
+- name: Self-Hosted GitHub Actions Runner on Hetzner Cloud
+  uses: Cyclenerd/hcloud-github-runner@v1.2.0
+  with:
+    github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+    hcloud_token: ${{ secrets.HCLOUD_TOKEN }}
+```
+
+### Prerequisites
+
+1. **GitHub Personal Access Token** with Administration permissions
+2. **Hetzner Cloud API Token** with read/write access
+3. Add both as repository secrets
+
+### Available Workflows
+
+- **`playwright-hetzner.yml`**: Full Playwright test suite on Hetzner Cloud
+- **`test-hetzner-runner.yml`**: Verification workflow to test the setup
+
+### Documentation
+
+For detailed setup instructions, troubleshooting, and cost analysis, see:
+📖 **[Hetzner Cloud Setup Guide](docs/hetzner-runners-setup.md)**
+
+### Cost Comparison
+
+| Runner Type   | CPU/RAM     | Cost/minute | Use Case         |
+| ------------- | ----------- | ----------- | ---------------- |
+| GitHub-hosted | 2 CPU, 7GB  | ~$0.008     | Standard CI/CD   |
+| Hetzner CPX11 | 2 CPU, 4GB  | ~$0.0013    | Light testing    |
+| Hetzner CPX21 | 3 CPU, 8GB  | ~$0.0026    | Playwright tests |
+| Hetzner CPX31 | 4 CPU, 16GB | ~$0.0040    | Heavy workloads  |

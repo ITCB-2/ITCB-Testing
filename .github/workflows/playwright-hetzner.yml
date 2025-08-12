@@ -1,0 +1,104 @@
+name: Playwright Tests on Hetzner Cloud
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+    inputs:
+      server_type:
+        description: 'Hetzner server type (cpx11, cpx21, cpx31, etc.)'
+        required: false
+        default: 'cpx21'
+      reason:
+        description: 'Reason for manual run'
+        required: false
+        default: 'Manual test execution'
+
+jobs:
+  setup-runner:
+    runs-on: ubuntu-latest
+    outputs:
+      runner-name: ${{ steps.runner.outputs.runner-name }}
+    steps:
+      - name: Create Hetzner Cloud Runner
+        id: runner
+        uses: Cyclenerd/hcloud-github-runner@v1.2.0
+        with:
+          github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          hcloud_token: ${{ secrets.HCLOUD_TOKEN }}
+          server_type: ${{ github.event.inputs.server_type || 'cpx21' }}
+          server_location: nbg1
+          server_image: ubuntu-22.04
+          runner_name_prefix: 'playwright-hetzner-'
+          runner_labels: 'hetzner,playwright,linux,self-hosted'
+          server_keep_alive_minutes: 5
+
+  test:
+    needs: setup-runner
+    runs-on: ${{ needs.setup-runner.outputs.runner-name }}
+    timeout-minutes: 60
+    env:
+      BASE_URL: ${{ secrets.BASE_URL }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run quality check
+        run: npm run check
+
+      - name: Run Playwright tests
+        run: npx playwright test --project=chromium
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report-hetzner
+          path: playwright-report/
+          retention-days: 30
+
+      - name: Upload test results on failure
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: test-results-hetzner
+          path: test-results/
+          retention-days: 7
+
+  # Optional: Summary job that always runs
+  summary:
+    if: always()
+    needs: [setup-runner, test]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test Summary
+        run: |
+          echo "## 🧪 Playwright Test Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Runner**: ${{ needs.setup-runner.outputs.runner-name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Server Type**: ${{ github.event.inputs.server_type || 'cpx21' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Test Status**: ${{ needs.test.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Trigger**: ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ needs.test.result }}" = "success" ]; then
+            echo "✅ All tests passed successfully on Hetzner Cloud!" >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ needs.test.result }}" = "failure" ]; then
+            echo "❌ Some tests failed. Check the test results artifact." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ Tests were cancelled or had an unexpected result." >> $GITHUB_STEP_SUMMARY
+          fi
