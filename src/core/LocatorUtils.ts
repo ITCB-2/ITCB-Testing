@@ -1,9 +1,20 @@
 import type {Locator, Page} from '@playwright/test'
 
+type AriaRole =
+  | 'button'
+  | 'textbox'
+  | 'link'
+  | 'checkbox'
+  | 'radio'
+  | 'combobox'
+  | 'listbox'
+  | 'option'
+  | 'heading'
+
 type stringOrRoleLocatorType =
   | string
-  | {role: string; name: string}
-  | {parent: string; role: string; name: string}
+  | {role: AriaRole; name: string}
+  | {parent?: string; role: AriaRole; name: string}
 
 export class LocatorUtils {
   protected page: Page
@@ -14,10 +25,10 @@ export class LocatorUtils {
 
   // Find a locator by string, using multiple strategies
   protected findLocatorByString(locator: string): Locator {
-    const strategies = [
-      () => this.page.locator(locator),
-      () => this.page.getByLabel(locator),
-      () => this.page.getByText(locator),
+    const strategies: (() => Locator)[] = [
+      (): Locator => this.page.locator(locator),
+      (): Locator => this.page.getByLabel(locator),
+      (): Locator => this.page.getByText(locator),
     ]
     // Iterate through strategies until one succeeds
     for (const strategy of strategies) {
@@ -38,12 +49,12 @@ export class LocatorUtils {
         return this.findLocatorByString(locator)
       }
       // Handle byRole with and without parent
-      if ('parent' in locator) {
+      if ('parent' in locator && locator.parent !== undefined) {
         const {parent, role, name} = locator
-        return this.page.locator(parent).getByRole(role as any, {name: name})
+        return this.page.locator(parent).getByRole(role, {name: name})
       } else {
         const {role, name} = locator
-        return this.page.getByRole(role as any, {name: name})
+        return this.page.getByRole(role, {name: name})
       }
     } catch {
       throw new Error(
