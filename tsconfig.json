@@ -1,9 +1,11 @@
 {
   "compilerOptions": {
     /* Core Settings */
+    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     },
+    "moduleResolution": "bundler",
     "esModuleInterop": true,
     "skipLibCheck": true,
     "target": "es2022",
@@ -11,10 +13,11 @@
     "isolatedModules": true,
     "verbatimModuleSyntax": true,
 
-    /* Strictness */
+    /* Strictness*/
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
+    "forceConsistentCasingInFileNames": true,
 
     /* Transpiling with TypeScript */
     "module": "preserve",
@@ -22,5 +25,13 @@
 
     /* Running in the DOM */
     "lib": ["es2022", "dom", "dom.iterable"]
-  }
+  },
+  /* File Specification */
+  "include": [
+    "src/**/*",
+    "playwright.config.ts",
+    ".prettierrc.ts",
+    "eslint.config.ts"
+  ],
+  "exclude": ["node_modules", "dist", "test-results", "playwright-report"]
 }
