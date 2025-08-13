@@ -1,6 +1,6 @@
 import type {Locator, Page} from '@playwright/test'
 
-type AriaRole =
+export type AriaRole =
   | 'button'
   | 'textbox'
   | 'link'
@@ -10,8 +10,9 @@ type AriaRole =
   | 'listbox'
   | 'option'
   | 'heading'
+  | 'img'
 
-type stringOrRoleLocatorType =
+export type stringOrRoleLocatorType =
   | string
   | {role: AriaRole; name: string}
   | {parent?: string; role: AriaRole; name: string}

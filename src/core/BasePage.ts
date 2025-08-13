@@ -1,21 +1,5 @@
-import {LocatorUtils} from '@/core/LocatorUtils'
+import {LocatorUtils, type stringOrRoleLocatorType} from '@/core/LocatorUtils'
 import {type Locator, type Page, expect} from '@playwright/test'
-
-type AriaRole =
-  | 'button'
-  | 'textbox'
-  | 'link'
-  | 'checkbox'
-  | 'radio'
-  | 'combobox'
-  | 'listbox'
-  | 'option'
-  | 'heading'
-
-type stringOrRoleLocatorType =
-  | string
-  | {role: AriaRole; name: string}
-  | {parent: string; role: AriaRole; name: string}
 
 export class BasePage extends LocatorUtils {
   constructor(page: Page) {
