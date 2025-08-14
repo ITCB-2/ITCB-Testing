@@ -1,4 +1,4 @@
-import test from '@/fixtures/testSetup'
+import {test} from '@/fixtures'
 
 test.describe('Main Page - Why ISTQB Bottom Menu Tests', () => {
   test.beforeEach(async ({mainPage}) => {

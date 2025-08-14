@@ -6,22 +6,10 @@ import {MainPage} from '@/pages/MainPage'
 import {OurCertificationPage} from '@/pages/OurCertificationPage'
 import {SlidersMainPage} from '@/pages/SlidersMainPage'
 import {TopMenuMainPage} from '@/pages/TopMenuMainPage'
-import {test as base, type BrowserContext, type Page} from '@playwright/test'
+import type {PageFixtures} from '@/types'
+import {test as base} from '@playwright/test'
 
-interface PageFixtures {
-  context: BrowserContext
-  page: Page
-  mainPage: MainPage
-  topMenuMainPage: TopMenuMainPage
-  bottomMenuMainPage: BottomMenuMainPage
-  slidersMainPage: SlidersMainPage
-  importantFactsPage: ImportantFactsPage
-  ourCertificationPage: OurCertificationPage
-  decisionMakerPage: DecisionMakerPage
-  communityMembersSharingPage: CommunityMembersSharingPage
-}
-
-const test = base.extend<PageFixtures>({
+export const test = base.extend<PageFixtures>({
   context: async ({browser}, use) => {
     const context = await browser.newContext()
     await use(context)
@@ -56,5 +44,3 @@ const test = base.extend<PageFixtures>({
     await use(new CommunityMembersSharingPage(page))
   },
 })
-
-export default test

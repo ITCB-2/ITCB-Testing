@@ -1,10 +1,16 @@
-import {BasePage} from '@/core/BasePage'
-import {BASE_URL} from '@/data/urls'
-import test from '@/fixtures/testSetup'
-import {IMPORTANT_FACTS_PAGE_LOCATORS} from '@/locators/Important_Facts'
-import {MAIN_PAGE_LOCATORS} from '@/locators/Main_Page'
-import {OUR_CERTIFICATIONS_PAGE_LOCATOR} from '@/locators/Our_Certification'
+import {BasePage} from '@/core'
+import {BASE_URL} from '@/data'
+import {test} from '@/fixtures'
+import {findItemByProperty} from '@/helpers'
+import {
+  IMPORTANT_FACTS_PAGE_LOCATORS,
+  MAIN_PAGE_LOCATORS,
+  OUR_CERTIFICATIONS_PAGE_LOCATOR,
+} from '@/locators'
 import {expect, type Page} from '@playwright/test'
+
+type OurCertificationBoxName =
+  (typeof OUR_CERTIFICATIONS_PAGE_LOCATOR.boxes)[number]['name']
 
 export class MainPage extends BasePage {
   constructor(page: Page) {
@@ -64,14 +70,13 @@ export class MainPage extends BasePage {
     })
   }
 
-  async clickOnReadMoreButton(boxName: string): Promise<void> {
+  async clickOnReadMoreButton(boxName: OurCertificationBoxName): Promise<void> {
     await test.step(`Click on ${boxName} Read More Button `, async () => {
-      const box = OUR_CERTIFICATIONS_PAGE_LOCATOR.boxes.find(
-        (b) => b.name === boxName,
+      const box = findItemByProperty(
+        OUR_CERTIFICATIONS_PAGE_LOCATOR.boxes,
+        'name',
+        boxName,
       )
-      if (!box) {
-        throw new Error(`Box with name "${boxName}" not found`)
-      }
       await this.clickOnElement(box.readMoreButton)
     })
   }

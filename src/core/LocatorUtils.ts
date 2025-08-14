@@ -1,21 +1,5 @@
+import type {StringOrRoleLocatorType} from '@/types'
 import type {Locator, Page} from '@playwright/test'
-
-export type AriaRole =
-  | 'button'
-  | 'textbox'
-  | 'link'
-  | 'checkbox'
-  | 'radio'
-  | 'combobox'
-  | 'listbox'
-  | 'option'
-  | 'heading'
-  | 'img'
-
-export type stringOrRoleLocatorType =
-  | string
-  | {role: AriaRole; name: string}
-  | {parent?: string; role: AriaRole; name: string}
 
 export class LocatorUtils {
   protected page: Page
@@ -43,7 +27,7 @@ export class LocatorUtils {
   }
 
   // Handle Generic Locator, byRole, byLabel, byText, and parent-child combinations
-  protected extractLocator(locator: stringOrRoleLocatorType): Locator {
+  protected extractLocator(locator: StringOrRoleLocatorType): Locator {
     try {
       // Try Generic Locator first
       if (typeof locator === 'string') {

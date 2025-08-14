@@ -1,4 +1,5 @@
-import test from '@/fixtures/testSetup'
+import {test} from '@/fixtures'
+
 test.describe.serial('Sliders Main Page Tests', () => {
   test.describe.configure({timeout: 60000})
 

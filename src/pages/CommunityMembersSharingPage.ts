@@ -1,7 +1,7 @@
-import {BasePage} from '@/core/BasePage'
-import test from '@/fixtures/testSetup'
-import {findItemByProperty} from '@/helpers/arrayUtils'
-import {COMMUNITY_MEMBERS_SHARING_PAGE_LOCATORS} from '@/locators/Community_Members_Sharing_Page'
+import {BasePage} from '@/core'
+import {test} from '@/fixtures'
+import {findItemByProperty} from '@/helpers'
+import {COMMUNITY_MEMBERS_SHARING_PAGE_LOCATORS} from '@/locators'
 import {type Page} from '@playwright/test'
 
 type CommunityMemberName =

@@ -1,3 +1,3 @@
-import {getEnvCredentials} from '@/helpers/envUtils'
+import {getEnvCredentials} from '@/helpers'
 
 export const BASE_URL: string = getEnvCredentials('BASE_URL')

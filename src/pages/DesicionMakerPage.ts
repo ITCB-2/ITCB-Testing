@@ -1,7 +1,7 @@
-import {BasePage} from '@/core/BasePage'
-import test from '@/fixtures/testSetup'
-import {findItemByProperty} from '@/helpers/arrayUtils'
-import {DECISION_MAKERS_SHARING_PAGE_LOCATORS} from '@/locators/Decision_Makers_Sharing'
+import {BasePage} from '@/core'
+import {test} from '@/fixtures'
+import {findItemByProperty} from '@/helpers'
+import {DECISION_MAKERS_SHARING_PAGE_LOCATORS} from '@/locators'
 import {type Page} from '@playwright/test'
 
 type DecisionMakerBoxName =

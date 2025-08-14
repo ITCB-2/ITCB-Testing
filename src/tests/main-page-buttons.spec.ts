@@ -1,8 +1,10 @@
-import test from '@/fixtures/testSetup'
-import {COMMUNITY_MEMBERS_SHARING_PAGE_LOCATORS} from '@/locators/Community_Members_Sharing_Page'
-import {DECISION_MAKERS_SHARING_PAGE_LOCATORS} from '@/locators/Decision_Makers_Sharing'
-import {IMPORTANT_FACTS_PAGE_LOCATORS} from '@/locators/Important_Facts'
-import {OUR_CERTIFICATIONS_PAGE_LOCATOR} from '@/locators/Our_Certification'
+import {test} from '@/fixtures'
+import {
+  COMMUNITY_MEMBERS_SHARING_PAGE_LOCATORS,
+  DECISION_MAKERS_SHARING_PAGE_LOCATORS,
+  IMPORTANT_FACTS_PAGE_LOCATORS,
+  OUR_CERTIFICATIONS_PAGE_LOCATOR,
+} from '@/locators'
 
 test.describe('Main Page - Buttons Tests', () => {
   test.beforeEach(async ({mainPage}) => {

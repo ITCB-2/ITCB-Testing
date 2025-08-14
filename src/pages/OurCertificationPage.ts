@@ -1,7 +1,7 @@
-import {BasePage} from '@/core/BasePage'
-import test from '@/fixtures/testSetup'
-import {findItemByProperty} from '@/helpers/arrayUtils'
-import {OUR_CERTIFICATIONS_PAGE_LOCATOR} from '@/locators/Our_Certification'
+import {BasePage} from '@/core'
+import {test} from '@/fixtures'
+import {findItemByProperty} from '@/helpers'
+import {OUR_CERTIFICATIONS_PAGE_LOCATOR} from '@/locators'
 import {type Page} from '@playwright/test'
 
 type OurCertificationBoxName =

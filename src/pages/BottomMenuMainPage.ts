@@ -1,23 +1,25 @@
-import {MainPage} from '@/pages/MainPage'
-import test from '@/fixtures/testSetup'
-import {BOTTOM_MENU_MAIN_PAGE_LOCATORS} from '@/locators/Bottom_Menu_Main_Page'
-import {ABOUT_US_PAGE_LOCATORS} from '@/locators/About_Us'
-import {DECISION_MAKERS_SHARING_PAGE_LOCATORS} from '@/locators/Decision_Makers_Sharing'
-import {EVENTS_SUMMARIES_PAGE_LOCATORS} from '@/locators/Events_Summaries'
-import {HOW_TO_PREPARE_TO_ISTQB_PAGE_LOCATOR} from '@/locators/How_To_Prepare_To_ISTQB'
-import {IMPORTANT_FACTS_PAGE_LOCATORS} from '@/locators/Important_Facts'
-import {INTERNATIONAL_CONFERENCES_PAGE_LOCATORS} from '@/locators/International_Conferences'
-import {ITCB_MAGAZINE_PAGE_LOCATORS} from '@/locators/ITCB_Magazine'
-import {MEMBERS_OF_COMMUNITY_SHARING_PAGE_LOCATORS} from '@/locators/Members_Of_Community_Sharing'
-import {OUR_CERTIFICATIONS_PAGE_LOCATOR} from '@/locators/Our_Certification'
-import {OUR_PARTNERS_PAGE_LOCATORS} from '@/locators/Our_Partners'
-import {PODCASTS_PAGE_LOCATORS} from '@/locators/Podcasts'
-import {QUESTIONS_AND_ANSWERS_PAGE_LOCATORS} from '@/locators/Questions_And_Answers'
-import {SYLLABUS_INFO_PAGE_LOCATORS} from '@/locators/Syllabus_Info'
-import {TERMS_GLOSSARY_PAGE_LOCATORS} from '@/locators/Terms_Glossary'
-import {TIPS_PAGE_LOCATORS} from '@/locators/Tips'
-import {USEFUL_LINKS_LOCATORS} from '@/locators/Useful_Links'
+import {test} from '@/fixtures'
+import {
+  ABOUT_US_PAGE_LOCATORS,
+  BOTTOM_MENU_MAIN_PAGE_LOCATORS,
+  DECISION_MAKERS_SHARING_PAGE_LOCATORS,
+  EVENTS_SUMMARIES_PAGE_LOCATORS,
+  HOW_TO_PREPARE_TO_ISTQB_PAGE_LOCATOR,
+  IMPORTANT_FACTS_PAGE_LOCATORS,
+  INTERNATIONAL_CONFERENCES_PAGE_LOCATORS,
+  ITCB_MAGAZINE_PAGE_LOCATORS,
+  MEMBERS_OF_COMMUNITY_SHARING_PAGE_LOCATORS,
+  OUR_CERTIFICATIONS_PAGE_LOCATOR,
+  OUR_PARTNERS_PAGE_LOCATORS,
+  PODCASTS_PAGE_LOCATORS,
+  QUESTIONS_AND_ANSWERS_PAGE_LOCATORS,
+  SYLLABUS_INFO_PAGE_LOCATORS,
+  TERMS_GLOSSARY_PAGE_LOCATORS,
+  TIPS_PAGE_LOCATORS,
+  USEFUL_LINKS_LOCATORS,
+} from '@/locators'
 import {expect, type Page} from '@playwright/test'
+import {MainPage} from './MainPage'
 
 export class BottomMenuMainPage extends MainPage {
   constructor(page: Page) {

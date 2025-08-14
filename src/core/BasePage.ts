@@ -1,5 +1,6 @@
-import {LocatorUtils, type stringOrRoleLocatorType} from '@/core/LocatorUtils'
+import type {StringOrRoleLocatorType} from '@/types'
 import {type Locator, type Page, expect} from '@playwright/test'
+import {LocatorUtils} from './LocatorUtils'
 
 export class BasePage extends LocatorUtils {
   constructor(page: Page) {
@@ -8,7 +9,7 @@ export class BasePage extends LocatorUtils {
 
   // Validate text of an element
   protected async validateText(
-    locator: stringOrRoleLocatorType,
+    locator: StringOrRoleLocatorType,
     text: string,
   ): Promise<void> {
     const extractedLocator = this.extractLocator(locator)
@@ -36,7 +37,7 @@ export class BasePage extends LocatorUtils {
   }
   // Click on an element
   protected async clickOnElement(
-    locator: stringOrRoleLocatorType,
+    locator: StringOrRoleLocatorType,
   ): Promise<void> {
     const extractedLocator: Locator = this.extractLocator(locator)
     await extractedLocator.click()
@@ -48,7 +49,7 @@ export class BasePage extends LocatorUtils {
   }
   // Hover on an element
   protected async hoverOnElement(
-    locator: stringOrRoleLocatorType,
+    locator: StringOrRoleLocatorType,
   ): Promise<void> {
     const extractedLocator: Locator = this.extractLocator(locator)
     await extractedLocator.hover()
@@ -56,7 +57,7 @@ export class BasePage extends LocatorUtils {
 
   // Validate that an element is visible
   protected async validateVisibility(
-    locator: stringOrRoleLocatorType,
+    locator: StringOrRoleLocatorType,
   ): Promise<void> {
     const extractedLocator = this.extractLocator(locator)
     try {
