@@ -2,7 +2,6 @@
 
 > End-to-end test automation for the Israel Testing Certification Board (ITCB) website using Playwright + TypeScript
 
-[![Code Quality](https://github.com/ITCB-2/ITCB-Testing/workflows/Code%20Quality%20Check/badge.svg)](https://github.com/ITCB-2/ITCB-Testing/actions)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue.svg)](https://www.typescriptlang.org/)
 [![Playwright](https://img.shields.io/badge/Playwright-1.49-green.svg)](https://playwright.dev/)
 [![License: ISC](https://img.shields.io/badge/License-ISC-yellow.svg)](LICENSE)
