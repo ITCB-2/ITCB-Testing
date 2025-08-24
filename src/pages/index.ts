@@ -1,8 +1,10 @@
-export {BottomMenuMainPage} from './BottomMenuMainPage'
-export {CommunityMembersSharingPage} from './CommunityMembersSharingPage'
-export {DecisionMakerPage} from './DesicionMakerPage'
-export {ImportantFactsPage} from './ImportantFactsPage'
-export {MainPage} from './MainPage'
-export {OurCertificationPage} from './OurCertificationPage'
-export {SlidersMainPage} from './SlidersMainPage'
-export {TopMenuMainPage} from './TopMenuMainPage'
+export * from './main-content/MainPage'
+export * from './main-content/SlidersMainPage'
+
+export * from './navigation/BottomMenuMainPage'
+export * from './navigation/TopMenuMainPage'
+
+export * from './content-pages/CommunityMembersSharingPage'
+export * from './content-pages/DesicionMakerPage'
+export * from './content-pages/ImportantFactsPage'
+export * from './content-pages/OurCertificationPage'

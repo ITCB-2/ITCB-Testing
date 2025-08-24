@@ -1,3 +1,4 @@
+import {BASE_URL} from '@/data'
 import {test} from '@/fixtures'
 import {
   ABOUT_US_PAGE_LOCATORS,
@@ -18,15 +19,14 @@ import {
   TOP_MENU_MAIN_PAGE_LOCATORS,
   USEFUL_LINKS_LOCATORS,
 } from '@/locators'
+import {MainPage} from '@/pages'
 import {expect, type Page} from '@playwright/test'
-import {MainPage} from './MainPage'
 
 export class TopMenuMainPage extends MainPage {
   constructor(page: Page) {
     super(page)
   }
 
-  //why isqb top menu navigation
   async navigateToDecisionMakersSharingPage(): Promise<void> {
     await test.step('Navigate to Decision Makers Sharing Page', async () => {
       const {button, decisionMakersSharingLink} =
@@ -35,7 +35,7 @@ export class TopMenuMainPage extends MainPage {
       await this.hoverOnElement(button)
       await this.validateVisibility(decisionMakersSharingLink)
       await this.clickOnElement(decisionMakersSharingLink)
-      // Wait for the section to be visible after scrolling
+
       await this.validateText(title, 'מקבלי ההחלטות משתפים')
     })
   }
@@ -46,7 +46,7 @@ export class TopMenuMainPage extends MainPage {
       const {title} = MEMBERS_OF_COMMUNITY_SHARING_PAGE_LOCATORS
       await this.hoverOnElement(button)
       await this.clickOnElement(membersOfCommunitySharingLink)
-      // Wait for the section to be visible after scrolling
+
       await this.validateText(title, 'חברי הקהילה משתפים')
     })
   }
@@ -74,7 +74,7 @@ export class TopMenuMainPage extends MainPage {
       await this.validateText(title, 'איך להתכונן למבחן ISTQB')
     })
   }
-  //istqb content top menu navigation
+
   async navigateToTermsGlossaryPage(): Promise<void> {
     await test.step('Navigate to Terms Glossary page', async () => {
       const {button, termsGlossaryLink} =
@@ -99,7 +99,7 @@ export class TopMenuMainPage extends MainPage {
       await this.validateText(title, 'כל מה שרציתם לדעת על סילבוס CTFL 4.0')
     })
   }
-  //testing in Israel top menu navigation
+
   async navigateToUsefulLinksPage(): Promise<void> {
     await test.step('Navigate to Useful Links page', async () => {
       const {button, usefulLinksLink} =
@@ -157,7 +157,7 @@ export class TopMenuMainPage extends MainPage {
       )
     })
   }
-  //additional information top menu navigation
+
   async navigateToImportantFactsPage(): Promise<void> {
     await test.step('navigate to Important Facts page', async () => {
       const {button, importantFactsLink} =
@@ -191,7 +191,7 @@ export class TopMenuMainPage extends MainPage {
       await this.validateText(title, 'כנסים בינלאומיים')
     })
   }
-  //about ITCB top menu navigation
+
   async navigateToAboutUsPage(): Promise<void> {
     await test.step('navigate to About Us page', async () => {
       const {button, aboutUsLink} = TOP_MENU_MAIN_PAGE_LOCATORS.aboutITCB
@@ -200,7 +200,7 @@ export class TopMenuMainPage extends MainPage {
       await this.validateVisibility(aboutUsLink)
       await this.clickOnElement(aboutUsLink)
       const pageContent = this.page.getByText('ITCB® - Israel Testing')
-      await this.validateURL('https://www.itcb.org.il/?todo=about')
+      await this.validateURL(`${BASE_URL}/?todo=about`)
       await expect(pageContent).toContainText('ITCB® - Israel Testing')
     })
   }
@@ -213,10 +213,10 @@ export class TopMenuMainPage extends MainPage {
       await this.validateVisibility(boardOfDirectorsLink)
       const pagePromise = this.page.context().waitForEvent('page')
       await this.clickOnElement(boardOfDirectorsLink)
-      // Get the new page that was opened
+
       const newPage = await pagePromise
       await newPage.waitForLoadState()
-      // Create locator based on role/name
+
       const locator = newPage.getByRole(boardOfDirectorsTitle.role, {
         name: boardOfDirectorsTitle.name,
       })
@@ -230,13 +230,13 @@ export class TopMenuMainPage extends MainPage {
       const {advisoryBoardTitle} = ABOUT_US_PAGE_LOCATORS.advisoryBoardSection
       await this.hoverOnElement(button)
       await this.validateVisibility(advisoryBoardLink)
-      // Wait for new page before clicking
+
       const pagePromise = this.page.context().waitForEvent('page')
       await this.clickOnElement(advisoryBoardLink)
-      // Get the new page that was opened
+
       const newPage = await pagePromise
       await newPage.waitForLoadState()
-      // Create locator based on role/name
+
       const locator = newPage.getByRole(advisoryBoardTitle.role, {
         name: advisoryBoardTitle.name,
       })

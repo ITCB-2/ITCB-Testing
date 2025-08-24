@@ -1,3 +1,4 @@
+import {BASE_URL} from '@/data'
 import {test} from '@/fixtures'
 import {
   ABOUT_US_PAGE_LOCATORS,
@@ -18,14 +19,13 @@ import {
   TIPS_PAGE_LOCATORS,
   USEFUL_LINKS_LOCATORS,
 } from '@/locators'
+import {MainPage} from '@/pages'
 import {expect, type Page} from '@playwright/test'
-import {MainPage} from './MainPage'
 
 export class BottomMenuMainPage extends MainPage {
   constructor(page: Page) {
     super(page)
   }
-  //why isqb bottom menu navigation
   async navigateToDecisionMakersSharingPageBottomMenu(): Promise<void> {
     await test.step('Navigate to Decision Makers Sharing Page through bottom menu', async () => {
       const {decisionMakersSharingLink} =
@@ -65,7 +65,7 @@ export class BottomMenuMainPage extends MainPage {
       await this.validateText(title, 'איך להתכונן למבחן ISTQB')
     })
   }
-  //istqb content bottom menu navigation
+
   async navigateToTermsGlossaryPageBottomMenu(): Promise<void> {
     await test.step('Navigate to Terms Glossary page through bottom menu', async () => {
       const {termsGlossaryLink} = BOTTOM_MENU_MAIN_PAGE_LOCATORS.ISTQBContent
@@ -87,7 +87,7 @@ export class BottomMenuMainPage extends MainPage {
       await this.validateText(title, 'כל מה שרציתם לדעת על סילבוס CTFL')
     })
   }
-  //testing in israel bottom menu navigation
+
   async navigateToUsefulLinksPageBottomMenu(): Promise<void> {
     await test.step('Navigate to Useful Links page through bottom menu', async () => {
       const {usefulLinksLink} = BOTTOM_MENU_MAIN_PAGE_LOCATORS.testingInIsrael
@@ -137,7 +137,7 @@ export class BottomMenuMainPage extends MainPage {
       )
     })
   }
-  // additional information bottom menu navigation
+
   async navigateToImportantFactsPageBottomMenu(): Promise<void> {
     await test.step('Navigate to Important Facts page through bottom menu', async () => {
       const {importantFactsLink} =
@@ -168,14 +168,14 @@ export class BottomMenuMainPage extends MainPage {
       await this.validateText(title, 'כנסים בינלאומיים')
     })
   }
-  // aboutITCB bottom menu navigation
+
   async navigateToAboutUsPageBottomMenu(): Promise<void> {
     await test.step('Navigate to About Us page through bottom menu', async () => {
       const {aboutUsLink} = BOTTOM_MENU_MAIN_PAGE_LOCATORS.aboutITCB
       await this.validateVisibility(aboutUsLink)
       await this.clickOnElement(aboutUsLink)
       const pageContent = this.page.getByText('ITCB® - Israel Testing')
-      await this.validateURL('https://www.itcb.org.il/?todo=about')
+      await this.validateURL(`${BASE_URL}/?todo=about`)
       await expect(pageContent).toContainText('ITCB® - Israel Testing')
     })
   }
@@ -185,16 +185,13 @@ export class BottomMenuMainPage extends MainPage {
       const {boardOfDirectorsTitle} = ABOUT_US_PAGE_LOCATORS
       await this.validateVisibility(boardOfDirectorsLink)
 
-      // Wait for new page before clicking
       const pagePromise = this.page.context().waitForEvent('page')
 
       await this.clickOnElement(boardOfDirectorsLink)
 
-      // Get the new page that was opened
       const newPage = await pagePromise
       await newPage.waitForLoadState()
 
-      // Create locator based on role/name
       const locator = newPage.getByRole(boardOfDirectorsTitle.role, {
         name: boardOfDirectorsTitle.name,
       })
@@ -210,16 +207,13 @@ export class BottomMenuMainPage extends MainPage {
 
       await this.validateVisibility(advisoryBoardLink)
 
-      // Wait for new page before clicking
       const pagePromise = this.page.context().waitForEvent('page')
 
       await this.clickOnElement(advisoryBoardLink)
 
-      // Get the new page that was opened
       const newPage = await pagePromise
       await newPage.waitForLoadState()
 
-      // Create locator based on role/name
       const locator = newPage.getByRole(advisoryBoardTitle.role, {
         name: advisoryBoardTitle.name,
       })

@@ -1,84 +1,94 @@
-# ITCB Testing Project - Playwright Test Automation Framework
+# ITCB Testing Framework
 
-## Overview
+> End-to-end test automation for the Israel Testing Certification Board (ITCB) website using Playwright + TypeScript
 
-This is a Playwright test automation framework built with TypeScript using the Page Object Model (POM) pattern for end-to-end testing of web applications.
+[![Code Quality](https://github.com/ITCB-2/ITCB-Testing/workflows/Code%20Quality%20Check/badge.svg)](https://github.com/ITCB-2/ITCB-Testing/actions)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue.svg)](https://www.typescriptlang.org/)
+[![Playwright](https://img.shields.io/badge/Playwright-1.49-green.svg)](https://playwright.dev/)
+[![License: ISC](https://img.shields.io/badge/License-ISC-yellow.svg)](LICENSE)
 
-## Code Quality Setup
-
-### Pre-commit Hooks
-
-- **ESLint**: Automatic code linting and fixing
-- **Prettier**: Automatic code formatting
-- **TypeScript**: Compilation check
-
-### GitHub Actions
-
-- **Code Quality Check**: Runs on every push/PR
-- **Lint Check**: ESLint validation
-- **Format Check**: Prettier validation
-- **TypeScript Check**: Compilation validation
-
-## Automated Code Quality
-
-This project automatically fixes code quality issues:
-
-- **Pre-commit**: Auto-fixes formatting and linting before each commit
-- **Pre-push**: Final validation and fixes before pushing to remote
-
-## Available Commands
+## 🚀 Quick Start
 
 ```bash
-# Quality checks
-npm run quality-check      # Full quality check (lint + format + tsc)
-npm run lint:check         # CI-friendly lint check
-npm run format:check       # CI-friendly format check
-npm run format:fix         # Format + fix all issues
+# Install dependencies
+npm install
 
-# Testing
-npm run test              # Run all Playwright tests
-npm run test:smoke        # Run smoke tests only
-npm run test:ci           # Run tests with GitHub reporter
+# Install browsers
+npx playwright install
 
-# Development
-npm run codegen           # Playwright code generator
-npm run report            # Show test report
+# Run tests
+npm test
 ```
 
-## Project Structure
+## 🏗️ Architecture
+
+- **Page Object Model (POM)** with TypeScript
+- **Dependency Injection** via custom fixtures
+- **Automatic Fallback Locators** for robust testing
+- **Pre-commit Quality Gates** (ESLint + Prettier + TypeScript)
+
+## 📁 Project Structure
 
 ```
 src/
-├── core/           # Base classes and utilities
-├── pages/          # Page Object Model classes
-├── locators/       # Centralized element locators
-├── fixtures/       # Custom test fixtures and setup
-├── helpers/        # Utility functions and helpers
-├── data/           # Test data and constants
-└── tests/          # Test specification files
+├── core/         # Base classes (BasePage, LocatorUtils)
+├── pages/        # Page objects (main-content, navigation, content-pages)
+├── locators/     # Centralized element selectors
+├── tests/        # Test specifications
+├── fixtures/     # Custom Playwright fixtures
+└── helpers/      # Utilities (environment, arrays)
 ```
 
-## Getting Started
+## 🧪 Testing
 
-1. Install dependencies:
+```bash
+npm test                  # All tests
+npm run test:chrome       # Chrome only
+npm run test:debug        # Debug mode
+npm run test:headed       # Visual mode
+npm run report            # View results
+```
 
-   ```bash
-   npm install
-   ```
+## 🔧 Development
 
-2. Install Playwright browsers:
+```bash
+npm run check             # Quality check (lint + format + tsc)
+npm run fix               # Auto-fix issues
+npm run codegen           # Generate test code
+```
 
-   ```bash
-   npx playwright install
-   ```
+## 🌍 Environment Setup
 
-3. Run quality check:
+Create `.env` file:
 
-   ```bash
-   npm run quality-check
-   ```
+```bash
+BASE_URL=your_test_environment_url
+```
 
-4. Run tests:
-   ```bash
-   npm test
-   ```
+## 🤝 Contributing
+
+1. **Quality First**: All commits go through automated quality checks
+2. **Follow Patterns**: Use existing page object and locator patterns
+3. **Test Categories**: Organize tests by functionality (main-content, navigation, content-pages)
+
+### Code Style
+
+- ESLint with zero warnings
+- Prettier formatting
+- Import alias: `@/` for internal imports
+
+## 📖 Documentation
+
+- **Architecture Details**: See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+- **Development Guide**: See [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)
+- **Troubleshooting**: See [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)
+
+## 🔄 CI/CD
+
+- **Code Quality**: Automated on every push/PR
+- **Cross-browser Testing**: Chrome, Firefox, Safari
+- **Test Reports**: Automated artifact generation
+
+---
+
+**Built with ❤️ for ITCB by the Testing Team**

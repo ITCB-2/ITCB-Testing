@@ -1,11 +1,13 @@
-import {BottomMenuMainPage} from '@/pages/BottomMenuMainPage'
-import {CommunityMembersSharingPage} from '@/pages/CommunityMembersSharingPage'
-import {DecisionMakerPage} from '@/pages/DesicionMakerPage'
-import {ImportantFactsPage} from '@/pages/ImportantFactsPage'
-import {MainPage} from '@/pages/MainPage'
-import {OurCertificationPage} from '@/pages/OurCertificationPage'
-import {SlidersMainPage} from '@/pages/SlidersMainPage'
-import {TopMenuMainPage} from '@/pages/TopMenuMainPage'
+import {
+  BottomMenuMainPage,
+  CommunityMembersSharingPage,
+  DecisionMakerPage,
+  ImportantFactsPage,
+  MainPage,
+  OurCertificationPage,
+  SlidersMainPage,
+  TopMenuMainPage,
+} from '@/pages'
 import type {PageFixtures} from '@/types'
 import {test as base} from '@playwright/test'
 
