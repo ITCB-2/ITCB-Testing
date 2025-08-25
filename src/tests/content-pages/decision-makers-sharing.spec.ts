@@ -1,7 +1,7 @@
 import {test} from '@/fixtures'
 import {DECISION_MAKERS_SHARING_PAGE_LOCATORS} from '@/locators'
 
-test.describe('Decision Makers Sharing Page Tests', () => {
+test.describe('Decision Makers Sharing Page Tests @regression', () => {
   test.beforeEach(async ({mainPage}) => {
     await mainPage.openMainPage()
   })

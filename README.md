@@ -42,11 +42,19 @@ src/
 
 ```bash
 npm test                  # All tests
+npm run test:sanity       # Sanity tests (daily CI)
 npm run test:chrome       # Chrome only
 npm run test:debug        # Debug mode
 npm run test:headed       # Visual mode
 npm run report            # View results
 ```
+
+### Test Categories
+
+- **@sanity**: Critical functionality tests (run daily on CI)
+- **@regression**: Comprehensive test coverage
+
+**Testing Guide**: See [docs/TESTING.md](docs/TESTING.md) for complete testing strategy and CI setup.
 
 ## 🔧 Development
 
@@ -80,13 +88,16 @@ BASE_URL=your_test_environment_url
 
 - **Architecture Details**: See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 - **Development Guide**: See [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)
+- **Testing Strategy**: See [docs/TESTING.md](docs/TESTING.md)
 - **Troubleshooting**: See [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)
 
 ## 🔄 CI/CD
 
+- **Daily Sanity Tests**: Automated execution at 6 AM UTC
 - **Code Quality**: Automated on every push/PR
 - **Cross-browser Testing**: Chrome, Firefox, Safari
 - **Test Reports**: Automated artifact generation
+- **Flexible Triggers**: Manual test execution with tag selection
 
 ---
 

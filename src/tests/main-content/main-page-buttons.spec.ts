@@ -1,6 +1,6 @@
 import {test} from '@/fixtures'
 
-test.describe('Main Page - Core Functionality Tests', () => {
+test.describe('Main Page - Core Functionality Tests @sanity', () => {
   test.beforeEach(async ({mainPage}) => {
     await mainPage.openMainPage()
   })

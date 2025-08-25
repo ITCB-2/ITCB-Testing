@@ -1,29 +1,82 @@
-name: Playwright Tests (Disabled)
+name: Playwright Tests
 
 on:
-  # Disabled workflow - uncomment below to re-enable
-  # workflow_run:
-  #   workflows: ['Code Quality Check']
-  #   types:
-  #     - completed
-  #   branches: [main, master]
+  # Automated Sanity Tests - Run every day at 6 AM UTC (2 AM EST, 8 AM CET)
+  schedule:
+    - cron: '0 6 * * *'
 
-  # Manual trigger only (optional - remove if you don't want any triggers)
+  # Run on push to main/master (full test suite)
+  push:
+    branches: [main, master]
+
+  # Run on PR to main/master (full test suite)
+  pull_request:
+    branches: [main, master]
+
+  # Code Quality workflow trigger (full test suite)
+  workflow_run:
+    workflows: ['Code Quality Check']
+    types:
+      - completed
+    branches: [main, master]
+
+  # Manual trigger with options
   workflow_dispatch:
     inputs:
+      test_type:
+        description: 'Type of tests to run'
+        required: true
+        default: 'sanity'
+        type: choice
+        options:
+          - sanity
+          - regression
+          - all
       reason:
         description: 'Reason for running tests manually'
         required: false
         default: 'Manual test run'
 
 jobs:
-  test:
+  # Sanity Tests Job - Runs on schedule and manual trigger
+  sanity-tests:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'schedule' || 
+      (github.event_name == 'workflow_dispatch' && 
+       (github.event.inputs.test_type == 'sanity' || github.event.inputs.test_type == 'all'))
+    env:
+      BASE_URL: ${{ secrets.BASE_URL }}
+      TEST_TAGS: '@sanity'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+      - name: Install dependencies
+        run: npm ci
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+      - name: Run Sanity Tests
+        run: npm run test:sanity
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: sanity-playwright-report
+          path: playwright-report/
+          retention-days: 30
+
+  # Full Test Suite Job - Runs on push, PR, and successful quality checks
+  full-tests:
     timeout-minutes: 120
     runs-on: ubuntu-latest
-    # Disabled condition - workflow won't run even if triggered
-    if: false
-    # Original condition (commented out):
-    # if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: |
+      github.event_name == 'push' || 
+      github.event_name == 'pull_request' ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') ||
+      (github.event_name == 'workflow_dispatch' && 
+       (github.event.inputs.test_type == 'all' || github.event.inputs.test_type == 'regression'))
     env:
       BASE_URL: ${{ secrets.BASE_URL }}
     steps:
@@ -35,11 +88,11 @@ jobs:
         run: npm ci
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
-      - name: Run Playwright tests
+      - name: Run All Tests
         run: npx playwright test
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
-          name: playwright-report
+          name: full-playwright-report
           path: playwright-report/
           retention-days: 30

@@ -1,6 +1,6 @@
 import {test} from '@/fixtures'
 
-test.describe('Main Page - Why ISTQB Menu Tests', () => {
+test.describe('Main Page - Why ISTQB Menu Tests @regression', () => {
   test.beforeEach(async ({mainPage}) => {
     await mainPage.openMainPage()
   })
@@ -10,16 +10,22 @@ test.describe('Main Page - Why ISTQB Menu Tests', () => {
     await topMenuMainPage.navigateToDecisionMakersSharingPage()
   })
 
-  test('should navigate to Members of Community Sharing page and verify content', async ({
-    topMenuMainPage,
-  }) => {
-    await topMenuMainPage.navigateTOMembersOfCommunitySharingPage()
-  })
-
   test('should navigate to Our Certifications page and verify content', async ({
     topMenuMainPage,
   }) => {
     await topMenuMainPage.navigateToOurCertificationsPage()
+  })
+})
+
+test.describe('Main Page - Why ISTQB Menu Tests (Comprehensive) @regression', () => {
+  test.beforeEach(async ({mainPage}) => {
+    await mainPage.openMainPage()
+  })
+
+  test('should navigate to Members of Community Sharing page and verify content', async ({
+    topMenuMainPage,
+  }) => {
+    await topMenuMainPage.navigateTOMembersOfCommunitySharingPage()
   })
 
   test('should navigate to How To Prepare To ISTQB Test page and verify content', async ({
@@ -29,7 +35,7 @@ test.describe('Main Page - Why ISTQB Menu Tests', () => {
   })
 })
 
-test.describe('Main Page - ISTQBContent Menu Tests', () => {
+test.describe('Main Page - ISTQBContent Menu Tests @regression', () => {
   test.beforeEach(async ({mainPage}) => {
     await mainPage.openMainPage()
   })
@@ -38,6 +44,12 @@ test.describe('Main Page - ISTQBContent Menu Tests', () => {
   }) => {
     await topMenuMainPage.navigateToTermsGlossaryPage()
   })
+})
+
+test.describe('Main Page - ISTQBContent Menu Tests (Comprehensive) @regression', () => {
+  test.beforeEach(async ({mainPage}) => {
+    await mainPage.openMainPage()
+  })
   test('should navigate to Syllabus Info page and verify content', async ({
     topMenuMainPage,
   }) => {
@@ -45,7 +57,18 @@ test.describe('Main Page - ISTQBContent Menu Tests', () => {
   })
 })
 
-test.describe('Main Page - testing In Israel Menu Tests', () => {
+test.describe('Main Page - testing In Israel Menu Tests @regression', () => {
+  test.beforeEach(async ({mainPage}) => {
+    await mainPage.openMainPage()
+  })
+  test('should navigate to ITCB Magazine page and verify content', async ({
+    topMenuMainPage,
+  }) => {
+    await topMenuMainPage.navigateToITCBMagazinePage()
+  })
+})
+
+test.describe('Main Page - testing In Israel Menu Tests (Comprehensive) @regression', () => {
   test.beforeEach(async ({mainPage}) => {
     await mainPage.openMainPage()
   })
@@ -53,11 +76,6 @@ test.describe('Main Page - testing In Israel Menu Tests', () => {
     topMenuMainPage,
   }) => {
     await topMenuMainPage.navigateToUsefulLinksPage()
-  })
-  test('should navigate to ITCB Magazine page and verify content', async ({
-    topMenuMainPage,
-  }) => {
-    await topMenuMainPage.navigateToITCBMagazinePage()
   })
   test('should navigate to Podcasts page and verify content', async ({
     topMenuMainPage,
@@ -76,7 +94,7 @@ test.describe('Main Page - testing In Israel Menu Tests', () => {
   })
 })
 
-test.describe('Main Page - additional Information Menu Tests', () => {
+test.describe('Main Page - additional Information Menu Tests @regression', () => {
   test.beforeEach(async ({mainPage}) => {
     await mainPage.openMainPage()
   })
@@ -84,6 +102,12 @@ test.describe('Main Page - additional Information Menu Tests', () => {
     topMenuMainPage,
   }) => {
     await topMenuMainPage.navigateToImportantFactsPage()
+  })
+})
+
+test.describe('Main Page - additional Information Menu Tests (Comprehensive) @regression', () => {
+  test.beforeEach(async ({mainPage}) => {
+    await mainPage.openMainPage()
   })
   test('should navigate to Questions and Answers page and verify content', async ({
     topMenuMainPage,
@@ -97,7 +121,7 @@ test.describe('Main Page - additional Information Menu Tests', () => {
   })
 })
 
-test.describe('Main Page - aboutITCB Menu Tests', () => {
+test.describe('Main Page - aboutITCB Menu Tests @regression', () => {
   test.describe.configure({timeout: 60000})
   test.beforeEach(async ({mainPage}) => {
     await mainPage.openMainPage()
@@ -106,6 +130,13 @@ test.describe('Main Page - aboutITCB Menu Tests', () => {
     topMenuMainPage,
   }) => {
     await topMenuMainPage.navigateToAboutUsPage()
+  })
+})
+
+test.describe('Main Page - aboutITCB Menu Tests (Comprehensive) @regression', () => {
+  test.describe.configure({timeout: 60000})
+  test.beforeEach(async ({mainPage}) => {
+    await mainPage.openMainPage()
   })
   test('should navigate to Board of Directors page and verify content', async ({
     topMenuMainPage,

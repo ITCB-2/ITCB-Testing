@@ -1,7 +1,7 @@
 import {test} from '@/fixtures'
 import {OUR_CERTIFICATIONS_PAGE_LOCATOR} from '@/locators'
 
-test.describe('Our Certifications Page Tests', () => {
+test.describe('Our Certifications Page Tests @regression', () => {
   test.beforeEach(async ({mainPage}) => {
     await mainPage.openMainPage()
   })
