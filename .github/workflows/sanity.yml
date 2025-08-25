@@ -1,0 +1,53 @@
+name: Sanity Tests
+
+on:
+  # Automated Sanity Tests - Run every 30 minutes
+  schedule:
+    - cron: '*/30 * * * *' # Every 30 minutes
+
+  # Manual trigger with options
+  workflow_dispatch:
+    inputs:
+      test_type:
+        description: 'Type of tests to run'
+        required: true
+        default: 'sanity'
+        type: choice
+        options:
+          - sanity
+          - regression
+          - all
+      reason:
+        description: 'Reason for running tests manually'
+        required: false
+        default: 'Manual test run'
+
+jobs:
+  # Sanity Tests Job - Runs every 30 minutes and manual trigger
+  sanity-tests:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'schedule' || 
+      (github.event_name == 'workflow_dispatch' && 
+       (github.event.inputs.test_type == 'sanity' || github.event.inputs.test_type == 'all'))
+    env:
+      BASE_URL: ${{ secrets.BASE_URL }}
+      TEST_TAGS: '@sanity'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+      - name: Install dependencies
+        run: npm ci
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+      - name: Run Sanity Tests
+        run: npm run test:sanity
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: sanity-playwright-report
+          path: playwright-report/
+          retention-days: 30
