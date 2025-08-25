@@ -11,7 +11,7 @@
 ### Setup
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/ITCB-2/ITCB-Testing.git
 cd ITCB-Testing
 npm install
 npx playwright install

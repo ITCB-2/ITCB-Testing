@@ -90,8 +90,9 @@ TEST_TAGS='@sanity' npx playwright test --list
 
 ### Automated Scheduling
 
-- **Daily Sanity Tests**: Run every day at 6 AM UTC (2 AM EST, 8 AM CET)
-- **Triggered on**: `schedule: '0 6 * * *'`
+- **Sanity Tests**: Run every 30 minutes automatically
+- **Nightly Regression Tests**: Run every day at 2 AM UTC
+- **Code Quality**: Triggered on push/PR
 
 ### Triggered Executions
 
@@ -104,21 +105,22 @@ TEST_TAGS='@sanity' npx playwright test --list
 
 #### Sanity Tests Job
 
-- **Runs on**: Scheduled cron job, manual trigger with 'sanity' type
+- **Runs on**: Every 30 minutes, manual trigger with 'sanity' type
 - **Timeout**: 60 minutes
 - **Environment**: `TEST_TAGS: '@sanity'`
 - **Command**: `npm run test:sanity`
 
-#### Full Tests Job
+#### Nightly Regression Tests Job
 
-- **Runs on**: Push, PR, successful quality checks, manual trigger with 'all'/'regression'
+- **Runs on**: Nightly at 2 AM UTC, manual trigger with 'regression'/'all'
 - **Timeout**: 120 minutes
 - **Command**: `npx playwright test`
 
 ### Artifacts
 
 - Test reports are uploaded with 30-day retention
-- Separate reports for each job type: `sanity-playwright-report`, `full-playwright-report`
+- Separate reports for each job type: `sanity-playwright-report`, `nightly-regression-playwright-report`
+- Code quality artifacts available for 7 days
 
 ## Test Structure
 
@@ -161,9 +163,10 @@ src/tests/
 
 ### CI Optimization
 
-- Sanity tests run daily to catch critical issues early
-- Full test suite runs on code changes for comprehensive validation
+- Sanity tests run every 30 minutes to catch critical issues early
+- Nightly regression tests provide comprehensive validation
 - Manual triggers allow targeted testing when needed
+- Code quality checks ensure consistent standards
 
 ## Monitoring & Reporting
 
