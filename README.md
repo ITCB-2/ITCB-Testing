@@ -1,11 +1,10 @@
 # ITCB Testing Framework
 
-> 🎯 **End-to-End Test Automation** for the Israel Testing Certification Board (| 🔧 **[Troubleshooting](docs/TROUBLESHOOTING.md)** | Common issues and solutions | All Users |
-> | ⚙️ **[CI/CD Workflows](.github/README.md)** | Automated testing pipeline | DevOps |
+> 🎯 **End-to-End Test Automation** for the Israel Testing Certification Board (ITCB) website using **Playwright + TypeScript**
 
 📖 **[Complete Documentation Index](docs/DOCUMENTATION_INDEX.md)**
 
-## 🏆 Built Withwebsite using **Playwright + TypeScript**
+## 🏆 Built With
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue.svg)](https://www.typescriptlang.org/)
 [![Playwright](https://img.shields.io/badge/Playwright-1.49.1-green.svg)](https://playwright.dev/)
@@ -126,4 +125,5 @@ npm run report      # View test results
 
 **💙 Built with passion for quality by the ITCB Testing Team**
 
+📫 **Questions or suggestions?** [Open an issue](https://github.com/ITCB-2/ITCB-Testing/issues) or contribute to make testing better!
 📫 **Questions or suggestions?** [Open an issue](https://github.com/ITCB-2/ITCB-Testing/issues) or contribute to make testing better!
