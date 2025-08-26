@@ -51,3 +51,11 @@ jobs:
           name: sanity-playwright-report
           path: playwright-report/
           retention-days: 30
+      - name: Add test results to summary
+        if: ${{ !cancelled() }}
+        run: |
+          echo "## 🧪 Sanity Tests Completed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📊 **Reports will be available at:** https://itcb-2.github.io/ITCB-Testing/" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "⏰ **Test completed at:** $(date)" >> $GITHUB_STEP_SUMMARY

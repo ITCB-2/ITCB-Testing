@@ -33,8 +33,9 @@
 **Goal**: Configure automation and monitoring
 
 1. **[../.github/README.md](../.github/README.md)** - GitHub Actions workflows
-2. **[TESTING.md](TESTING.md)** - Test scheduling and strategies
-3. **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** - CI troubleshooting
+2. **[GITHUB_PAGES_SETUP.md](GITHUB_PAGES_SETUP.md)** - Automated report hosting
+3. **[TESTING.md](TESTING.md)** - Test scheduling and strategies
+4. **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** - CI troubleshooting
 
 ### **❓ I Have a Specific Problem**
 
@@ -43,13 +44,14 @@
 
 ## � Document Summaries
 
-| **Document**                                     | **Purpose**                    | **Key Topics**                                                     | **Read Time** |
-| ------------------------------------------------ | ------------------------------ | ------------------------------------------------------------------ | ------------- |
-| **[ARCHITECTURE.md](ARCHITECTURE.md)**           | Technical design and patterns  | Three-layer architecture, dependency injection, locator strategies | 15 min        |
-| **[DEVELOPMENT.md](DEVELOPMENT.md)**             | Setup and workflow guide       | Prerequisites, commands, naming conventions, quality gates         | 20 min        |
-| **[TESTING.md](TESTING.md)**                     | Test strategy and execution    | Test classification, CI/CD, performance optimization               | 25 min        |
-| **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)**     | Problem solving and debugging  | Common issues, environment problems, debugging tools               | 10 min        |
-| **[../.github/README.md](../.github/README.md)** | CI/CD workflows and automation | GitHub Actions, schedules, artifact management                     | 15 min        |
+| **Document**                                       | **Purpose**                    | **Key Topics**                                                     | **Read Time** |
+| -------------------------------------------------- | ------------------------------ | ------------------------------------------------------------------ | ------------- |
+| **[ARCHITECTURE.md](ARCHITECTURE.md)**             | Technical design and patterns  | Three-layer architecture, dependency injection, locator strategies | 15 min        |
+| **[DEVELOPMENT.md](DEVELOPMENT.md)**               | Setup and workflow guide       | Prerequisites, commands, naming conventions, quality gates         | 20 min        |
+| **[TESTING.md](TESTING.md)**                       | Test strategy and execution    | Test classification, CI/CD, performance optimization               | 25 min        |
+| **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)**       | Problem solving and debugging  | Common issues, environment problems, debugging tools               | 10 min        |
+| **[GITHUB_PAGES_SETUP.md](GITHUB_PAGES_SETUP.md)** | Automated report hosting       | GitHub Pages deployment, CI integration, report access             | 10 min        |
+| **[../.github/README.md](../.github/README.md)**   | CI/CD workflows and automation | GitHub Actions, schedules, artifact management                     | 15 min        |
 
 ## 🔄 Cross-References
 
