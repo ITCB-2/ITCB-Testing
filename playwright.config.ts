@@ -18,8 +18,21 @@ export default defineConfig({
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
-  /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
+  /* Retry on CI only - with specific retries for sanity and regression tests */
+  retries: ((): number => {
+    if (!process.env.CI) return 0
+
+    // Check if running sanity or regression tests specifically
+    const testTags = process.env.TEST_TAGS
+    if (
+      testTags &&
+      (testTags.includes('@sanity') || testTags.includes('@regression'))
+    ) {
+      return 2 // 2 retries for sanity/regression tests
+    } else {
+      return 0 // No retries for other CI tests
+    }
+  })(),
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 2 : undefined,
   /* Filter tests by tags - example: @sanity, @regression */

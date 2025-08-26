@@ -18,6 +18,7 @@
 - **Automatic Fallback Locators** with intelligent element resolution
 - **Quality-First Development** with pre-commit hooks and zero-warning policy
 - **Smart Test Classification** using `@sanity` and `@regression` tags
+- **Intelligent Retry Logic** - Critical tests get automatic retries in CI
 - **Automated CI/CD Pipeline** with scheduled testing and rich reporting
 
 ## 🚀 Quick Start
@@ -59,6 +60,29 @@ npm run test:debug  # Interactive debugging
 npm run report      # View test results
 ```
 
+## 🔄 Smart Retry Configuration
+
+Our CI environment includes intelligent retry logic that automatically provides additional attempts for critical test failures:
+
+### **Retry Behavior**
+
+| **Environment**       | **Test Type**       | **Retries** | **Use Case**                      |
+| --------------------- | ------------------- | ----------- | --------------------------------- |
+| **Local Development** | All tests           | 0           | Immediate feedback                |
+| **CI Environment**    | General tests       | 0           | Fast failure detection            |
+| **CI Environment**    | `@sanity` tests     | 2           | Critical functionality protection |
+| **CI Environment**    | `@regression` tests | 2           | Stability assurance               |
+
+### **Automatic Detection**
+
+The retry system automatically detects:
+
+- ✅ CI environment (`process.env.CI`)
+- ✅ Test categories via tags (`@sanity`, `@regression`)
+- ✅ Targeted test commands (`npm run test:sanity`, `npm run test:regression`)
+
+> 📋 **Details**: See [Retry Configuration Guide](docs/RETRY_CONFIGURATION.md) for complete implementation details.
+
 ## 🎯 For Different Users
 
 ### **🆕 New Developer**
@@ -87,9 +111,10 @@ npm run report      # View test results
 
 ### **🔧 DevOps / CI Maintainer**
 
-→ **Check**: [GitHub Workflows](.github/README.md)
+→ **Check**: [GitHub Workflows](.github/README.md) | [Retry Configuration](docs/RETRY_CONFIGURATION.md)
 
 - Automated testing schedules
+- Intelligent retry logic for critical tests
 - Workflow configuration
 - Artifact management
 
@@ -103,13 +128,14 @@ npm run report      # View test results
 
 ## � Documentation
 
-| **Document**                                      | **Purpose**                 | **Audience** |
-| ------------------------------------------------- | --------------------------- | ------------ |
-| 🏗️ **[Architecture](docs/ARCHITECTURE.md)**       | Technical design patterns   | Developers   |
-| 🛠️ **[Development](docs/DEVELOPMENT.md)**         | Setup and workflow guide    | Contributors |
-| 🧪 **[Testing](docs/TESTING.md)**                 | Test strategy and execution | QA Engineers |
-| 🔧 **[Troubleshooting](docs/TROUBLESHOOTING.md)** | Common issues and solutions | All Users    |
-| ⚙️ **[CI/CD Workflows](.github/README.md)**       | Automated testing pipeline  | DevOps       |
+| **Document**                                             | **Purpose**                 | **Audience** |
+| -------------------------------------------------------- | --------------------------- | ------------ |
+| 🏗️ **[Architecture](docs/ARCHITECTURE.md)**              | Technical design patterns   | Developers   |
+| 🛠️ **[Development](docs/DEVELOPMENT.md)**                | Setup and workflow guide    | Contributors |
+| 🧪 **[Testing](docs/TESTING.md)**                        | Test strategy and execution | QA Engineers |
+| � **[Retry Configuration](docs/RETRY_CONFIGURATION.md)** | CI retry behavior and setup | DevOps/QA    |
+| �🔧 **[Troubleshooting](docs/TROUBLESHOOTING.md)**       | Common issues and solutions | All Users    |
+| ⚙️ **[CI/CD Workflows](.github/README.md)**              | Automated testing pipeline  | DevOps       |
 
 � **[Complete Documentation Index](docs/README.md)**
 
