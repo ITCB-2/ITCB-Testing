@@ -81,7 +81,6 @@ All workflows support manual triggering via GitHub Actions UI:
 ## 📊 Report Access
 
 - **Live Reports**: https://itcb-2.github.io/ITCB-Testing/
-- **Latest Report**: https://itcb-2.github.io/ITCB-Testing/latest/
 
 ## 🛠 Troubleshooting
 

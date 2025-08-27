@@ -94,7 +94,6 @@ This will create a local version of what gets deployed to GitHub Pages.
 Once deployed (after enabling GitHub Pages):
 
 - **Main Page**: https://itcb-2.github.io/ITCB-Testing/
-- **Latest Report**: https://itcb-2.github.io/ITCB-Testing/latest/
 - **Archives**: https://itcb-2.github.io/ITCB-Testing/archives/
 
 ## 🔧 Manual Report Deployment

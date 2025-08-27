@@ -49,7 +49,6 @@ jobs:
 
             Hey team! 👋 Our automated Playwright test reports are now live:
 
-            🔗 **Latest Report**: https://itcb-2.github.io/ITCB-Testing/latest/
             🏠 **All Reports**: https://itcb-2.github.io/ITCB-Testing/
 
             Reports are automatically updated after each test run. Check it out! 🚀

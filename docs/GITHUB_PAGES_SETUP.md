@@ -12,7 +12,6 @@ This repository is configured to automatically deploy Playwright HTML reports to
 
 2. **Report Access**:
    - **Live Reports**: https://itcb-2.github.io/ITCB-Testing/
-   - **Latest Report**: https://itcb-2.github.io/ITCB-Testing/latest/
    - **Archive**: Historical reports stored under `/archives/`
 
 **Note**: Code Quality workflows focus on development standards (linting, formatting, TypeScript) and do not generate HTML reports.
@@ -70,7 +69,6 @@ You can also manually trigger report deployment:
 Once deployed, reports will be available at:
 
 - Main page: `https://itcb-2.github.io/ITCB-Testing/`
-- Latest report: `https://itcb-2.github.io/ITCB-Testing/latest/`
 
 ### 🔍 Troubleshooting
 
