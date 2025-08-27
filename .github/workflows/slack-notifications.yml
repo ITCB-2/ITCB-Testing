@@ -1,0 +1,91 @@
+name: Slack Notifications
+
+on:
+  # Triggered when deploy-reports workflow completes
+  workflow_run:
+    workflows: ['Deploy Playwright Reports to GitHub Pages']
+    types:
+      - completed
+
+  # Manual trigger for testing
+  workflow_dispatch:
+    inputs:
+      status:
+        description: 'Test notification status'
+        required: true
+        default: 'success'
+        type: choice
+        options:
+          - success
+          - failure
+
+jobs:
+  notify-slack:
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get deployment status
+        id: deployment-status
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo "status=${{ github.event.inputs.status }}" >> $GITHUB_OUTPUT
+            echo "trigger=manual" >> $GITHUB_OUTPUT
+          else
+            echo "status=${{ github.event.workflow_run.conclusion }}" >> $GITHUB_OUTPUT
+            echo "trigger=auto" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Notify Slack on Success
+        if: steps.deployment-status.outputs.status == 'success'
+        uses: 8398a7/action-slack@v3
+        with:
+          status: success
+          channel: '#testing-updates' # Change to your channel
+          text: |
+            📊 **Test Reports Updated!**
+
+            Hey team! 👋 Our automated Playwright test reports are now live:
+
+            🔗 **Latest Report**: https://itcb-2.github.io/ITCB-Testing/latest/
+            🏠 **All Reports**: https://itcb-2.github.io/ITCB-Testing/
+
+            Reports are automatically updated after each test run. Check it out! 🚀
+
+            Repository: ${{ github.repository }}
+            Branch: ${{ github.ref_name }}
+            Deployed at: $(date)
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Notify Slack on Failure
+        if: steps.deployment-status.outputs.status == 'failure'
+        uses: 8398a7/action-slack@v3
+        with:
+          status: failure
+          channel: '#testing-updates' # Change to your channel
+          text: |
+            ❌ **Test Report Deployment Failed**
+
+            There was an issue deploying the latest test reports to GitHub Pages.
+
+            Repository: ${{ github.repository }}
+            Branch: ${{ github.ref_name }}
+
+            🔧 **Action Required:** Please check the deployment workflow logs
+            📋 **Workflow:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+            The team may need to check the previous reports at:
+            🔗 https://itcb-2.github.io/ITCB-Testing/
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Add notification status to summary
+        run: |
+          echo "## 📱 Slack Notification Sent!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📊 **Status:** ${{ steps.deployment-status.outputs.status }}" >> $GITHUB_STEP_SUMMARY
+          echo "🔔 **Trigger:** ${{ steps.deployment-status.outputs.trigger }}" >> $GITHUB_STEP_SUMMARY
+          echo "⏰ **Sent at:** $(date)" >> $GITHUB_STEP_SUMMARY
