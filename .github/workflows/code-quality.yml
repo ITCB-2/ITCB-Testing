@@ -39,6 +39,6 @@ jobs:
         run: |
           echo "## ✅ Code Quality Check Completed" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "� **Quality Gates:** Linting, Formatting, TypeScript Compilation" >> $GITHUB_STEP_SUMMARY
+          echo "🛡️ **Quality Gates:** Linting, Formatting, TypeScript Compilation" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "⏰ **Check completed at:** $(date)" >> $GITHUB_STEP_SUMMARY

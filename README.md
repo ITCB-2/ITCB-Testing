@@ -126,18 +126,18 @@ The retry system automatically detects:
 - Debugging strategies
 - Performance tips
 
-## � Documentation
+## 📚 Documentation
 
-| **Document**                                             | **Purpose**                 | **Audience** |
-| -------------------------------------------------------- | --------------------------- | ------------ |
-| 🏗️ **[Architecture](docs/ARCHITECTURE.md)**              | Technical design patterns   | Developers   |
-| 🛠️ **[Development](docs/DEVELOPMENT.md)**                | Setup and workflow guide    | Contributors |
-| 🧪 **[Testing](docs/TESTING.md)**                        | Test strategy and execution | QA Engineers |
-| � **[Retry Configuration](docs/RETRY_CONFIGURATION.md)** | CI retry behavior and setup | DevOps/QA    |
-| �🔧 **[Troubleshooting](docs/TROUBLESHOOTING.md)**       | Common issues and solutions | All Users    |
-| ⚙️ **[CI/CD Workflows](.github/README.md)**              | Automated testing pipeline  | DevOps       |
+| **Document**                                              | **Purpose**                 | **Audience** |
+| --------------------------------------------------------- | --------------------------- | ------------ |
+| 🏗️ **[Architecture](docs/ARCHITECTURE.md)**               | Technical design patterns   | Developers   |
+| 🛠️ **[Development](docs/DEVELOPMENT.md)**                 | Setup and workflow guide    | Contributors |
+| 🧪 **[Testing](docs/TESTING.md)**                         | Test strategy and execution | QA Engineers |
+| 🔄 **[Retry Configuration](docs/RETRY_CONFIGURATION.md)** | CI retry behavior and setup | DevOps/QA    |
+| 🔧 **[Troubleshooting](docs/TROUBLESHOOTING.md)**         | Common issues and solutions | All Users    |
+| ⚙️ **[CI/CD Workflows](.github/README.md)**               | Automated testing pipeline  | DevOps       |
 
-� **[Complete Documentation Index](docs/README.md)**
+📖 **[Complete Documentation Index](docs/README.md)**
 
 ## 🏆 Built With
 

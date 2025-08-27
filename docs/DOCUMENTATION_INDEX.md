@@ -42,7 +42,7 @@
 **Goal**: Find solutions quickly
 → **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** - Start here for all issues
 
-## � Document Summaries
+## 📋 Document Summaries
 
 | **Document**                                       | **Purpose**                    | **Key Topics**                                                     | **Read Time** |
 | -------------------------------------------------- | ------------------------------ | ------------------------------------------------------------------ | ------------- |
@@ -101,7 +101,7 @@
 2. Understand CI/CD: [../.github/README.md](../.github/README.md)
 3. Optimize and contribute improvements
 
-## � Documentation Maintenance
+## 📝 Documentation Maintenance
 
 ### **For Contributors**
 
@@ -137,5 +137,5 @@ Regular documentation health checks:
 
 ---
 
-**� Found Missing Information?**  
+**❓ Found Missing Information?**  
 If documentation is unclear or incomplete, please [open an issue](https://github.com/ITCB-2/ITCB-Testing/issues) with the label `documentation` or contribute improvements directly.

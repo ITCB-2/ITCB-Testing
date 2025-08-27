@@ -374,7 +374,7 @@ export const getTestConfig = (): TestConfig => ({
 - 🎯 **Maintainability**: Are patterns consistent with existing codebase?
 - 🔧 **Quality**: Do all quality gates pass?
 
-## � Repository Secrets Configuration
+## 🔒 Repository Secrets Configuration
 
 ### **Required Repository Secrets**
 
@@ -396,7 +396,7 @@ For GitHub Actions workflows to function properly, configure these repository-le
 - ✅ **Use `.env` file** for local development
 - ❌ **Avoid organization secrets** for this project
 
-## �🔗 Related Documentation
+## 🔗 Related Documentation
 
 - **Architecture Details**: [ARCHITECTURE.md](ARCHITECTURE.md)
 - **Testing Strategy**: [TESTING.md](TESTING.md)
