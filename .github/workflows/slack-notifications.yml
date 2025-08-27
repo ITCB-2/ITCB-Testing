@@ -45,17 +45,17 @@ jobs:
           status: success
           channel: '#testing-updates'
           text: |
-            📊 **Test Reports Updated!**
+            📊 Test Reports Updated!
 
             Hey team! 👋 Our automated Playwright test reports are now live:
 
-            🏠 **All Reports**: https://itcb-2.github.io/ITCB-Testing/
+            🏠 Latest Report: https://itcb-2.github.io/ITCB-Testing/
 
             Reports are automatically updated after each test run. Check it out! 🚀
 
             Repository: ${{ github.repository }}
             Branch: ${{ github.ref_name }}
-            Deployed at: $(date)
+            Deployed at: $(TZ='Asia/Jerusalem' date '+%d-%m-%Y %H:%M:%S')
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
@@ -66,15 +66,15 @@ jobs:
           status: failure
           channel: '#testing-updates'
           text: |
-            ❌ **Test Report Deployment Failed**
+            ❌ Test Report Deployment Failed
 
             There was an issue deploying the latest test reports to GitHub Pages.
 
             Repository: ${{ github.repository }}
             Branch: ${{ github.ref_name }}
 
-            🔧 **Action Required:** Please check the deployment workflow logs
-            📋 **Workflow:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            🔧 Action Required: Please check the deployment workflow logs
+            📋 Workflow: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
             The team may need to check the previous reports at:
             🔗 https://itcb-2.github.io/ITCB-Testing/
@@ -85,6 +85,6 @@ jobs:
         run: |
           echo "## 📱 Slack Notification Sent!" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "📊 **Status:** ${{ steps.deployment-status.outputs.status }}" >> $GITHUB_STEP_SUMMARY
-          echo "🔔 **Trigger:** ${{ steps.deployment-status.outputs.trigger }}" >> $GITHUB_STEP_SUMMARY
-          echo "⏰ **Sent at:** $(date)" >> $GITHUB_STEP_SUMMARY
+          echo "📊 Status: ${{ steps.deployment-status.outputs.status }}" >> $GITHUB_STEP_SUMMARY
+          echo "🔔 Trigger: ${{ steps.deployment-status.outputs.trigger }}" >> $GITHUB_STEP_SUMMARY
+          echo "⏰ Sent at: $(date)" >> $GITHUB_STEP_SUMMARY
