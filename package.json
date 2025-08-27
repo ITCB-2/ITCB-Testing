@@ -18,7 +18,8 @@
     "lint:check": "eslint src/**/*.ts --max-warnings 0 --no-warn-ignored",
     "format:check": "prettier --check src/**/*.ts",
     "check": "npm run lint:check && npm run format:check && npx tsc --noEmit",
-    "fix": "prettier --write src/**/*.ts && eslint src/**/*.ts --fix --no-warn-ignored"
+    "fix": "prettier --write src/**/*.ts && eslint src/**/*.ts --fix --no-warn-ignored",
+    "trigger-ci": "git commit --allow-empty -m \"trigger CI workflows for testing\" && git push"
   },
   "repository": {
     "type": "git",
