@@ -374,7 +374,29 @@ export const getTestConfig = (): TestConfig => ({
 - 🎯 **Maintainability**: Are patterns consistent with existing codebase?
 - 🔧 **Quality**: Do all quality gates pass?
 
-## 🔗 Related Documentation
+## � Repository Secrets Configuration
+
+### **Required Repository Secrets**
+
+For GitHub Actions workflows to function properly, configure these repository-level secrets:
+
+1. **`BASE_URL`** - Target application URL for testing
+   - Go to: Repository Settings → Secrets and variables → Actions
+   - Add new repository secret: `BASE_URL=https://www.itcb.org.il`
+   - Used by: Sanity tests, Nightly regression tests
+
+2. **`SLACK_WEBHOOK_URL`** (Optional) - For Slack notifications
+   - Add repository secret with your Slack webhook URL
+   - Used by: Slack notification workflows
+
+### **Important Notes**
+
+- ✅ **Use repository-level secrets only** (not organization-level)
+- ✅ **Never commit secrets** to version control
+- ✅ **Use `.env` file** for local development
+- ❌ **Avoid organization secrets** for this project
+
+## �🔗 Related Documentation
 
 - **Architecture Details**: [ARCHITECTURE.md](ARCHITECTURE.md)
 - **Testing Strategy**: [TESTING.md](TESTING.md)

@@ -30,8 +30,10 @@ To enable this functionality, the repository administrator needs to:
    - The workflows have the necessary permissions configured
    - `GITHUB_TOKEN` automatically has the required access
 
-3. **Environment Variables**:
-   - Ensure `BASE_URL` secret is configured for test execution
+3. **Repository Secrets**:
+   - Ensure `BASE_URL` repository secret is configured for test execution
+   - Go to repository Settings → Secrets and variables → Actions
+   - Add `BASE_URL` as a repository secret (not organization-level)
 
 ### 🔧 Workflow Files Created/Modified
 
