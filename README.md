@@ -111,7 +111,7 @@ The retry system automatically detects:
 
 ### **🔧 DevOps / CI Maintainer**
 
-→ **Check**: [GitHub Workflows](.github/README.md) | [Retry Configuration](docs/RETRY_CONFIGURATION.md)
+→ **Check**: [GitHub Workflows](.github/WORKFLOWS.md) | [Retry Configuration](docs/RETRY_CONFIGURATION.md)
 
 - Automated testing schedules
 - Intelligent retry logic for critical tests
@@ -135,9 +135,9 @@ The retry system automatically detects:
 | 🧪 **[Testing](docs/TESTING.md)**                         | Test strategy and execution | QA Engineers |
 | 🔄 **[Retry Configuration](docs/RETRY_CONFIGURATION.md)** | CI retry behavior and setup | DevOps/QA    |
 | 🔧 **[Troubleshooting](docs/TROUBLESHOOTING.md)**         | Common issues and solutions | All Users    |
-| ⚙️ **[CI/CD Workflows](.github/README.md)**               | Automated testing pipeline  | DevOps       |
+| ⚙️ **[CI/CD Workflows](.github/WORKFLOWS.md)**            | Automated testing pipeline  | DevOps       |
 
-📖 **[Complete Documentation Index](docs/README.md)**
+📖 **[Complete Documentation Index](docs/DOCUMENTATION_INDEX.md)**
 
 ## 🏆 Built With
 
@@ -151,5 +151,4 @@ The retry system automatically detects:
 
 **💙 Built with passion for quality by the ITCB Testing Team**
 
-📫 **Questions or suggestions?** [Open an issue](https://github.com/ITCB-2/ITCB-Testing/issues) or contribute to make testing better!
 📫 **Questions or suggestions?** [Open an issue](https://github.com/ITCB-2/ITCB-Testing/issues) or contribute to make testing better!
