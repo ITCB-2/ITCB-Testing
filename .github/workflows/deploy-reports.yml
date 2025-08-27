@@ -206,7 +206,8 @@ jobs:
             WORKFLOW_NAME="${{ github.event.workflow_run.name || github.event.inputs.source_workflow }}"
             WORKFLOW_NAME_CLEAN=$(echo "$WORKFLOW_NAME" | tr ' ' '-' | tr '[:upper:]' '[:lower:]')
             
-            mkdir -p "./public/archives/$WORKFLOW_NAME_CLEAN"
+            # Create the full archive path including timestamp directory
+            mkdir -p "./public/archives/$WORKFLOW_NAME_CLEAN/$TIMESTAMP"
             cp -r ./reports-temp/* "./public/archives/$WORKFLOW_NAME_CLEAN/$TIMESTAMP/"
             
             echo "Reports copied to public directory"
