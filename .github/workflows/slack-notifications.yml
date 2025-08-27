@@ -43,7 +43,7 @@ jobs:
         uses: 8398a7/action-slack@v3
         with:
           status: success
-          channel: '#testing-updates' # Change to your channel
+          channel: '#testing-updates'
           text: |
             📊 **Test Reports Updated!**
 
@@ -65,7 +65,7 @@ jobs:
         uses: 8398a7/action-slack@v3
         with:
           status: failure
-          channel: '#testing-updates' # Change to your channel
+          channel: '#testing-updates'
           text: |
             ❌ **Test Report Deployment Failed**
 
