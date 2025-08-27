@@ -38,6 +38,10 @@ jobs:
             echo "trigger=auto" >> $GITHUB_OUTPUT
           fi
 
+          # Get current date/time in Israel timezone
+          ISRAEL_TIME=$(TZ='Asia/Jerusalem' date '+%d-%m-%Y %H:%M:%S')
+          echo "israel_time=$ISRAEL_TIME" >> $GITHUB_OUTPUT
+
       - name: Notify Slack on Success
         if: steps.deployment-status.outputs.status == 'success'
         uses: 8398a7/action-slack@v3
@@ -55,7 +59,7 @@ jobs:
 
             Repository: ${{ github.repository }}
             Branch: ${{ github.ref_name }}
-            Deployed at: $(TZ='Asia/Jerusalem' date '+%d-%m-%Y %H:%M:%S')
+            Deployed at: ${{ steps.deployment-status.outputs.israel_time }}
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
