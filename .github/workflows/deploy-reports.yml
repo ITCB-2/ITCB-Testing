@@ -39,14 +39,12 @@ jobs:
       github.event.workflow_run.conclusion == 'failure' ||
       github.event_name == 'workflow_dispatch'
     steps:
-      - name: Checkout Pages branch
-        uses: actions/checkout@v5
-        with:
-          ref: gh-pages
-          fetch-depth: 0
-
       - name: Setup Pages
         uses: actions/configure-pages@v5
+
+      - name: Create reports directory structure
+        run: |
+          mkdir -p reports latest
 
       - name: Set workflow variables
         run: |
@@ -298,22 +296,6 @@ jobs:
                       cd - > /dev/null
                   fi
               done
-          fi
-
-      - name: Commit and push to gh-pages
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add .
-          if git diff --staged --quiet; then
-            echo "No changes to commit"
-          else
-            if [ "$REPORTS_AVAILABLE" = "true" ]; then
-              git commit -m "Add Playwright report for ${WORKFLOW_DIR} - ${TIMESTAMP}"
-            else
-              git commit -m "Add placeholder for ${WORKFLOW_DIR} - ${TIMESTAMP} (artifacts unavailable)"
-            fi
-            git push origin gh-pages
           fi
 
       - name: Upload artifact
