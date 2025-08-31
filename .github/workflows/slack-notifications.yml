@@ -34,7 +34,7 @@ jobs:
           if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
             echo "deployment_status=${{ github.event.inputs.status }}" >> $GITHUB_OUTPUT
             echo "trigger=manual" >> $GITHUB_OUTPUT
-            echo "test_status=unknown" >> $GITHUB_OUTPUT
+            echo "test_status=skipped" >> $GITHUB_OUTPUT
             echo "workflow_name=Manual Test" >> $GITHUB_OUTPUT
           else
             # Get deployment status from deploy-reports workflow
@@ -57,14 +57,14 @@ jobs:
               TEST_RUN_DATA=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
                 "https://api.github.com/repos/${{ github.repository }}/actions/runs/${TRIGGERING_WORKFLOW_ID}")
               
-              TEST_STATUS=$(echo "$TEST_RUN_DATA" | jq -r '.conclusion // "unknown"')
-              WORKFLOW_NAME=$(echo "$TEST_RUN_DATA" | jq -r '.name // "Unknown Test"')
+              TEST_STATUS=$(echo "$TEST_RUN_DATA" | jq -r '.conclusion // "skipped"')
+              WORKFLOW_NAME=$(echo "$TEST_RUN_DATA" | jq -r '.name // "Manual Test"')
               
               echo "test_status=${TEST_STATUS}" >> $GITHUB_OUTPUT
               echo "workflow_name=${WORKFLOW_NAME}" >> $GITHUB_OUTPUT
             else
-              echo "test_status=unknown" >> $GITHUB_OUTPUT
-              echo "workflow_name=Unknown Test" >> $GITHUB_OUTPUT
+              echo "test_status=skipped" >> $GITHUB_OUTPUT
+              echo "workflow_name=Manual Test" >> $GITHUB_OUTPUT
             fi
           fi
 
@@ -84,7 +84,7 @@ jobs:
             Hey team! 👋 Our automated Playwright test reports are now live:
 
             🧪 **Test Workflow:** ${{ steps.status.outputs.workflow_name }}
-            📋 **Test Status:** ${{ steps.status.outputs.test_status == 'success' && '✅ PASSED' || steps.status.outputs.test_status == 'failure' && '❌ FAILED' || '❓ UNKNOWN' }}
+            📋 **Test Status:** ${{ steps.status.outputs.test_status == 'success' && '✅ PASSED' || steps.status.outputs.test_status == 'failure' && '❌ FAILED' || '⏭️ SKIPPED' }}
 
             🏠 **Latest Report:** https://itcb-2.github.io/ITCB-Testing/
 
@@ -108,7 +108,7 @@ jobs:
             There was an issue deploying the latest test reports to GitHub Pages.
 
             🧪 **Original Test Workflow:** ${{ steps.status.outputs.workflow_name }}
-            📋 **Test Status:** ${{ steps.status.outputs.test_status == 'success' && '✅ Tests passed but deployment failed' || steps.status.outputs.test_status == 'failure' && '❌ Tests failed and deployment failed' || '❓ Unknown test status' }}
+            📋 **Test Status:** ${{ steps.status.outputs.test_status == 'success' && '✅ Tests passed but deployment failed' || steps.status.outputs.test_status == 'failure' && '❌ Tests failed and deployment failed' || '⏭️ Tests were skipped but deployment failed' }}
 
             Repository: ${{ github.repository }}
             Branch: ${{ github.ref_name }}

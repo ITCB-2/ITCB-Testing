@@ -60,9 +60,9 @@ jobs:
 
           # Set artifact name based on workflow
           case "$WORKFLOW_NAME" in
-            *"Sanity"*|*"sanity"*) ARTIFACT_NAME="sanity-playwright-report" ;;
-            *"Nightly"*|*"nightly"*) ARTIFACT_NAME="nightly-regression-playwright-report" ;;
-            *) ARTIFACT_NAME="playwright-report" ;;
+            *"Sanity"*|*"sanity"*) ARTIFACT_NAME="sanity-playwright-report-$RUN_NUMBER" ;;
+            *"Nightly"*|*"nightly"*) ARTIFACT_NAME="nightly-regression-playwright-report-$RUN_NUMBER" ;;
+            *) ARTIFACT_NAME="playwright-report-$RUN_NUMBER" ;;
           esac
 
           echo "WORKFLOW_NAME=$WORKFLOW_NAME" >> $GITHUB_ENV
