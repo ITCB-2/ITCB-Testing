@@ -5,32 +5,19 @@ on:
   schedule:
     - cron: '0 */2 * * *' # Every 2 hours
 
-  # Manual trigger with options
+  # Manual trigger
   workflow_dispatch:
     inputs:
-      test_type:
-        description: 'Type of tests to run'
-        required: true
-        default: 'sanity'
-        type: choice
-        options:
-          - sanity
-          - regression
-          - all
       reason:
         description: 'Reason for running tests manually'
         required: false
-        default: 'Manual test run'
+        default: 'Manual sanity test run'
 
 jobs:
-  # Sanity Tests Job - Runs every 30 minutes and manual trigger
+  # Sanity Tests Job - Focused on critical functionality
   sanity-tests:
     timeout-minutes: 60
     runs-on: ubuntu-latest
-    if: |
-      github.event_name == 'schedule' || 
-      (github.event_name == 'workflow_dispatch' && 
-       (github.event.inputs.test_type == 'sanity' || github.event.inputs.test_type == 'all'))
     env:
       BASE_URL: ${{ secrets.BASE_URL }}
       TEST_TAGS: '@sanity'

@@ -3,7 +3,7 @@ name: Deploy Playwright Reports to GitHub Pages
 on:
   # Triggered by other workflows completing
   workflow_run:
-    workflows: ['Sanity Tests', 'Nightly Regression Tests']
+    workflows: ['Sanity Tests', 'Regression Tests']
     types:
       - completed
 
@@ -61,7 +61,7 @@ jobs:
           # Set artifact name based on workflow
           case "$WORKFLOW_NAME" in
             *"Sanity"*|*"sanity"*) ARTIFACT_NAME="sanity-playwright-report-$RUN_NUMBER" ;;
-            *"Nightly"*|*"nightly"*) ARTIFACT_NAME="nightly-regression-playwright-report-$RUN_NUMBER" ;;
+            *"Regression"*|*"regression"*) ARTIFACT_NAME="regression-playwright-report-$RUN_NUMBER" ;;
             *) ARTIFACT_NAME="playwright-report-$RUN_NUMBER" ;;
           esac
 

@@ -1,29 +1,21 @@
-name: Nightly Regression Tests
+name: Regression Tests
 
 on:
   # Nightly regression tests at 2 AM UTC
   schedule:
     - cron: '0 2 * * *'
 
-  # Manual trigger with options
+  # Manual trigger
   workflow_dispatch:
     inputs:
-      test_type:
-        description: 'Type of tests to run'
-        required: true
-        default: 'regression'
-        type: choice
-        options:
-          - regression
-          - all
       reason:
         description: 'Reason for running tests manually'
         required: false
-        default: 'Manual nightly regression test run'
+        default: 'Manual regression test run'
 
 jobs:
-  # Nightly Regression Tests Job
-  nightly-regression-tests:
+  # Regression Tests Job - Full test suite
+  regression-tests:
     timeout-minutes: 120
     runs-on: ubuntu-latest
     env:
@@ -39,17 +31,41 @@ jobs:
         run: npx playwright install --with-deps
       - name: Run All Tests (Regression)
         run: npx playwright test
-      - uses: actions/upload-artifact@v4
+
+      # Try to upload artifacts, but continue if quota is hit
+      - name: Upload artifacts (with quota fallback)
         if: ${{ !cancelled() }}
+        continue-on-error: true
+        id: upload-artifacts
+        uses: actions/upload-artifact@v4
         with:
-          name: nightly-regression-playwright-report-${{ github.run_number }}
+          name: regression-playwright-report-${{ github.run_number }}
           path: playwright-report/
           retention-days: 7
+
+      # Fallback: Show report info if upload failed
+      - name: Handle artifact upload failure
+        if: ${{ !cancelled() && steps.upload-artifacts.outcome == 'failure' }}
+        run: |
+          echo "⚠️ Artifact upload failed (likely storage quota)"
+          echo "📁 Report files generated:"
+          find playwright-report -type f -name "*.html" | head -10
+          echo ""
+          echo "📊 Report size:"
+          du -sh playwright-report/ || echo "No report directory found"
+
       - name: Add test results to summary
         if: ${{ !cancelled() }}
         run: |
-          echo "## 🌙 Nightly Regression Tests Completed" >> $GITHUB_STEP_SUMMARY
+          echo "## 🌙 Regression Tests Completed" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "📊 **Reports will be available at:** https://itcb-2.github.io/ITCB-Testing/" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ steps.upload-artifacts.outcome }}" == "success" ]; then
+            echo "📊 **Reports available at:** https://itcb-2.github.io/ITCB-Testing/" >> $GITHUB_STEP_SUMMARY
+            echo "✅ **Artifacts:** Successfully uploaded" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ **Artifacts:** Upload failed (storage quota issue)" >> $GITHUB_STEP_SUMMARY
+            echo "🔧 **Reports:** Generated locally but not uploaded" >> $GITHUB_STEP_SUMMARY
+            echo "⏳ **Note:** Storage quota refreshes every 6-12 hours" >> $GITHUB_STEP_SUMMARY
+          fi
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "⏰ **Test completed at:** $(date)" >> $GITHUB_STEP_SUMMARY
