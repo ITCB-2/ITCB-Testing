@@ -401,4 +401,4 @@ For GitHub Actions workflows to function properly, configure these repository-le
 - **Architecture Details**: [ARCHITECTURE.md](ARCHITECTURE.md)
 - **Testing Strategy**: [TESTING.md](TESTING.md)
 - **Troubleshooting**: [TROUBLESHOOTING.md](TROUBLESHOOTING.md)
-- **CI/CD Workflows**: [../.github/README.md](../.github/README.md)
+- **CI/CD Workflows**: [../.github/WORKFLOWS.md](../.github/WORKFLOWS.md)

@@ -7,7 +7,7 @@ This repository is configured to automatically deploy Playwright HTML reports to
 ### 🚀 What's Configured
 
 1. **Automated Deployment**: Reports are automatically deployed after:
-   - Sanity Tests (every 30 minutes)
+   - Sanity Tests (every 2 hours)
    - Nightly Regression Tests (daily at 2 AM UTC)
 
 2. **Report Access**:

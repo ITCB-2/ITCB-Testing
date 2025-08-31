@@ -10,7 +10,7 @@ All tests use Playwright's tagging system to enable efficient execution based on
 
 | **Tag**         | **Purpose**                          | **Execution Time** | **CI Schedule**   | **Coverage**       |
 | --------------- | ------------------------------------ | ------------------ | ----------------- | ------------------ |
-| **@sanity**     | Critical functionality validation    | ~5-10 minutes      | Every 30 minutes  | Core features only |
+| **@sanity**     | Critical functionality validation    | ~5-10 minutes      | Every 2 hours     | Core features only |
 | **@regression** | Comprehensive application validation | ~30-45 minutes     | Daily at 2 AM UTC | Full feature set   |
 
 ### **@sanity Tests** - Critical Path Validation
@@ -19,7 +19,7 @@ All tests use Playwright's tagging system to enable efficient execution based on
 
 - ⏱️ **Execution Time**: 5-10 minutes maximum
 - 🎯 **Coverage Focus**: Essential user journeys
-- 📅 **CI Schedule**: Every 30 minutes
+- 📅 **CI Schedule**: Every 2 hours
 - 🚨 **Failure Impact**: Immediate attention required
 
 **Current @sanity Coverage**:
@@ -180,7 +180,7 @@ src/tests/
 
 | **Workflow**              | **Trigger**       | **Frequency**     | **Tests Executed**   | **Purpose**                       |
 | ------------------------- | ----------------- | ----------------- | -------------------- | --------------------------------- |
-| **🚨 Sanity Tests**       | Schedule + Manual | Every 30 minutes  | `@sanity` only       | Critical functionality monitoring |
+| **🚨 Sanity Tests**       | Schedule + Manual | Every 2 hours     | `@sanity` only       | Critical functionality monitoring |
 | **🌙 Nightly Regression** | Schedule + Manual | Daily at 2 AM UTC | Full test suite      | Comprehensive validation          |
 | **⚡ Code Quality**       | Push/PR           | On every commit   | Code validation only | Quality gate enforcement          |
 
@@ -342,7 +342,7 @@ npx playwright test --list  # List all tests by tag
 
 - **Architecture Details**: [ARCHITECTURE.md](ARCHITECTURE.md)
 - **Development Workflow**: [DEVELOPMENT.md](DEVELOPMENT.md)
-- **CI/CD Configuration**: [../.github/README.md](../.github/README.md)
+- **CI/CD Configuration**: [../.github/WORKFLOWS.md](../.github/WORKFLOWS.md)
 - **Troubleshooting Guide**: [TROUBLESHOOTING.md](TROUBLESHOOTING.md)
 
 ---
