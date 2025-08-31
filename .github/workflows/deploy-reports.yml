@@ -39,52 +39,285 @@ jobs:
       github.event.workflow_run.conclusion == 'failure' ||
       github.event_name == 'workflow_dispatch'
     steps:
-      - name: Checkout
+      - name: Checkout Pages branch
         uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          fetch-depth: 0
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
-      - name: Download artifacts from workflow run
-        if: github.event_name == 'workflow_run'
-        uses: dawidd6/action-download-artifact@v3
-        with:
-          name: ${{ github.event.workflow_run.name == 'Sanity Tests' && 'sanity-playwright-report' || github.event.workflow_run.name == 'Nightly Regression Tests' && 'nightly-regression-playwright-report' || 'playwright-report' }}
-          path: ./reports-temp/
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          run_id: ${{ github.event.workflow_run.id }}
-          if_no_artifact_found: warn
-
-      - name: Download artifacts for manual dispatch
-        if: github.event_name == 'workflow_dispatch'
-        uses: dawidd6/action-download-artifact@v3
-        with:
-          name: ${{ github.event.inputs.source_workflow == 'sanity-tests' && 'sanity-playwright-report' || github.event.inputs.source_workflow == 'nightly-regression-tests' && 'nightly-regression-playwright-report' || 'playwright-report' }}
-          path: ./reports-temp/
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          workflow: ${{ github.event.inputs.source_workflow == 'sanity-tests' && 'sanity.yml' || github.event.inputs.source_workflow == 'nightly-regression-tests' && 'nightly-regression.yml' || 'sanity.yml' }}
-          if_no_artifact_found: warn
-
-      - name: Deploy Playwright reports directly
+      - name: Set workflow variables
         run: |
-          # Simply copy the Playwright HTML reports to public directory
-          if [ -d "./reports-temp" ]; then
-            mkdir -p ./public
-            cp -r ./reports-temp/* ./public/
-            
-            echo "Playwright reports copied to public directory"
-            ls -la ./public/
+          if [ "${{ github.event_name }}" = "workflow_run" ]; then
+            WORKFLOW_NAME="${{ github.event.workflow_run.name }}"
+            RUN_NUMBER="${{ github.event.workflow_run.run_number }}"
           else
-            echo "No reports found to deploy"
-            # Create a placeholder if no reports exist
-            mkdir -p ./public
-            echo "<h1>No Playwright reports available yet</h1><p>Reports will appear here after test runs complete.</p>" > ./public/index.html
+            WORKFLOW_NAME="${{ github.event.inputs.source_workflow }}"
+            RUN_NUMBER="${{ github.run_number }}"
+          fi
+
+          # Set artifact name based on workflow
+          case "$WORKFLOW_NAME" in
+            *"Sanity"*|*"sanity"*) ARTIFACT_NAME="sanity-playwright-report" ;;
+            *"Nightly"*|*"nightly"*) ARTIFACT_NAME="nightly-regression-playwright-report" ;;
+            *) ARTIFACT_NAME="playwright-report" ;;
+          esac
+
+          echo "WORKFLOW_NAME=$WORKFLOW_NAME" >> $GITHUB_ENV
+          echo "RUN_NUMBER=$RUN_NUMBER" >> $GITHUB_ENV
+          echo "ARTIFACT_NAME=$ARTIFACT_NAME" >> $GITHUB_ENV
+          echo "WORKFLOW_DIR=$(echo "$WORKFLOW_NAME" | sed 's/[^a-zA-Z0-9]/-/g' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
+      - name: Download artifacts
+        uses: dawidd6/action-download-artifact@v3
+        with:
+          name: ${{ env.ARTIFACT_NAME }}
+          path: ./reports-temp/
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          run_id: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.id || '' }}
+          workflow: ${{ github.event_name == 'workflow_dispatch' && (github.event.inputs.source_workflow == 'sanity-tests' && 'sanity.yml' || 'nightly-regression.yml') || '' }}
+          if_no_artifact_found: warn
+
+      - name: Organize reports
+        run: |
+          TIMESTAMP=$(date +"%Y-%m-%d_%H-%M-%S")
+          WORKFLOW_NAME="${{ github.event.workflow_run.name || github.event.inputs.source_workflow }}"
+          RUN_NUMBER="${{ github.event.workflow_run.run_number || github.run_number }}"
+          WORKFLOW_DIR=$(echo "$WORKFLOW_NAME" | sed 's/[^a-zA-Z0-9]/-/g' | tr '[:upper:]' '[:lower:]')
+
+          if [ -d "./reports-temp" ]; then
+            # Create directories and copy reports
+            mkdir -p "./reports/${WORKFLOW_DIR}/${TIMESTAMP}_run-${RUN_NUMBER}" "./latest/${WORKFLOW_DIR}"
+            cp -r ./reports-temp/* "./reports/${WORKFLOW_DIR}/${TIMESTAMP}_run-${RUN_NUMBER}/"
+            cp -r ./reports-temp/* "./latest/${WORKFLOW_DIR}/"
+            
+            # Store for commit message
+            echo "WORKFLOW_DIR=${WORKFLOW_DIR}" >> $GITHUB_ENV
+            echo "TIMESTAMP=${TIMESTAMP}" >> $GITHUB_ENV
+          fi
+
+      - name: Generate index page
+        run: |
+          cat > index.html << 'EOF'
+          <!DOCTYPE html>
+          <html>
+          <head>
+              <title>Playwright Test Reports</title>
+              <style>
+                  body { font-family: Arial, sans-serif; margin: 40px; }
+                  .header { border-bottom: 2px solid #eee; padding-bottom: 20px; margin-bottom: 30px; }
+                  .section { margin-bottom: 30px; }
+                  .latest-reports { background: #f5f5f5; padding: 20px; border-radius: 8px; }
+                  .historical-reports { margin-top: 30px; }
+                  .workflow-group { margin-bottom: 25px; border: 1px solid #ddd; border-radius: 8px; }
+                  .workflow-header { background: #f8f9fa; padding: 15px; font-weight: bold; border-bottom: 1px solid #ddd; }
+                  .report-list { padding: 15px; }
+                  .report-item { margin: 8px 0; }
+                  .report-link { color: #0366d6; text-decoration: none; }
+                  .report-link:hover { text-decoration: underline; }
+                  .timestamp { color: #666; font-size: 0.9em; }
+                  .latest-badge { background: #28a745; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; }
+          EOF
+
+          echo "              </style>" >> index.html
+          echo "          </head>" >> index.html
+          echo "          <body>" >> index.html
+          echo "              <div class="header">" >> index.html
+          echo "                  <h1>🎭 Playwright Test Reports</h1>" >> index.html
+          echo "                  <p>Historical test reports archive</p>" >> index.html
+          echo "              </div>" >> index.html
+
+          # Latest reports section
+          echo "              <div class="section latest-reports">" >> index.html
+          echo "                  <h2>📊 Latest Reports</h2>" >> index.html
+
+          if [ -d "./latest" ]; then
+              for workflow in ./latest/*/; do
+                  if [ -d "$workflow" ]; then
+                      workflow_name=$(basename "$workflow")
+                      echo "                  <div class="report-item">" >> index.html
+                      echo "                      <a href="./latest/$workflow_name/index.html" class="report-link">" >> index.html
+                      echo "                          ${workflow_name} <span class="latest-badge">LATEST</span>" >> index.html
+                      echo "                      </a>" >> index.html
+                      echo "                  </div>" >> index.html
+                  fi
+              done
+          fi
+
+          echo "              </div>" >> index.html
+
+          # Historical reports section
+          echo "              <div class="section historical-reports">" >> index.html
+          echo "                  <h2>📚 Historical Reports</h2>" >> index.html
+
+          if [ -d "./reports" ]; then
+              for workflow in ./reports/*/; do
+                  if [ -d "$workflow" ]; then
+                      workflow_name=$(basename "$workflow")
+                      echo "                  <div class="workflow-group">" >> index.html
+                      echo "                      <div class="workflow-header">$workflow_name</div>" >> index.html
+                      echo "                      <div class="report-list">" >> index.html
+                      
+                      # List reports in reverse chronological order
+                      for report in $(ls -t "$workflow"/); do
+                          if [ -d "$workflow/$report" ]; then
+                              # Extract timestamp and run number for display
+                              display_name=$(echo "$report" | sed 's/_/ /g')
+                              echo "                          <div class="report-item">" >> index.html
+                              echo "                              <a href="./reports/$workflow_name/$report/index.html" class="report-link">" >> index.html
+                              echo "                                  $display_name" >> index.html
+                              echo "                              </a>" >> index.html
+                              echo "                              <span class="timestamp">$(date -d "${report%_run-*}" +"%B %d, %Y at %H:%M" 2>/dev/null || echo "${report%_run-*}")</span>" >> index.html
+                              echo "                          </div>" >> index.html
+                          fi
+                      done
+                      
+                      echo "                      </div>" >> index.html
+                      echo "                  </div>" >> index.html
+                  fi
+              done
+          fi
+
+          echo "              </div>" >> index.html
+          echo "              <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; color: #666; font-size: 0.9em;">" >> index.html
+          echo "                  Last updated: $(date)" >> index.html
+          echo "              </div>" >> index.html
+          echo "          </body>" >> index.html
+          echo "          </html>" >> index.html
+
+      - name: Cleanup old reports (keep last 10 per workflow)
+        run: |
+          if [ -d "./reports" ]; then
+              for workflow in ./reports/*/; do
+                  if [ -d "$workflow" ]; then
+                      # Keep only the 10 most recent reports per workflow
+                      cd "$workflow"
+                      ls -t | tail -n +11 | xargs -r rm -rf
+                      cd - > /dev/null
+                  fi
+              done
+          fi
+
+      - name: Generate index page
+        run: |
+          cat > index.html << 'EOF'
+          <!DOCTYPE html>
+          <html>
+          <head>
+              <title>Playwright Test Reports</title>
+              <style>
+                  body { font-family: Arial, sans-serif; margin: 40px; }
+                  .header { border-bottom: 2px solid #eee; padding-bottom: 20px; margin-bottom: 30px; }
+                  .section { margin-bottom: 30px; }
+                  .latest-reports { background: #f5f5f5; padding: 20px; border-radius: 8px; }
+                  .historical-reports { margin-top: 30px; }
+                  .workflow-group { margin-bottom: 25px; border: 1px solid #ddd; border-radius: 8px; }
+                  .workflow-header { background: #f8f9fa; padding: 15px; font-weight: bold; border-bottom: 1px solid #ddd; }
+                  .report-list { padding: 15px; }
+                  .report-item { margin: 8px 0; }
+                  .report-link { color: #0366d6; text-decoration: none; }
+                  .report-link:hover { text-decoration: underline; }
+                  .timestamp { color: #666; font-size: 0.9em; }
+                  .latest-badge { background: #28a745; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; }
+          EOF
+
+          echo "              </style>" >> index.html
+          echo "          </head>" >> index.html
+          echo "          <body>" >> index.html
+          echo "              <div class=\"header\">" >> index.html
+          echo "                  <h1>🎭 Playwright Test Reports</h1>" >> index.html
+          echo "                  <p>Historical test reports archive</p>" >> index.html
+          echo "              </div>" >> index.html
+
+          # Latest reports section
+          echo "              <div class=\"section latest-reports\">" >> index.html
+          echo "                  <h2>📊 Latest Reports</h2>" >> index.html
+
+          if [ -d "./latest" ]; then
+              for workflow in ./latest/*/; do
+                  if [ -d "$workflow" ]; then
+                      workflow_name=$(basename "$workflow")
+                      echo "                  <div class=\"report-item\">" >> index.html
+                      echo "                      <a href=\"./latest/$workflow_name/index.html\" class=\"report-link\">" >> index.html
+                      echo "                          ${workflow_name} <span class=\"latest-badge\">LATEST</span>" >> index.html
+                      echo "                      </a>" >> index.html
+                      echo "                  </div>" >> index.html
+                  fi
+              done
+          fi
+
+          echo "              </div>" >> index.html
+
+          # Historical reports section
+          echo "              <div class=\"section historical-reports\">" >> index.html
+          echo "                  <h2>📚 Historical Reports</h2>" >> index.html
+
+          if [ -d "./reports" ]; then
+              for workflow in ./reports/*/; do
+                  if [ -d "$workflow" ]; then
+                      workflow_name=$(basename "$workflow")
+                      echo "                  <div class=\"workflow-group\">" >> index.html
+                      echo "                      <div class=\"workflow-header\">$workflow_name</div>" >> index.html
+                      echo "                      <div class=\"report-list\">" >> index.html
+                      
+                      # List reports in reverse chronological order
+                      for report in $(ls -t "$workflow"/); do
+                          if [ -d "$workflow/$report" ]; then
+                              # Extract timestamp and run number for display
+                              display_name=$(echo "$report" | sed 's/_/ /g')
+                              echo "                          <div class=\"report-item\">" >> index.html
+                              echo "                              <a href=\"./reports/$workflow_name/$report/index.html\" class=\"report-link\">" >> index.html
+                              echo "                                  $display_name" >> index.html
+                              echo "                              </a>" >> index.html
+                              echo "                              <span class=\"timestamp\">$(date -d "${report%_run-*}" +"%B %d, %Y at %H:%M" 2>/dev/null || echo "${report%_run-*}")</span>" >> index.html
+                              echo "                          </div>" >> index.html
+                          fi
+                      done
+                      
+                      echo "                      </div>" >> index.html
+                      echo "                  </div>" >> index.html
+                  fi
+              done
+          fi
+
+          echo "              </div>" >> index.html
+          echo "              <div style=\"margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; color: #666; font-size: 0.9em;\">" >> index.html
+          echo "                  Last updated: $(date)" >> index.html
+          echo "              </div>" >> index.html
+          echo "          </body>" >> index.html
+          echo "          </html>" >> index.html
+
+      - name: Cleanup old reports (keep last 10 per workflow)
+        run: |
+          if [ -d "./reports" ]; then
+              for workflow in ./reports/*/; do
+                  if [ -d "$workflow" ]; then
+                      # Keep only the 10 most recent reports per workflow
+                      cd "$workflow"
+                      ls -t | tail -n +11 | xargs -r rm -rf
+                      cd - > /dev/null
+                  fi
+              done
+          fi
+
+      - name: Commit and push to gh-pages
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Add Playwright report for ${WORKFLOW_DIR} - ${TIMESTAMP}"
+            git push origin gh-pages
           fi
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './public'
+          path: '.'
 
       - name: Deploy to GitHub Pages
         id: deployment
@@ -95,5 +328,7 @@ jobs:
           echo "## 🎭 Playwright Reports Deployed!" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "📊 **Report URL:** ${{ steps.deployment.outputs.page_url }}" >> $GITHUB_STEP_SUMMARY
+          echo "📚 **Latest Report:** ${{ steps.deployment.outputs.page_url }}latest/${WORKFLOW_DIR}/" >> $GITHUB_STEP_SUMMARY
+          echo "🗂️ **Historical Archive:** ${{ steps.deployment.outputs.page_url }}reports/${WORKFLOW_DIR}/" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "⏰ **Deployed at:** $(date)" >> $GITHUB_STEP_SUMMARY
