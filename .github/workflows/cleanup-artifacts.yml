@@ -1,9 +1,9 @@
 name: Cleanup Old Artifacts
 
 on:
-  # Run cleanup every 6 hours
+  # Run cleanup every 24 hours
   schedule:
-    - cron: '0 */6 * * *'
+    - cron: '0 2 * * *'
 
   # Manual trigger for immediate cleanup
   workflow_dispatch:
