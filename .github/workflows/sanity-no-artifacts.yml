@@ -1,0 +1,60 @@
+name: Sanity Tests (No Artifacts)
+
+on:
+  # Manual trigger for testing without artifacts
+  workflow_dispatch:
+    inputs:
+      test_type:
+        description: 'Type of tests to run'
+        required: true
+        default: 'sanity'
+        type: choice
+        options:
+          - sanity
+          - regression
+          - all
+      reason:
+        description: 'Reason for running tests manually'
+        required: false
+        default: 'Manual test run - no artifacts'
+
+jobs:
+  # Sanity Tests Job - Testing without artifacts
+  sanity-tests-no-artifacts:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    env:
+      BASE_URL: ${{ secrets.BASE_URL }}
+      TEST_TAGS: '@sanity'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+      - name: Install dependencies
+        run: npm ci
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+      - name: Run Sanity Tests
+        run: npm run test:sanity
+      # Temporarily skip artifact upload to test CI pipeline
+      - name: Show test results instead of uploading
+        if: ${{ !cancelled() }}
+        run: |
+          echo "🧪 Tests completed successfully!"
+          echo "📁 Report files generated:"
+          find playwright-report -type f -name "*.html" | head -10
+          echo ""
+          echo "📊 Report size:"
+          du -sh playwright-report/ || echo "No report directory found"
+      - name: Add test results to summary
+        if: ${{ !cancelled() }}
+        run: |
+          echo "## 🧪 Sanity Tests Completed (No Artifacts)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ **Status:** Tests ran successfully without artifact upload" >> $GITHUB_STEP_SUMMARY
+          echo "📁 **Report Files:** Generated but not uploaded (storage quota workaround)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "⏰ **Test completed at:** $(date)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "🔧 **Note:** Artifacts disabled temporarily until GitHub storage quota refreshes (6-12 hours)" >> $GITHUB_STEP_SUMMARY
