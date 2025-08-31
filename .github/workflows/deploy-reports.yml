@@ -47,19 +47,23 @@ jobs:
 
       - name: Download artifacts from workflow run
         if: github.event_name == 'workflow_run'
-        uses: actions/download-artifact@v4
+        uses: dawidd6/action-download-artifact@v3
         with:
           name: ${{ github.event.workflow_run.name == 'Sanity Tests' && 'sanity-playwright-report' || github.event.workflow_run.name == 'Nightly Regression Tests' && 'nightly-regression-playwright-report' || 'playwright-report' }}
           path: ./reports-temp/
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          run-id: ${{ github.event.workflow_run.id }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          run_id: ${{ github.event.workflow_run.id }}
+          if_no_artifact_found: warn
 
       - name: Download artifacts for manual dispatch
         if: github.event_name == 'workflow_dispatch'
-        uses: actions/download-artifact@v4
+        uses: dawidd6/action-download-artifact@v3
         with:
           name: ${{ github.event.inputs.source_workflow == 'sanity-tests' && 'sanity-playwright-report' || github.event.inputs.source_workflow == 'nightly-regression-tests' && 'nightly-regression-playwright-report' || 'playwright-report' }}
           path: ./reports-temp/
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          workflow: ${{ github.event.inputs.source_workflow == 'sanity-tests' && 'sanity.yml' || github.event.inputs.source_workflow == 'nightly-regression-tests' && 'nightly-regression.yml' || 'sanity.yml' }}
+          if_no_artifact_found: warn
 
       - name: Deploy Playwright reports directly
         run: |
