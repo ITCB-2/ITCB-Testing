@@ -127,6 +127,6 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "📊 **Deployment Status:** ${{ steps.status.outputs.deployment_status }}" >> $GITHUB_STEP_SUMMARY
           echo "🧪 **Test Status:** ${{ steps.status.outputs.test_status }}" >> $GITHUB_STEP_SUMMARY
-          echo "� **Workflow:** ${{ steps.status.outputs.workflow_name }}" >> $GITHUB_STEP_SUMMARY
-          echo "�🔔 **Trigger:** ${{ steps.status.outputs.trigger }}" >> $GITHUB_STEP_SUMMARY
+          echo "🔄 **Workflow:** ${{ steps.status.outputs.workflow_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "🔔 **Trigger:** ${{ steps.status.outputs.trigger }}" >> $GITHUB_STEP_SUMMARY
           echo "⏰ **Sent at:** $(date)" >> $GITHUB_STEP_SUMMARY
