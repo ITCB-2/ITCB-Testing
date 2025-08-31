@@ -27,15 +27,45 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Get deployment status
-        id: deployment-status
+      - name: Get test and deployment status
+        id: status
         run: |
+          # Default values for manual trigger
           if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
-            echo "status=${{ github.event.inputs.status }}" >> $GITHUB_OUTPUT
+            echo "deployment_status=${{ github.event.inputs.status }}" >> $GITHUB_OUTPUT
             echo "trigger=manual" >> $GITHUB_OUTPUT
+            echo "test_status=unknown" >> $GITHUB_OUTPUT
+            echo "workflow_name=Manual Test" >> $GITHUB_OUTPUT
           else
-            echo "status=${{ github.event.workflow_run.conclusion }}" >> $GITHUB_OUTPUT
+            # Get deployment status from deploy-reports workflow
+            echo "deployment_status=${{ github.event.workflow_run.conclusion }}" >> $GITHUB_OUTPUT
             echo "trigger=auto" >> $GITHUB_OUTPUT
+            
+            # Try to get the original test workflow info from the deploy-reports workflow
+            # The deploy-reports workflow name contains info about which test workflow triggered it
+            DEPLOY_WORKFLOW_ID="${{ github.event.workflow_run.id }}"
+            
+            # Use GitHub API to get the deploy-reports workflow run details
+            DEPLOY_RUN_DATA=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+              "https://api.github.com/repos/${{ github.repository }}/actions/runs/${DEPLOY_WORKFLOW_ID}")
+            
+            # Extract the triggering workflow info from the deploy run
+            TRIGGERING_WORKFLOW_ID=$(echo "$DEPLOY_RUN_DATA" | jq -r '.triggering_workflow.id // empty')
+            
+            if [ -n "$TRIGGERING_WORKFLOW_ID" ] && [ "$TRIGGERING_WORKFLOW_ID" != "null" ]; then
+              # Get the original test workflow run details
+              TEST_RUN_DATA=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+                "https://api.github.com/repos/${{ github.repository }}/actions/runs/${TRIGGERING_WORKFLOW_ID}")
+              
+              TEST_STATUS=$(echo "$TEST_RUN_DATA" | jq -r '.conclusion // "unknown"')
+              WORKFLOW_NAME=$(echo "$TEST_RUN_DATA" | jq -r '.name // "Unknown Test"')
+              
+              echo "test_status=${TEST_STATUS}" >> $GITHUB_OUTPUT
+              echo "workflow_name=${WORKFLOW_NAME}" >> $GITHUB_OUTPUT
+            else
+              echo "test_status=unknown" >> $GITHUB_OUTPUT
+              echo "workflow_name=Unknown Test" >> $GITHUB_OUTPUT
+            fi
           fi
 
           # Get current date/time in Israel timezone
@@ -43,7 +73,7 @@ jobs:
           echo "israel_time=$ISRAEL_TIME" >> $GITHUB_OUTPUT
 
       - name: Notify Slack on Success
-        if: steps.deployment-status.outputs.status == 'success'
+        if: steps.status.outputs.deployment_status == 'success'
         uses: 8398a7/action-slack@v3
         with:
           status: success
@@ -53,18 +83,21 @@ jobs:
 
             Hey team! 👋 Our automated Playwright test reports are now live:
 
-            🏠 Latest Report: https://itcb-2.github.io/ITCB-Testing/
+            🧪 **Test Workflow:** ${{ steps.status.outputs.workflow_name }}
+            📋 **Test Status:** ${{ steps.status.outputs.test_status == 'success' && '✅ PASSED' || steps.status.outputs.test_status == 'failure' && '❌ FAILED' || '❓ UNKNOWN' }}
 
-            Reports are automatically updated after each test run. Check it out! 🚀
+            🏠 **Latest Report:** https://itcb-2.github.io/ITCB-Testing/
+
+            ${{ steps.status.outputs.test_status == 'success' && '🎉 All tests passed! Great work!' || steps.status.outputs.test_status == 'failure' && '⚠️  Some tests failed. Please check the report for details.' || '📊 Check the report for test results.' }}
 
             Repository: ${{ github.repository }}
             Branch: ${{ github.ref_name }}
-            Deployed at: ${{ steps.deployment-status.outputs.israel_time }}
+            Deployed at: ${{ steps.status.outputs.israel_time }}
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Notify Slack on Failure
-        if: steps.deployment-status.outputs.status == 'failure'
+        if: steps.status.outputs.deployment_status == 'failure'
         uses: 8398a7/action-slack@v3
         with:
           status: failure
@@ -73,6 +106,9 @@ jobs:
             ❌ Test Report Deployment Failed
 
             There was an issue deploying the latest test reports to GitHub Pages.
+
+            🧪 **Original Test Workflow:** ${{ steps.status.outputs.workflow_name }}
+            📋 **Test Status:** ${{ steps.status.outputs.test_status == 'success' && '✅ Tests passed but deployment failed' || steps.status.outputs.test_status == 'failure' && '❌ Tests failed and deployment failed' || '❓ Unknown test status' }}
 
             Repository: ${{ github.repository }}
             Branch: ${{ github.ref_name }}
@@ -89,6 +125,8 @@ jobs:
         run: |
           echo "## 📱 Slack Notification Sent!" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "📊 Status: ${{ steps.deployment-status.outputs.status }}" >> $GITHUB_STEP_SUMMARY
-          echo "🔔 Trigger: ${{ steps.deployment-status.outputs.trigger }}" >> $GITHUB_STEP_SUMMARY
-          echo "⏰ Sent at: $(date)" >> $GITHUB_STEP_SUMMARY
+          echo "📊 **Deployment Status:** ${{ steps.status.outputs.deployment_status }}" >> $GITHUB_STEP_SUMMARY
+          echo "🧪 **Test Status:** ${{ steps.status.outputs.test_status }}" >> $GITHUB_STEP_SUMMARY
+          echo "� **Workflow:** ${{ steps.status.outputs.workflow_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "�🔔 **Trigger:** ${{ steps.status.outputs.trigger }}" >> $GITHUB_STEP_SUMMARY
+          echo "⏰ **Sent at:** $(date)" >> $GITHUB_STEP_SUMMARY
