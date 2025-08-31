@@ -25,7 +25,7 @@ jobs:
     if: always()
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Get test and deployment status
         id: status
@@ -74,50 +74,57 @@ jobs:
 
       - name: Notify Slack on Success
         if: steps.status.outputs.deployment_status == 'success'
-        uses: 8398a7/action-slack@v3
+        uses: slackapi/slack-github-action@v2.1.1
         with:
-          status: success
-          channel: '#testing-updates'
-          text: |
-            📊 Test Reports Updated!
-
-            Hey team! 👋 Our automated Playwright test reports are now live:
-
-            🧪 **Test Workflow:** ${{ steps.status.outputs.workflow_name }}
-            📋 **Test Status:** ${{ steps.status.outputs.test_status == 'success' && '✅ PASSED' || steps.status.outputs.test_status == 'failure' && '❌ FAILED' || '⏭️ SKIPPED' }}
-
-            🏠 **Latest Report:** https://itcb-2.github.io/ITCB-Testing/
-
-            ${{ steps.status.outputs.test_status == 'success' && '🎉 All tests passed! Great work!' || steps.status.outputs.test_status == 'failure' && '⚠️  Some tests failed. Please check the report for details.' || '📊 Check the report for test results.' }}
-
-            Repository: ${{ github.repository }}
-            Branch: ${{ github.ref_name }}
-            Deployed at: ${{ steps.status.outputs.israel_time }}
+          payload: |
+            {
+              "channel": "#testing-updates",
+              "text": "📊 Test Reports Updated!",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "📊 Test Reports Updated!"
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "Hey team! 👋 Our automated Playwright test reports are now live:\n\n🧪 *Test Workflow:* ${{ steps.status.outputs.workflow_name }}\n📋 *Test Status:* ${{ steps.status.outputs.test_status == 'success' && '✅ PASSED' || steps.status.outputs.test_status == 'failure' && '❌ FAILED' || '⏭️ SKIPPED' }}\n\n🏠 *Latest Report:* https://itcb-2.github.io/ITCB-Testing/\n\n${{ steps.status.outputs.test_status == 'success' && '🎉 All tests passed! Great work!' || steps.status.outputs.test_status == 'failure' && '⚠️ Some tests failed. Please check the report for details.' || '📊 Check the report for test results.' }}\n\nRepository: ${{ github.repository }}\nBranch: ${{ github.ref_name }}\nDeployed at: ${{ steps.status.outputs.israel_time }}"
+                  }
+                }
+              ]
+            }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Notify Slack on Failure
         if: steps.status.outputs.deployment_status == 'failure'
-        uses: 8398a7/action-slack@v3
+        uses: slackapi/slack-github-action@v2.1.1
         with:
-          status: failure
-          channel: '#testing-updates'
-          text: |
-            ❌ Test Report Deployment Failed
-
-            There was an issue deploying the latest test reports to GitHub Pages.
-
-            🧪 **Original Test Workflow:** ${{ steps.status.outputs.workflow_name }}
-            📋 **Test Status:** ${{ steps.status.outputs.test_status == 'success' && '✅ Tests passed but deployment failed' || steps.status.outputs.test_status == 'failure' && '❌ Tests failed and deployment failed' || '⏭️ Tests were skipped but deployment failed' }}
-
-            Repository: ${{ github.repository }}
-            Branch: ${{ github.ref_name }}
-
-            🔧 Action Required: Please check the deployment workflow logs
-            📋 Workflow: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-
-            The team may need to check the previous reports at:
-            🔗 https://itcb-2.github.io/ITCB-Testing/
+          payload: |
+            {
+              "channel": "#testing-updates",
+              "text": "❌ Test Report Deployment Failed",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "❌ Test Report Deployment Failed"
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "There was an issue deploying the latest test reports to GitHub Pages.\n\n🧪 *Original Test Workflow:* ${{ steps.status.outputs.workflow_name }}\n📋 *Test Status:* ${{ steps.status.outputs.test_status == 'success' && '✅ Tests passed but deployment failed' || steps.status.outputs.test_status == 'failure' && '❌ Tests failed and deployment failed' || '⏭️ Tests were skipped but deployment failed' }}\n\nRepository: ${{ github.repository }}\nBranch: ${{ github.ref_name }}\n\n🔧 Action Required: Please check the deployment workflow logs\n📋 Workflow: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\n\nThe team may need to check the previous reports at:\n🔗 https://netanelh2.github.io/Playwright-TypeScript-Init/"
+                  }
+                }
+              ]
+            }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 

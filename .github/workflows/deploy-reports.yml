@@ -40,13 +40,13 @@ jobs:
       github.event_name == 'workflow_dispatch'
     steps:
       - name: Checkout Pages branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: gh-pages
           fetch-depth: 0
 
       - name: Setup Pages
-        uses: actions/configure-pages@v4
+        uses: actions/configure-pages@v5
 
       - name: Set workflow variables
         run: |
@@ -71,9 +71,9 @@ jobs:
           echo "WORKFLOW_DIR=$(echo "$WORKFLOW_NAME" | sed 's/[^a-zA-Z0-9]/-/g' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
 
       - name: Download artifacts
-        uses: dawidd6/action-download-artifact@v3
+        uses: dawidd6/action-download-artifact@v11
         with:
-          name: ${{ env.ARTIFACT_NAME }}
+          name: ${{ github.event_name == 'workflow_run' && (contains(github.event.workflow_run.name, 'Sanity') && format('sanity-playwright-report-{0}', github.event.workflow_run.run_number) || contains(github.event.workflow_run.name, 'Regression') && format('regression-playwright-report-{0}', github.event.workflow_run.run_number) || format('playwright-report-{0}', github.event.workflow_run.run_number)) || (github.event.inputs.source_workflow == 'sanity-tests' && format('sanity-playwright-report-{0}', github.run_number) || github.event.inputs.source_workflow == 'regression-tests' && format('regression-playwright-report-{0}', github.run_number) || format('playwright-report-{0}', github.run_number)) }}
           path: ./reports-temp/
           github_token: ${{ secrets.GITHUB_TOKEN }}
           run_id: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.id || '' }}
@@ -97,95 +97,6 @@ jobs:
             echo "WORKFLOW_DIR=${WORKFLOW_DIR}" >> $GITHUB_ENV
             echo "TIMESTAMP=${TIMESTAMP}" >> $GITHUB_ENV
           fi
-
-      - name: Generate index page
-        run: |
-          cat > index.html << 'EOF'
-          <!DOCTYPE html>
-          <html>
-          <head>
-              <title>Playwright Test Reports</title>
-              <style>
-                  body { font-family: Arial, sans-serif; margin: 40px; }
-                  .header { border-bottom: 2px solid #eee; padding-bottom: 20px; margin-bottom: 30px; }
-                  .section { margin-bottom: 30px; }
-                  .latest-reports { background: #f5f5f5; padding: 20px; border-radius: 8px; }
-                  .historical-reports { margin-top: 30px; }
-                  .workflow-group { margin-bottom: 25px; border: 1px solid #ddd; border-radius: 8px; }
-                  .workflow-header { background: #f8f9fa; padding: 15px; font-weight: bold; border-bottom: 1px solid #ddd; }
-                  .report-list { padding: 15px; }
-                  .report-item { margin: 8px 0; }
-                  .report-link { color: #0366d6; text-decoration: none; }
-                  .report-link:hover { text-decoration: underline; }
-                  .timestamp { color: #666; font-size: 0.9em; }
-                  .latest-badge { background: #28a745; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; }
-          EOF
-
-          echo "              </style>" >> index.html
-          echo "          </head>" >> index.html
-          echo "          <body>" >> index.html
-          echo "              <div class="header">" >> index.html
-          echo "                  <h1>🎭 Playwright Test Reports</h1>" >> index.html
-          echo "                  <p>Historical test reports archive</p>" >> index.html
-          echo "              </div>" >> index.html
-
-          # Latest reports section
-          echo "              <div class="section latest-reports">" >> index.html
-          echo "                  <h2>📊 Latest Reports</h2>" >> index.html
-
-          if [ -d "./latest" ]; then
-              for workflow in ./latest/*/; do
-                  if [ -d "$workflow" ]; then
-                      workflow_name=$(basename "$workflow")
-                      echo "                  <div class="report-item">" >> index.html
-                      echo "                      <a href="./latest/$workflow_name/index.html" class="report-link">" >> index.html
-                      echo "                          ${workflow_name} <span class="latest-badge">LATEST</span>" >> index.html
-                      echo "                      </a>" >> index.html
-                      echo "                  </div>" >> index.html
-                  fi
-              done
-          fi
-
-          echo "              </div>" >> index.html
-
-          # Historical reports section
-          echo "              <div class="section historical-reports">" >> index.html
-          echo "                  <h2>📚 Historical Reports</h2>" >> index.html
-
-          if [ -d "./reports" ]; then
-              for workflow in ./reports/*/; do
-                  if [ -d "$workflow" ]; then
-                      workflow_name=$(basename "$workflow")
-                      echo "                  <div class="workflow-group">" >> index.html
-                      echo "                      <div class="workflow-header">$workflow_name</div>" >> index.html
-                      echo "                      <div class="report-list">" >> index.html
-                      
-                      # List reports in reverse chronological order
-                      for report in $(ls -t "$workflow"/); do
-                          if [ -d "$workflow/$report" ]; then
-                              # Extract timestamp and run number for display
-                              display_name=$(echo "$report" | sed 's/_/ /g')
-                              echo "                          <div class="report-item">" >> index.html
-                              echo "                              <a href="./reports/$workflow_name/$report/index.html" class="report-link">" >> index.html
-                              echo "                                  $display_name" >> index.html
-                              echo "                              </a>" >> index.html
-                              echo "                              <span class="timestamp">$(date -d "${report%_run-*}" +"%B %d, %Y at %H:%M" 2>/dev/null || echo "${report%_run-*}")</span>" >> index.html
-                              echo "                          </div>" >> index.html
-                          fi
-                      done
-                      
-                      echo "                      </div>" >> index.html
-                      echo "                  </div>" >> index.html
-                  fi
-              done
-          fi
-
-          echo "              </div>" >> index.html
-          echo "              <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; color: #666; font-size: 0.9em;">" >> index.html
-          echo "                  Last updated: $(date)" >> index.html
-          echo "              </div>" >> index.html
-          echo "          </body>" >> index.html
-          echo "          </html>" >> index.html
 
       - name: Cleanup old reports (keep last 10 per workflow)
         run: |
@@ -315,13 +226,13 @@ jobs:
           fi
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           path: '.'
 
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v4.0.5
 
       - name: Add deployment status to summary
         run: |
