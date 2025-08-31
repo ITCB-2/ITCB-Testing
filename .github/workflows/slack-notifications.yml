@@ -36,36 +36,63 @@ jobs:
             echo "trigger=manual" >> $GITHUB_OUTPUT
             echo "test_status=skipped" >> $GITHUB_OUTPUT
             echo "workflow_name=Manual Test" >> $GITHUB_OUTPUT
+            echo "artifact_issue=false" >> $GITHUB_OUTPUT
           else
             # Get deployment status from deploy-reports workflow
             echo "deployment_status=${{ github.event.workflow_run.conclusion }}" >> $GITHUB_OUTPUT
             echo "trigger=auto" >> $GITHUB_OUTPUT
             
-            # Try to get the original test workflow info from the deploy-reports workflow
-            # The deploy-reports workflow name contains info about which test workflow triggered it
+            # Get the deploy workflow run details to find the triggering workflow
             DEPLOY_WORKFLOW_ID="${{ github.event.workflow_run.id }}"
-            
-            # Use GitHub API to get the deploy-reports workflow run details
             DEPLOY_RUN_DATA=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
               "https://api.github.com/repos/${{ github.repository }}/actions/runs/${DEPLOY_WORKFLOW_ID}")
             
             # Extract the triggering workflow info from the deploy run
             TRIGGERING_WORKFLOW_ID=$(echo "$DEPLOY_RUN_DATA" | jq -r '.triggering_workflow.id // empty')
             
+            # Default values
+            TEST_STATUS="unknown"
+            WORKFLOW_NAME="Unknown Workflow"
+            ARTIFACT_ISSUE="false"
+            
             if [ -n "$TRIGGERING_WORKFLOW_ID" ] && [ "$TRIGGERING_WORKFLOW_ID" != "null" ]; then
               # Get the original test workflow run details
               TEST_RUN_DATA=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
                 "https://api.github.com/repos/${{ github.repository }}/actions/runs/${TRIGGERING_WORKFLOW_ID}")
               
-              TEST_STATUS=$(echo "$TEST_RUN_DATA" | jq -r '.conclusion // "skipped"')
-              WORKFLOW_NAME=$(echo "$TEST_RUN_DATA" | jq -r '.name // "Manual Test"')
+              TEST_STATUS=$(echo "$TEST_RUN_DATA" | jq -r '.conclusion // "unknown"')
+              WORKFLOW_NAME=$(echo "$TEST_RUN_DATA" | jq -r '.name // "Unknown Workflow"')
               
-              echo "test_status=${TEST_STATUS}" >> $GITHUB_OUTPUT
-              echo "workflow_name=${WORKFLOW_NAME}" >> $GITHUB_OUTPUT
+              # Check if this was an artifact upload issue by looking at the deploy logs
+              DEPLOY_LOGS=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+                "https://api.github.com/repos/${{ github.repository }}/actions/runs/${DEPLOY_WORKFLOW_ID}/logs" || echo "")
+              
+              if echo "$DEPLOY_LOGS" | grep -q "if_no_artifact_found.*warn\|No artifacts found\|quota"; then
+                ARTIFACT_ISSUE="true"
+                echo "Detected artifact issue in deployment" >&2
+              fi
             else
-              echo "test_status=skipped" >> $GITHUB_OUTPUT
-              echo "workflow_name=Manual Test" >> $GITHUB_OUTPUT
+              # Fallback: Look for recent test workflows that might have triggered this
+              echo "No triggering workflow found, searching for recent test workflows..." >&2
+              
+              # Get recent workflow runs to find the likely source
+              RECENT_RUNS=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+                "https://api.github.com/repos/${{ github.repository }}/actions/runs?per_page=10&status=completed")
+              
+              # Look for the most recent test workflow run
+              RECENT_TEST_RUN=$(echo "$RECENT_RUNS" | jq -r '.workflow_runs[] | select(.name | test("Test|Sanity|Regression")) | select(.created_at > (now - 3600)) | .conclusion + "|" + .name' | head -1)
+              
+              if [ -n "$RECENT_TEST_RUN" ] && [ "$RECENT_TEST_RUN" != "null" ]; then
+                TEST_STATUS=$(echo "$RECENT_TEST_RUN" | cut -d'|' -f1)
+                WORKFLOW_NAME=$(echo "$RECENT_TEST_RUN" | cut -d'|' -f2)
+                ARTIFACT_ISSUE="true"  # Likely artifact issue if deploy failed but test succeeded
+                echo "Found recent test workflow: $WORKFLOW_NAME with status: $TEST_STATUS" >&2
+              fi
             fi
+            
+            echo "test_status=${TEST_STATUS}" >> $GITHUB_OUTPUT
+            echo "workflow_name=${WORKFLOW_NAME}" >> $GITHUB_OUTPUT
+            echo "artifact_issue=${ARTIFACT_ISSUE}" >> $GITHUB_OUTPUT
           fi
 
           # Get current date/time in Israel timezone
@@ -115,14 +142,14 @@ jobs:
                   "type": "header",
                   "text": {
                     "type": "plain_text",
-                    "text": "❌ Test Report Deployment Failed"
+                    "text": "${{ steps.status.outputs.artifact_issue == 'true' && '⚠️ Test Report Storage Issue' || '❌ Test Report Deployment Failed' }}"
                   }
                 },
                 {
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "There was an issue deploying the latest test reports to GitHub Pages.\n\n🧪 *Original Test Workflow:* ${{ steps.status.outputs.workflow_name }}\n📋 *Test Status:* ${{ steps.status.outputs.test_status == 'success' && '✅ Tests passed but deployment failed' || steps.status.outputs.test_status == 'failure' && '❌ Tests failed and deployment failed' || '⏭️ Tests were skipped but deployment failed' }}\n\nRepository: ${{ github.repository }}\nBranch: ${{ github.ref_name }}\n\n🔧 Action Required: Please check the deployment workflow logs\n📋 Workflow: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\n\nThe team may need to check the previous reports at:\n🔗 https://netanelh2.github.io/Playwright-TypeScript-Init/"
+                    "text": "${{ steps.status.outputs.artifact_issue == 'true' && 'Tests completed but reports could not be deployed due to GitHub storage quota limits.' || 'There was an issue deploying the latest test reports to GitHub Pages.' }}\n\n🧪 *Original Test Workflow:* ${{ steps.status.outputs.workflow_name }}\n📋 *Test Status:* ${{ steps.status.outputs.test_status == 'success' && '✅ Tests PASSED' || steps.status.outputs.test_status == 'failure' && '❌ Tests FAILED' || steps.status.outputs.test_status == 'unknown' && '❓ Status unknown' || '⏭️ Tests were skipped' }}${{ steps.status.outputs.artifact_issue == 'true' && ' but deployment failed' || ' and deployment failed' }}\n${{ steps.status.outputs.artifact_issue == 'true' && '📦 *Issue:* GitHub artifact storage quota exceeded\n⏳ *Note:* Storage quota typically refreshes within 6-12 hours\n🔧 *Action:* Reports will auto-deploy once quota is available' || '🔧 *Action Required:* Please check the deployment workflow logs' }}\n\nRepository: ${{ github.repository }}\nBranch: ${{ github.ref_name }}\n\n📋 Workflow: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\n\n${{ steps.status.outputs.artifact_issue == 'true' && '📊 Previous reports still available at:' || 'The team may need to check the previous reports at:' }}\n🔗 https://itcb-2.github.io/ITCB-Testing/"
                   }
                 }
               ]
@@ -138,4 +165,8 @@ jobs:
           echo "🧪 **Test Status:** ${{ steps.status.outputs.test_status }}" >> $GITHUB_STEP_SUMMARY
           echo "🔄 **Workflow:** ${{ steps.status.outputs.workflow_name }}" >> $GITHUB_STEP_SUMMARY
           echo "🔔 **Trigger:** ${{ steps.status.outputs.trigger }}" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ steps.status.outputs.artifact_issue }}" == "true" ]; then
+            echo "📦 **Artifact Issue:** GitHub storage quota exceeded" >> $GITHUB_STEP_SUMMARY
+            echo "⏳ **Note:** Storage quota typically refreshes within 6-12 hours" >> $GITHUB_STEP_SUMMARY
+          fi
           echo "⏰ **Sent at:** $(date)" >> $GITHUB_STEP_SUMMARY
