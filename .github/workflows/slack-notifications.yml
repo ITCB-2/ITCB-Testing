@@ -42,77 +42,43 @@ jobs:
             echo "deployment_status=${{ github.event.workflow_run.conclusion }}" >> $GITHUB_OUTPUT
             echo "trigger=auto" >> $GITHUB_OUTPUT
             
-            # Get the deploy workflow run details to find the triggering workflow
-            DEPLOY_WORKFLOW_ID="${{ github.event.workflow_run.id }}"
+            # For workflow_run events, we can access the triggering workflow information
+            # The deploy-reports workflow is triggered by completed test workflows
             
-            # Use GitHub API to get the deploy-reports workflow run details
-            DEPLOY_RUN_DATA=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-              "https://api.github.com/repos/${{ github.repository }}/actions/runs/${DEPLOY_WORKFLOW_ID}")
+            # Extract triggering workflow info from the event context
+            TRIGGERING_WORKFLOW_NAME="${{ github.event.workflow_run.name }}"
+            TRIGGERING_HEAD_SHA="${{ github.event.workflow_run.head_sha }}"
             
-            echo "Deploy workflow data: $DEPLOY_RUN_DATA" >&2
+            echo "Processing deployment for: $TRIGGERING_WORKFLOW_NAME" >&2
+            echo "Head SHA: $TRIGGERING_HEAD_SHA" >&2
             
-            # Extract the triggering workflow info from the deploy run
-            TRIGGERING_WORKFLOW_ID=$(echo "$DEPLOY_RUN_DATA" | jq -r '.triggering_actor.login // empty')
-            TRIGGERING_WORKFLOW_NAME=$(echo "$DEPLOY_RUN_DATA" | jq -r '.triggering_workflow.name // empty')
-
-             # Default values
-            TEST_STATUS="skipped"
-            WORKFLOW_NAME="Test Workflow"
+            # Default values - we know this is triggered by the Deploy workflow which is triggered by test workflows
+            TEST_STATUS="unknown"
+            WORKFLOW_NAME="Sanity Tests"  # This is our main test workflow
             ARTIFACT_ISSUE="false"
             
-            # Check if we have workflow_run trigger data (more reliable)
-            if [ -n "$TRIGGERING_WORKFLOW_NAME" ] && [ "$TRIGGERING_WORKFLOW_NAME" != "null" ]; then
-              WORKFLOW_NAME="$TRIGGERING_WORKFLOW_NAME"
-              echo "Found triggering workflow from deploy run: $WORKFLOW_NAME" >&2
-              
-              # Look for the actual run of this workflow in recent runs
-              RECENT_RUNS=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-                "https://api.github.com/repos/${{ github.repository }}/actions/runs?per_page=20")
-              
-              # Find the most recent run of the triggering workflow
-              TEST_RUN_DATA=$(echo "$RECENT_RUNS" | jq -r --arg name "$WORKFLOW_NAME" \
-                '.workflow_runs[] | select(.name == $name) | select(.created_at > (now - 7200)) | . | @base64' | head -1)
-              
-              if [ -n "$TEST_RUN_DATA" ] && [ "$TEST_RUN_DATA" != "null" ]; then
-                TEST_RUN_DECODED=$(echo "$TEST_RUN_DATA" | base64 -d)
-                TEST_STATUS=$(echo "$TEST_RUN_DECODED" | jq -r '.conclusion // "skipped"')
-                echo "Found test status: $TEST_STATUS" >&2
-              fi
-            else
-              # Fallback: Look for recent test workflows that might have triggered this
-              echo "No triggering workflow found in deploy data, searching for recent test workflows..." >&2
-              
-              # Get recent workflow runs to find the likely source
-              RECENT_RUNS=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-              "https://api.github.com/repos/${{ github.repository }}/actions/runs?per_page=20")
-              
-              # Look for the most recent test workflow run (within last 2 hours)
-              RECENT_TEST_RUN=$(echo "$RECENT_RUNS" | jq -r \
-                '.workflow_runs[] | select(.name | test("Sanity|Regression|Test")) | select(.created_at > (now - 7200)) | "\(.conclusion)|\(.name)|\(.created_at)"' | head -1)
-              
-              if [ -n "$RECENT_TEST_RUN" ] && [ "$RECENT_TEST_RUN" != "null" ]; then
-                TEST_STATUS=$(echo "$RECENT_TEST_RUN" | cut -d'|' -f1)
-                WORKFLOW_NAME=$(echo "$RECENT_TEST_RUN" | cut -d'|' -f2)
-                echo "Found recent test workflow: $WORKFLOW_NAME with status: $TEST_STATUS" >&2
-              fi
-            fi
-                        
-            # Check for artifact issues in the deployment
-            if [ "${{ github.event.workflow_run.conclusion }}" == "success" ] && [ "$TEST_STATUS" == "success" ]; then
-              # If both succeeded, check if there were artifact warnings
-              DEPLOY_LOGS=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-                "https://api.github.com/repos/${{ github.repository }}/actions/runs/${DEPLOY_WORKFLOW_ID}/logs" 2>/dev/null || echo "")
-              
-              if echo "$DEPLOY_LOGS" | grep -q "artifact storage quota\|quota exceeded\|if_no_artifact_found.*warn\|No artifacts found"; then
-                ARTIFACT_ISSUE="true"
-                echo "Detected artifact issue in deployment" >&2
-              fi
-            elif [ "${{ github.event.workflow_run.conclusion }}" == "failure" ] && [ "$TEST_STATUS" == "success" ]; then
-              # If deploy failed but test succeeded, likely an artifact issue
+            # Since deploy-reports is triggered on test completion, we can infer the test status
+            # based on whether the deployment was needed (deploy only runs after successful tests)
+            if [ "${{ github.event.workflow_run.conclusion }}" == "success" ]; then
+              # If deployment succeeded, the triggering test likely succeeded
+              TEST_STATUS="success"
+              echo "Deployment succeeded - inferring test success" >&2
+            elif [ "${{ github.event.workflow_run.conclusion }}" == "failure" ]; then
+              # If deployment failed, we need to check why
+              # Since deploy is only triggered after test success, this is likely an artifact/deployment issue
+              TEST_STATUS="success"  # Test likely succeeded but deployment had issues
               ARTIFACT_ISSUE="true"
-              echo "Deploy failed but test succeeded - likely artifact issue" >&2
+              echo "Deployment failed - likely artifact/deployment issue after successful tests" >&2
+            else
+              # Other statuses (cancelled, skipped, etc.)
+              TEST_STATUS="unknown"
+              echo "Deployment status: ${{ github.event.workflow_run.conclusion }}" >&2
             fi
-
+            
+            # Additional context from the deploy workflow event
+            DEPLOY_CREATED_AT="${{ github.event.workflow_run.created_at }}"
+            echo "Deploy workflow created at: $DEPLOY_CREATED_AT" >&2
+            
             echo "test_status=${TEST_STATUS}" >> $GITHUB_OUTPUT
             echo "workflow_name=${WORKFLOW_NAME}" >> $GITHUB_OUTPUT
             echo "artifact_issue=${ARTIFACT_ISSUE}" >> $GITHUB_OUTPUT
@@ -123,6 +89,7 @@ jobs:
             echo "  test_status: ${TEST_STATUS}" >&2
             echo "  workflow_name: ${WORKFLOW_NAME}" >&2
             echo "  artifact_issue: ${ARTIFACT_ISSUE}" >&2
+            echo "  triggering_workflow: $TRIGGERING_WORKFLOW_NAME" >&2
           fi
 
           # Get current date/time in Israel timezone
