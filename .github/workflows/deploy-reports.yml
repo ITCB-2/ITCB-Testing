@@ -131,7 +131,7 @@ jobs:
             echo '        </ul>'
             echo '    </div>'
             echo '    <p><a href="../index.html">← Back to Reports Archive</a></p>'
-            echo "    <p style=\"color: #666; font-size: 0.9em;\">Generated at: \$(date)</p>"
+            echo "    <p style=\"color: #666; font-size: 0.9em;\">Generated at: $(TZ='Asia/Jerusalem' date '+%B %d, %Y at %H:%M %Z')</p>"
             echo '</body>'
             echo '</html>'
           } > ./reports-temp/index.html
@@ -286,7 +286,7 @@ jobs:
                               echo "                              <a href=\"./reports/$workflow_name/$report/index.html\" class=\"report-link\">" >> index.html
                               echo "                                  $display_name" >> index.html
                               echo "                              </a>" >> index.html
-                              echo "                              <span class=\"timestamp\">$(date -d "${report%_run-*}" +"%B %d, %Y at %H:%M" 2>/dev/null || echo "${report%_run-*}")</span>" >> index.html
+                              echo "                              <span class=\"timestamp\">$(TZ='Asia/Jerusalem' date -d "${report%_run-*}" +"%B %d, %Y at %H:%M" 2>/dev/null || echo "${report%_run-*}")</span>" >> index.html
                               echo "                          </div>" >> index.html
                           fi
                       done
@@ -299,7 +299,7 @@ jobs:
 
           echo "              </div>" >> index.html
           echo "              <div style=\"margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; color: #666; font-size: 0.9em;\">" >> index.html
-          echo "                  Last updated: $(date)" >> index.html
+          echo "                  Last updated: $(TZ='Asia/Jerusalem' date '+%B %d, %Y at %H:%M %Z')" >> index.html
           echo "              </div>" >> index.html
           echo "          </body>" >> index.html
           echo "          </html>" >> index.html
@@ -343,4 +343,4 @@ jobs:
             echo "📋 **Placeholder:** Created with explanation of the issue" >> $GITHUB_STEP_SUMMARY
           fi
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "⏰ **Deployed at:** $(date)" >> $GITHUB_STEP_SUMMARY
+          echo "⏰ **Deployed at:** $(TZ='Asia/Jerusalem' date '+%B %d, %Y at %H:%M %Z')" >> $GITHUB_STEP_SUMMARY
