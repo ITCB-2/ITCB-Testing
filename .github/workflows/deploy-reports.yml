@@ -68,17 +68,23 @@ jobs:
           echo "ARTIFACT_NAME=$ARTIFACT_NAME" >> $GITHUB_ENV
           echo "WORKFLOW_DIR=$(echo "$WORKFLOW_NAME" | sed 's/[^a-zA-Z0-9]/-/g' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
 
+          # For manual dispatch, we'll get the actual run number from the downloaded artifact later
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "MANUAL_DISPATCH=true" >> $GITHUB_ENV
+          fi
+
       - name: Download artifacts
         uses: dawidd6/action-download-artifact@v11
         id: download-artifacts
         continue-on-error: true
         with:
-          name: ${{ github.event_name == 'workflow_run' && (contains(github.event.workflow_run.name, 'Sanity') && format('sanity-playwright-report-{0}', github.event.workflow_run.run_number) || contains(github.event.workflow_run.name, 'Regression') && format('regression-playwright-report-{0}', github.event.workflow_run.run_number) || format('playwright-report-{0}', github.event.workflow_run.run_number)) || (github.event.inputs.source_workflow == 'sanity-tests' && format('sanity-playwright-report-{0}', github.run_number) || github.event.inputs.source_workflow == 'regression-tests' && format('regression-playwright-report-{0}', github.run_number) || format('playwright-report-{0}', github.run_number)) }}
+          name: ${{ github.event_name == 'workflow_run' && (contains(github.event.workflow_run.name, 'Sanity') && format('sanity-playwright-report-{0}', github.event.workflow_run.run_number) || contains(github.event.workflow_run.name, 'Regression') && format('regression-playwright-report-{0}', github.event.workflow_run.run_number) || format('playwright-report-{0}', github.event.workflow_run.run_number)) || (github.event.inputs.source_workflow == 'sanity-tests' && 'sanity-playwright-report-*' || github.event.inputs.source_workflow == 'regression-tests' && 'regression-playwright-report-*' || 'playwright-report-*') }}
           path: ./reports-temp/
           github_token: ${{ secrets.GITHUB_TOKEN }}
           run_id: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.id || '' }}
           workflow: ${{ github.event_name == 'workflow_dispatch' && (github.event.inputs.source_workflow == 'sanity-tests' && 'sanity.yml' || 'nightly-regression.yml') || '' }}
           if_no_artifact_found: warn
+          name_is_regexp: ${{ github.event_name == 'workflow_dispatch' && 'true' || 'false' }}
 
       - name: Handle missing artifacts
         if: steps.download-artifacts.outcome == 'failure'
@@ -138,6 +144,18 @@ jobs:
           WORKFLOW_DIR=$(echo "$WORKFLOW_NAME" | sed 's/[^a-zA-Z0-9]/-/g' | tr '[:upper:]' '[:lower:]')
 
           if [ -d "./reports-temp" ] && [ "$(ls -A ./reports-temp)" ]; then
+            # For manual dispatch, try to extract the actual run number from the downloaded artifact
+            if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+              # Look for any artifact info files or try to determine from the content
+              if ls ./reports-temp/*/trace/*.json 2>/dev/null | head -1 | xargs grep -o "run-[0-9]*" | head -1; then
+                ACTUAL_RUN=$(ls ./reports-temp/*/trace/*.json 2>/dev/null | head -1 | xargs grep -o "run-[0-9]*" | head -1 | sed 's/run-//')
+                if [ -n "$ACTUAL_RUN" ]; then
+                  RUN_NUMBER="$ACTUAL_RUN"
+                  echo "Detected actual run number: $RUN_NUMBER"
+                fi
+              fi
+            fi
+            
             # Create directories and copy reports
             mkdir -p "./reports/${WORKFLOW_DIR}/${TIMESTAMP}_run-${RUN_NUMBER}" "./latest/${WORKFLOW_DIR}"
             cp -r ./reports-temp/* "./reports/${WORKFLOW_DIR}/${TIMESTAMP}_run-${RUN_NUMBER}/"
@@ -182,6 +200,7 @@ jobs:
           # Store for commit message
           echo "WORKFLOW_DIR=${WORKFLOW_DIR}" >> $GITHUB_ENV
           echo "TIMESTAMP=${TIMESTAMP}" >> $GITHUB_ENV
+          echo "ACTUAL_RUN_NUMBER=${RUN_NUMBER}" >> $GITHUB_ENV
 
       - name: Cleanup old reports (keep last 10 per workflow)
         run: |
