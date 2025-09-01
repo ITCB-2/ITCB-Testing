@@ -93,42 +93,42 @@ jobs:
 
           # Create a basic index page explaining the situation
           mkdir -p ./reports-temp
-          cat > ./reports-temp/index.html << 'EOF'
-          <!DOCTYPE html>
-          <html>
-          <head>
-              <title>Test Report - Artifact Issue</title>
-              <style>
-                  body { font-family: Arial, sans-serif; margin: 40px; text-align: center; }
-                  .warning { background: #fff3cd; border: 1px solid #ffeaa7; padding: 20px; border-radius: 8px; margin: 20px 0; }
-                  .info { background: #d1ecf1; border: 1px solid #bee5eb; padding: 15px; border-radius: 8px; margin: 20px 0; }
-              </style>
-          </head>
-          <body>
-              <h1>🎭 Test Report Unavailable</h1>
-              <div class="warning">
-                  <h3>⚠️ Artifact Storage Issue</h3>
-                  <p>The test report artifacts could not be deployed due to GitHub storage quota limits.</p>
-              </div>
-              <div class="info">
-                  <h4>📊 What this means:</h4>
-                  <ul style="text-align: left; display: inline-block;">
-                      <li>Tests likely completed successfully</li>
-                      <li>Reports were generated but couldn't be uploaded</li>
-                      <li>GitHub has storage quotas that reset periodically</li>
-                  </ul>
-                  <h4>🔧 Next steps:</h4>
-                  <ul style="text-align: left; display: inline-block;">
-                      <li>Reports will auto-deploy once quota is available</li>
-                      <li>Storage quota typically refreshes within 6-12 hours</li>
-                      <li>Check previous reports in the historical archive</li>
-                  </ul>
-              </div>
-              <p><a href="../index.html">← Back to Reports Archive</a></p>
-              <p style="color: #666; font-size: 0.9em;">Generated at: $(date)</p>
-          </body>
-          </html>
-          EOF
+          {
+            echo '<!DOCTYPE html>'
+            echo '<html>'
+            echo '<head>'
+            echo '    <title>Test Report - Artifact Issue</title>'
+            echo '    <style>'
+            echo '        body { font-family: Arial, sans-serif; margin: 40px; text-align: center; }'
+            echo '        .warning { background: #fff3cd; border: 1px solid #ffeaa7; padding: 20px; border-radius: 8px; margin: 20px 0; }'
+            echo '        .info { background: #d1ecf1; border: 1px solid #bee5eb; padding: 15px; border-radius: 8px; margin: 20px 0; }'
+            echo '    </style>'
+            echo '</head>'
+            echo '<body>'
+            echo '    <h1>🎭 Test Report Unavailable</h1>'
+            echo '    <div class="warning">'
+            echo '        <h3>⚠️ Artifact Storage Issue</h3>'
+            echo '        <p>The test report artifacts could not be deployed due to GitHub storage quota limits.</p>'
+            echo '    </div>'
+            echo '    <div class="info">'
+            echo '        <h4>📊 What this means:</h4>'
+            echo '        <ul style="text-align: left; display: inline-block;">'
+            echo '            <li>Tests likely completed successfully</li>'
+            echo '            <li>Reports were generated but could not be uploaded</li>'
+            echo '            <li>GitHub has storage quotas that reset periodically</li>'
+            echo '        </ul>'
+            echo '        <h4>🔧 Next steps:</h4>'
+            echo '        <ul style="text-align: left; display: inline-block;">'
+            echo '            <li>Reports will auto-deploy once quota is available</li>'
+            echo '            <li>Storage quota typically refreshes within 6-12 hours</li>'
+            echo '            <li>Check previous reports in the historical archive</li>'
+            echo '        </ul>'
+            echo '    </div>'
+            echo '    <p><a href="../index.html">← Back to Reports Archive</a></p>'
+            echo "    <p style=\"color: #666; font-size: 0.9em;\">Generated at: \$(date)</p>"
+            echo '</body>'
+            echo '</html>'
+          } > ./reports-temp/index.html
 
       - name: Organize reports
         run: |
@@ -153,27 +153,27 @@ jobs:
             mkdir -p "./reports/${WORKFLOW_DIR}/${TIMESTAMP}_run-${RUN_NUMBER}" "./latest/${WORKFLOW_DIR}"
             
             # Create a placeholder file explaining the situation
-            cat > "./latest/${WORKFLOW_DIR}/index.html" << 'EOF'
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <title>Test Report - Missing Artifacts</title>
-                <style>
-                    body { font-family: Arial, sans-serif; margin: 40px; text-align: center; }
-                    .warning { background: #fff3cd; border: 1px solid #ffeaa7; padding: 20px; border-radius: 8px; margin: 20px 0; }
-                </style>
-            </head>
-            <body>
-                <h1>🎭 Test Report Unavailable</h1>
-                <div class="warning">
-                    <h3>⚠️ Artifacts Not Available</h3>
-                    <p>Test reports could not be deployed due to missing artifacts.</p>
-                    <p>This typically happens when GitHub storage quota is exceeded.</p>
-                </div>
-                <p><a href="../../index.html">← Back to Reports Archive</a></p>
-            </body>
-            </html>
-            EOF
+            {
+              echo '<!DOCTYPE html>'
+              echo '<html>'
+              echo '<head>'
+              echo '    <title>Test Report - Missing Artifacts</title>'
+              echo '    <style>'
+              echo '        body { font-family: Arial, sans-serif; margin: 40px; text-align: center; }'
+              echo '        .warning { background: #fff3cd; border: 1px solid #ffeaa7; padding: 20px; border-radius: 8px; margin: 20px 0; }'
+              echo '    </style>'
+              echo '</head>'
+              echo '<body>'
+              echo '    <h1>🎭 Test Report Unavailable</h1>'
+              echo '    <div class="warning">'
+              echo '        <h3>⚠️ Artifacts Not Available</h3>'
+              echo '        <p>Test reports could not be deployed due to missing artifacts.</p>'
+              echo '        <p>This typically happens when GitHub storage quota is exceeded.</p>'
+              echo '    </div>'
+              echo '    <p><a href="../../index.html">← Back to Reports Archive</a></p>'
+              echo '</body>'
+              echo '</html>'
+            } > "./latest/${WORKFLOW_DIR}/index.html"
             
             cp "./latest/${WORKFLOW_DIR}/index.html" "./reports/${WORKFLOW_DIR}/${TIMESTAMP}_run-${RUN_NUMBER}/index.html"
             echo "REPORTS_AVAILABLE=false" >> $GITHUB_ENV
@@ -198,26 +198,26 @@ jobs:
 
       - name: Generate index page
         run: |
-          cat > index.html << 'EOF'
-          <!DOCTYPE html>
-          <html>
-          <head>
-              <title>Playwright Test Reports</title>
-              <style>
-                  body { font-family: Arial, sans-serif; margin: 40px; }
-                  .header { border-bottom: 2px solid #eee; padding-bottom: 20px; margin-bottom: 30px; }
-                  .section { margin-bottom: 30px; }
-                  .latest-reports { background: #f5f5f5; padding: 20px; border-radius: 8px; }
-                  .historical-reports { margin-top: 30px; }
-                  .workflow-group { margin-bottom: 25px; border: 1px solid #ddd; border-radius: 8px; }
-                  .workflow-header { background: #f8f9fa; padding: 15px; font-weight: bold; border-bottom: 1px solid #ddd; }
-                  .report-list { padding: 15px; }
-                  .report-item { margin: 8px 0; }
-                  .report-link { color: #0366d6; text-decoration: none; }
-                  .report-link:hover { text-decoration: underline; }
-                  .timestamp { color: #666; font-size: 0.9em; }
-                  .latest-badge { background: #28a745; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; }
-          EOF
+          {
+            echo '<!DOCTYPE html>'
+            echo '<html>'
+            echo '<head>'
+            echo '    <title>Playwright Test Reports</title>'
+            echo '    <style>'
+            echo '        body { font-family: Arial, sans-serif; margin: 40px; }'
+            echo '        .header { border-bottom: 2px solid #eee; padding-bottom: 20px; margin-bottom: 30px; }'
+            echo '        .section { margin-bottom: 30px; }'
+            echo '        .latest-reports { background: #f5f5f5; padding: 20px; border-radius: 8px; }'
+            echo '        .historical-reports { margin-top: 30px; }'
+            echo '        .workflow-group { margin-bottom: 25px; border: 1px solid #ddd; border-radius: 8px; }'
+            echo '        .workflow-header { background: #f8f9fa; padding: 15px; font-weight: bold; border-bottom: 1px solid #ddd; }'
+            echo '        .report-list { padding: 15px; }'
+            echo '        .report-item { margin: 8px 0; }'
+            echo '        .report-link { color: #0366d6; text-decoration: none; }'
+            echo '        .report-link:hover { text-decoration: underline; }'
+            echo '        .timestamp { color: #666; font-size: 0.9em; }'
+            echo '        .latest-badge { background: #28a745; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; }'
+          } > index.html
 
           echo "              </style>" >> index.html
           echo "          </head>" >> index.html
