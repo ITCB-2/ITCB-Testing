@@ -44,6 +44,8 @@ jobs:
             
             # Get the deploy workflow run details to find the triggering workflow
             DEPLOY_WORKFLOW_ID="${{ github.event.workflow_run.id }}"
+            
+            # Use GitHub API to get the deploy-reports workflow run details
             DEPLOY_RUN_DATA=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
               "https://api.github.com/repos/${{ github.repository }}/actions/runs/${DEPLOY_WORKFLOW_ID}")
             
@@ -52,10 +54,10 @@ jobs:
             # Extract the triggering workflow info from the deploy run
             TRIGGERING_WORKFLOW_ID=$(echo "$DEPLOY_RUN_DATA" | jq -r '.triggering_actor.login // empty')
             TRIGGERING_WORKFLOW_NAME=$(echo "$DEPLOY_RUN_DATA" | jq -r '.triggering_workflow.name // empty')
-            
-            # Default values
-            TEST_STATUS="unknown"
-            WORKFLOW_NAME="Unknown Workflow"
+
+             # Default values
+            TEST_STATUS="skipped"
+            WORKFLOW_NAME="Test Workflow"
             ARTIFACT_ISSUE="false"
             
             # Check if we have workflow_run trigger data (more reliable)
@@ -73,7 +75,7 @@ jobs:
               
               if [ -n "$TEST_RUN_DATA" ] && [ "$TEST_RUN_DATA" != "null" ]; then
                 TEST_RUN_DECODED=$(echo "$TEST_RUN_DATA" | base64 -d)
-                TEST_STATUS=$(echo "$TEST_RUN_DECODED" | jq -r '.conclusion // "unknown"')
+                TEST_STATUS=$(echo "$TEST_RUN_DECODED" | jq -r '.conclusion // "skipped"')
                 echo "Found test status: $TEST_STATUS" >&2
               fi
             else
@@ -82,7 +84,7 @@ jobs:
               
               # Get recent workflow runs to find the likely source
               RECENT_RUNS=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-                "https://api.github.com/repos/${{ github.repository }}/actions/runs?per_page=20")
+              "https://api.github.com/repos/${{ github.repository }}/actions/runs?per_page=20")
               
               # Look for the most recent test workflow run (within last 2 hours)
               RECENT_TEST_RUN=$(echo "$RECENT_RUNS" | jq -r \
@@ -94,7 +96,7 @@ jobs:
                 echo "Found recent test workflow: $WORKFLOW_NAME with status: $TEST_STATUS" >&2
               fi
             fi
-            
+                        
             # Check for artifact issues in the deployment
             if [ "${{ github.event.workflow_run.conclusion }}" == "success" ] && [ "$TEST_STATUS" == "success" ]; then
               # If both succeeded, check if there were artifact warnings
@@ -110,11 +112,11 @@ jobs:
               ARTIFACT_ISSUE="true"
               echo "Deploy failed but test succeeded - likely artifact issue" >&2
             fi
-            
+
             echo "test_status=${TEST_STATUS}" >> $GITHUB_OUTPUT
             echo "workflow_name=${WORKFLOW_NAME}" >> $GITHUB_OUTPUT
             echo "artifact_issue=${ARTIFACT_ISSUE}" >> $GITHUB_OUTPUT
-            
+                     
             # Debug output
             echo "Final values:" >&2
             echo "  deployment_status: ${{ github.event.workflow_run.conclusion }}" >&2
@@ -135,20 +137,37 @@ jobs:
           payload: |
             {
               "channel": "#testing-updates",
-              "text": "📊 Test Reports Updated!",
+              "text": "✅ Test Workflow Completed Successfully!",
               "blocks": [
                 {
                   "type": "header",
                   "text": {
                     "type": "plain_text",
-                    "text": "📊 Test Reports Updated!"
+                    "text": "✅ Test Workflow Completed Successfully!"
                   }
                 },
                 {
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "Hey team! 👋 Our automated Playwright test reports are now live:\n\n🧪 *Test Workflow:* ${{ steps.status.outputs.workflow_name }}\n📋 *Test Status:* ${{ steps.status.outputs.test_status == 'success' && '✅ PASSED' || steps.status.outputs.test_status == 'failure' && '❌ FAILED' || '⏭️ SKIPPED' }}\n\n🏠 *Latest Report:* https://itcb-2.github.io/ITCB-Testing/\n\n${{ steps.status.outputs.test_status == 'success' && '🎉 All tests passed! Great work!' || steps.status.outputs.test_status == 'failure' && '⚠️ Some tests failed. Please check the report for details.' || '📊 Check the report for test results.' }}\n\nRepository: ${{ github.repository }}\nBranch: ${{ github.ref_name }}\nDeployed at: ${{ steps.status.outputs.israel_time }}"
+                    "text": "## 🧪 Test Workflow Status\n\n*Workflow:* **${{ steps.status.outputs.workflow_name }}**\n*Status:* ${{ steps.status.outputs.test_status == 'success' && '✅ **PASSED**' || steps.status.outputs.test_status == 'failure' && '❌ **FAILED**' || '⏭️ **SKIPPED**' }}\n*Repository:* ${{ github.repository }}\n*Branch:* ${{ github.ref_name }}"
+                  }
+                },
+                {
+                  "type": "divider"
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "## 📊 Report Deployment Status\n\n*Status:* ✅ **DEPLOYED SUCCESSFULLY**\n*Report URL:* https://itcb-2.github.io/ITCB-Testing/\n*Deployed at:* ${{ steps.status.outputs.israel_time }}"
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "${{ steps.status.outputs.test_status == 'success' && '🎉 **Great work!** All tests passed and reports are now live!' || steps.status.outputs.test_status == 'failure' && '⚠️ **Action needed:** Some tests failed. Check the detailed report above.' || '📊 **Info:** Test results are available in the report above.' }}"
                   }
                 }
               ]
@@ -177,8 +196,34 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "${{ steps.status.outputs.artifact_issue == 'true' && 'Tests completed but reports could not be deployed due to GitHub storage quota limits.' || 'There was an issue deploying the latest test reports to GitHub Pages.' }}\n\n🧪 *Original Test Workflow:* ${{ steps.status.outputs.workflow_name }}\n📋 *Test Status:* ${{ steps.status.outputs.test_status == 'success' && '✅ Tests PASSED' || steps.status.outputs.test_status == 'failure' && '❌ Tests FAILED' || steps.status.outputs.test_status == 'unknown' && '❓ Status unknown' || '⏭️ Tests were skipped' }}${{ steps.status.outputs.artifact_issue == 'true' && ' (but deployment failed due to storage quota)' || ' and deployment failed' }}\n${{ steps.status.outputs.artifact_issue == 'true' && '📦 *Issue:* GitHub artifact storage quota exceeded\n⏳ *Note:* Storage quota typically refreshes within 6-12 hours\n🔧 *Action:* Reports will auto-deploy once quota is available' || '🔧 *Action Required:* Please check the deployment workflow logs' }}\n\nRepository: ${{ github.repository }}\nBranch: ${{ github.ref_name }}\n\n📋 Workflow: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\n\n${{ steps.status.outputs.artifact_issue == 'true' && '📊 Previous reports still available at:' || 'The team may need to check the previous reports at:' }}\n🔗 https://itcb-2.github.io/ITCB-Testing/"
+                    "text": "## 🧪 Test Workflow Status\n\n*Workflow:* **${{ steps.status.outputs.workflow_name }}**\n*Status:* ${{ steps.status.outputs.test_status == 'success' && '✅ **PASSED**' || steps.status.outputs.test_status == 'failure' && '❌ **FAILED**' || '⏭️ **SKIPPED**' }}\n*Repository:* ${{ github.repository }}\n*Branch:* ${{ github.ref_name }}"
                   }
+                },
+                {
+                  "type": "divider"
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "## 📊 Report Deployment Status\n\n*Status:* ❌ **DEPLOYMENT FAILED**\n${{ steps.status.outputs.artifact_issue == 'true' && '*Issue:* GitHub artifact storage quota exceeded\n*Note:* Storage quota typically refreshes within 6-12 hours\n*Action:* Reports will auto-deploy once quota is available' || '*Action Required:* Please check the deployment workflow logs' }}"
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "${{ steps.status.outputs.artifact_issue == 'true' && '📊 **Previous reports still available at:**\n🔗 https://itcb-2.github.io/ITCB-Testing/' || '🔧 **Team action needed** - Check the workflow logs for deployment issues.\n🔗 Previous reports: https://itcb-2.github.io/ITCB-Testing/' }}"
+                  }
+                },
+                {
+                  "type": "context",
+                  "elements": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "📋 Workflow: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                    }
+                  ]
                 }
               ]
             }
