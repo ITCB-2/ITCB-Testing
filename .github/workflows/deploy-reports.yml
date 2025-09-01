@@ -158,8 +158,18 @@ jobs:
             
             # Create directories and copy reports
             mkdir -p "./reports/${WORKFLOW_DIR}/${TIMESTAMP}_run-${RUN_NUMBER}" "./latest/${WORKFLOW_DIR}"
-            cp -r ./reports-temp/* "./reports/${WORKFLOW_DIR}/${TIMESTAMP}_run-${RUN_NUMBER}/"
-            cp -r ./reports-temp/* "./latest/${WORKFLOW_DIR}/"
+            
+            # Copy the contents of the first artifact directory found (not the directory itself)
+            # This flattens the structure so we get the Playwright report directly
+            FIRST_ARTIFACT_DIR=$(find ./reports-temp -mindepth 1 -maxdepth 1 -type d | head -1)
+            if [ -n "$FIRST_ARTIFACT_DIR" ] && [ -d "$FIRST_ARTIFACT_DIR" ]; then
+              cp -r "$FIRST_ARTIFACT_DIR"/* "./reports/${WORKFLOW_DIR}/${TIMESTAMP}_run-${RUN_NUMBER}/"
+              cp -r "$FIRST_ARTIFACT_DIR"/* "./latest/${WORKFLOW_DIR}/"
+            else
+              # Fallback to old method if no subdirectory found
+              cp -r ./reports-temp/* "./reports/${WORKFLOW_DIR}/${TIMESTAMP}_run-${RUN_NUMBER}/"
+              cp -r ./reports-temp/* "./latest/${WORKFLOW_DIR}/"
+            fi
             
             echo "✅ Reports organized successfully"
             echo "REPORTS_AVAILABLE=true" >> $GITHUB_ENV
