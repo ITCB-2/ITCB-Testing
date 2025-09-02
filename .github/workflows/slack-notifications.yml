@@ -3,7 +3,7 @@ name: Slack Notifications
 on:
   # Triggered when deploy-reports workflow completes
   workflow_run:
-    workflows: ['Deploy Playwright Reports to GitHub Pages']
+    workflows: ['Deploy Playwright HTML Report to GitHub Pages']
     types:
       - completed
 
