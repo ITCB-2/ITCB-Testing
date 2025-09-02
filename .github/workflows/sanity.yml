@@ -57,15 +57,15 @@ jobs:
       - name: Add test results to summary
         if: ${{ !cancelled() }}
         run: |
-          echo "## 🧪 Sanity Tests Completed" >> $GITHUB_STEP_SUMMARY
+          echo "🧪 Sanity Tests Completed" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           if [ "${{ steps.upload-artifacts.outcome }}" == "success" ]; then
-            echo "📊 **Reports available at:** https://itcb-2.github.io/ITCB-Testing/" >> $GITHUB_STEP_SUMMARY
-            echo "✅ **Artifacts:** Successfully uploaded" >> $GITHUB_STEP_SUMMARY
+            echo "📊 Reports available at: https://itcb-2.github.io/ITCB-Testing/" >> $GITHUB_STEP_SUMMARY
+            echo "✅ Artifacts: Successfully uploaded" >> $GITHUB_STEP_SUMMARY
           else
-            echo "⚠️ **Artifacts:** Upload failed (storage quota issue)" >> $GITHUB_STEP_SUMMARY
-            echo "🔧 **Reports:** Generated locally but not uploaded" >> $GITHUB_STEP_SUMMARY
-            echo "⏳ **Note:** Storage quota refreshes every 6-12 hours" >> $GITHUB_STEP_SUMMARY
+            echo "⚠️ Artifacts: Upload failed (storage quota issue)" >> $GITHUB_STEP_SUMMARY
+            echo "🔧 Reports: Generated locally but not uploaded" >> $GITHUB_STEP_SUMMARY
+            echo "⏳ Note: Storage quota refreshes every 6-12 hours" >> $GITHUB_STEP_SUMMARY
           fi
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "⏰ **Test completed at:** $(date)" >> $GITHUB_STEP_SUMMARY
+          echo "⏰ Test completed at: $(date)" >> $GITHUB_STEP_SUMMARY

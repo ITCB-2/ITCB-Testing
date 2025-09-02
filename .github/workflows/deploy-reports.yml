@@ -338,19 +338,19 @@ jobs:
 
       - name: Add deployment status to summary
         run: |
-          echo "## 🎭 Playwright Reports Deployment Status" >> $GITHUB_STEP_SUMMARY
+          echo "🎭 Playwright Reports Deployment Status" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           if [ "$REPORTS_AVAILABLE" = "true" ]; then
-            echo "✅ **Status:** Reports deployed successfully" >> $GITHUB_STEP_SUMMARY
-            echo "📊 **Report URL:** ${{ steps.deployment.outputs.page_url }}" >> $GITHUB_STEP_SUMMARY
-            echo "📚 **Latest Report:** ${{ steps.deployment.outputs.page_url }}latest/${WORKFLOW_DIR}/" >> $GITHUB_STEP_SUMMARY
-            echo "🗂️ **Historical Archive:** ${{ steps.deployment.outputs.page_url }}reports/${WORKFLOW_DIR}/" >> $GITHUB_STEP_SUMMARY
+            echo "✅ Status: Reports deployed successfully" >> $GITHUB_STEP_SUMMARY
+            echo "📊 Report URL: ${{ steps.deployment.outputs.page_url }}" >> $GITHUB_STEP_SUMMARY
+            echo "📚 Latest Report: ${{ steps.deployment.outputs.page_url }}latest/${WORKFLOW_DIR}/" >> $GITHUB_STEP_SUMMARY
+            echo "🗂️ Historical Archive: ${{ steps.deployment.outputs.page_url }}reports/${WORKFLOW_DIR}/" >> $GITHUB_STEP_SUMMARY
           else
-            echo "⚠️ **Status:** Deployment completed but artifacts were unavailable" >> $GITHUB_STEP_SUMMARY
-            echo "📦 **Issue:** Likely GitHub storage quota exceeded" >> $GITHUB_STEP_SUMMARY
-            echo "🔧 **Action:** Reports will auto-deploy once quota is available" >> $GITHUB_STEP_SUMMARY
-            echo "📊 **Site URL:** ${{ steps.deployment.outputs.page_url }}" >> $GITHUB_STEP_SUMMARY
-            echo "📋 **Placeholder:** Created with explanation of the issue" >> $GITHUB_STEP_SUMMARY
+            echo "⚠️ Status: Deployment completed but artifacts were unavailable" >> $GITHUB_STEP_SUMMARY
+            echo "📦 Issue: Likely GitHub storage quota exceeded" >> $GITHUB_STEP_SUMMARY
+            echo "🔧 Action: Reports will auto-deploy once quota is available" >> $GITHUB_STEP_SUMMARY
+            echo "📊 Site URL: ${{ steps.deployment.outputs.page_url }}" >> $GITHUB_STEP_SUMMARY
+            echo "📋 Placeholder: Created with explanation of the issue" >> $GITHUB_STEP_SUMMARY
           fi
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "⏰ **Deployed at:** $(TZ='Asia/Jerusalem' date '+%B %d, %Y at %H:%M %Z')" >> $GITHUB_STEP_SUMMARY
+          echo "⏰ Deployed at: $(TZ='Asia/Jerusalem' date '+%B %d, %Y at %H:%M %Z')" >> $GITHUB_STEP_SUMMARY

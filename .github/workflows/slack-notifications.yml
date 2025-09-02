@@ -117,7 +117,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "## 🧪 Test Workflow Status\n\n*Workflow:* **${{ steps.status.outputs.workflow_name }}**\n*Status:* ${{ steps.status.outputs.test_status == 'success' && '✅ **PASSED**' || steps.status.outputs.test_status == 'failure' && '❌ **FAILED**' || '⏭️ **SKIPPED**' }}\n*Repository:* ${{ github.repository }}\n*Branch:* ${{ github.ref_name }}"
+                    "text": "🧪 Test Workflow Status\n\n*Workflow:* ${{ steps.status.outputs.workflow_name }}\n*Status:* ${{ steps.status.outputs.test_status == 'success' && '✅ PASSED' || steps.status.outputs.test_status == 'failure' && '❌ FAILED' || '⏭️ SKIPPED' }}\n*Repository:* ${{ github.repository }}\n*Branch:* ${{ github.ref_name }}"
                   }
                 },
                 {
@@ -127,14 +127,14 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "## 📊 Report Deployment Status\n\n*Status:* ✅ **DEPLOYED SUCCESSFULLY**\n*Report URL:* https://itcb-2.github.io/ITCB-Testing/\n*Deployed at:* ${{ steps.status.outputs.israel_time }}"
+                    "text": "📊 Report Deployment Status\n\n*Status:* ✅ DEPLOYED SUCCESSFULLY\n*Report URL:* https://itcb-2.github.io/ITCB-Testing/\n*Deployed at:* ${{ steps.status.outputs.israel_time }}"
                   }
                 },
                 {
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "${{ steps.status.outputs.test_status == 'success' && '🎉 **Great work!** All tests passed and reports are now live!' || steps.status.outputs.test_status == 'failure' && '⚠️ **Action needed:** Some tests failed. Check the detailed report above.' || '📊 **Info:** Test results are available in the report above.' }}"
+                    "text": "${{ steps.status.outputs.test_status == 'success' && '🎉 Great work! All tests passed and reports are now live!' || steps.status.outputs.test_status == 'failure' && '⚠️ Action needed: Some tests failed. Check the detailed report above.' || '📊 Info: Test results are available in the report above.' }}"
                   }
                 }
               ]
@@ -163,7 +163,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "## 🧪 Test Workflow Status\n\n*Workflow:* **${{ steps.status.outputs.workflow_name }}**\n*Status:* ${{ steps.status.outputs.test_status == 'success' && '✅ **PASSED**' || steps.status.outputs.test_status == 'failure' && '❌ **FAILED**' || '⏭️ **SKIPPED**' }}\n*Repository:* ${{ github.repository }}\n*Branch:* ${{ github.ref_name }}"
+                    "text": "🧪 Test Workflow Status\n\n*Workflow:* ${{ steps.status.outputs.workflow_name }}\n*Status:* ${{ steps.status.outputs.test_status == 'success' && '✅ PASSED' || steps.status.outputs.test_status == 'failure' && '❌ FAILED' || '⏭️ SKIPPED' }}\n*Repository:* ${{ github.repository }}\n*Branch:* ${{ github.ref_name }}"
                   }
                 },
                 {
@@ -173,14 +173,14 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "## 📊 Report Deployment Status\n\n*Status:* ❌ **DEPLOYMENT FAILED**\n${{ steps.status.outputs.artifact_issue == 'true' && '*Issue:* GitHub artifact storage quota exceeded\n*Note:* Storage quota typically refreshes within 6-12 hours\n*Action:* Reports will auto-deploy once quota is available' || '*Action Required:* Please check the deployment workflow logs' }}"
+                    "text": "📊 Report Deployment Status\n\n*Status:* ❌ DEPLOYMENT FAILED\n${{ steps.status.outputs.artifact_issue == 'true' && '*Issue:* GitHub artifact storage quota exceeded\n*Note:* Storage quota typically refreshes within 6-12 hours\n*Action:* Reports will auto-deploy once quota is available' || '*Action Required:* Please check the deployment workflow logs' }}"
                   }
                 },
                 {
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "${{ steps.status.outputs.artifact_issue == 'true' && '📊 **Previous reports still available at:**\n🔗 https://itcb-2.github.io/ITCB-Testing/' || '🔧 **Team action needed** - Check the workflow logs for deployment issues.\n🔗 Previous reports: https://itcb-2.github.io/ITCB-Testing/' }}"
+                    "text": "${{ steps.status.outputs.artifact_issue == 'true' && '📊 Previous reports still available at:\n🔗 https://itcb-2.github.io/ITCB-Testing/' || '🔧 Team action needed - Check the workflow logs for deployment issues.\n🔗 Previous reports: https://itcb-2.github.io/ITCB-Testing/' }}"
                   }
                 },
                 {
@@ -199,14 +199,14 @@ jobs:
 
       - name: Add notification status to summary
         run: |
-          echo "## 📱 Slack Notification Sent!" >> $GITHUB_STEP_SUMMARY
+          echo "📱 Slack Notification Sent!" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "📊 **Deployment Status:** ${{ steps.status.outputs.deployment_status }}" >> $GITHUB_STEP_SUMMARY
-          echo "🧪 **Test Status:** ${{ steps.status.outputs.test_status }}" >> $GITHUB_STEP_SUMMARY
-          echo "🔄 **Workflow:** ${{ steps.status.outputs.workflow_name }}" >> $GITHUB_STEP_SUMMARY
-          echo "🔔 **Trigger:** ${{ steps.status.outputs.trigger }}" >> $GITHUB_STEP_SUMMARY
+          echo "📊 Deployment Status: ${{ steps.status.outputs.deployment_status }}" >> $GITHUB_STEP_SUMMARY
+          echo "🧪 Test Status: ${{ steps.status.outputs.test_status }}" >> $GITHUB_STEP_SUMMARY
+          echo "🔄 Workflow: ${{ steps.status.outputs.workflow_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "🔔 Trigger: ${{ steps.status.outputs.trigger }}" >> $GITHUB_STEP_SUMMARY
           if [ "${{ steps.status.outputs.artifact_issue }}" == "true" ]; then
-            echo "📦 **Artifact Issue:** GitHub storage quota exceeded" >> $GITHUB_STEP_SUMMARY
-            echo "⏳ **Note:** Storage quota typically refreshes within 6-12 hours" >> $GITHUB_STEP_SUMMARY
+            echo "📦 Artifact Issue: GitHub storage quota exceeded" >> $GITHUB_STEP_SUMMARY
+            echo "⏳ Note: Storage quota typically refreshes within 6-12 hours" >> $GITHUB_STEP_SUMMARY
           fi
-          echo "⏰ **Sent at:** $(date)" >> $GITHUB_STEP_SUMMARY
+          echo "⏰ Sent at: $(date)" >> $GITHUB_STEP_SUMMARY

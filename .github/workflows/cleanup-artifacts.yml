@@ -98,13 +98,13 @@ jobs:
 
               // Add to step summary
               const summaryLines = [
-                `## 🧹 Artifact Cleanup ${dryRun ? '(DRY RUN)' : 'Complete'}`,
+                `🧹 Artifact Cleanup ${dryRun ? '(DRY RUN)' : 'Complete'}`,
                 '',
-                `📅 **Cutoff Date:** ${cutoffDate.toISOString()}`,
-                `🗑️ **Artifacts ${dryRun ? 'would be' : ''} processed:** ${deletedCount}`,
-                `💾 **Storage ${dryRun ? 'would be' : ''} freed:** ${totalSizeMB} MB`,
+                `📅 Cutoff Date: ${cutoffDate.toISOString()}`,
+                `🗑️ Artifacts ${dryRun ? 'would be' : ''} processed: ${deletedCount}`,
+                `💾 Storage ${dryRun ? 'would be' : ''} freed: ${totalSizeMB} MB`,
                 '',
-                `⏰ **Completed at:** ${new Date().toISOString()}`
+                `⏰ Completed at: ${new Date().toISOString()}`
               ];
 
               require('fs').appendFileSync(process.env.GITHUB_STEP_SUMMARY, summaryLines.join('\n'));
