@@ -29,6 +29,18 @@ export class BasePage extends LocatorUtils {
   }
   // Validate URL of the page
   protected async validateURL(expectedURL: string): Promise<void> {
+    // Handle trailing slash inconsistency between environments
+    // Accept both "domain/?query" and "domain?query" formats
+    const currentUrl = this.page.url()
+    const normalizedExpected = expectedURL.replace('/?', '?')
+    const normalizedCurrent = currentUrl.replace('/?', '?')
+
+    if (normalizedCurrent === normalizedExpected) {
+      // URLs match after normalization
+      return
+    }
+
+    // Fall back to standard validation
     await expect(this.page).toHaveURL(expectedURL)
   }
   // Navigate to a specific URL
