@@ -1,4 +1,4 @@
-name: Deploy Playwright Reports to GitHub Pages
+name: Deploy Playwright HTML Report to GitHub Pages
 
 on:
   # Triggered by other workflows completing
@@ -89,242 +89,31 @@ jobs:
       - name: Handle missing artifacts
         if: steps.download-artifacts.outcome == 'failure'
         run: |
-          echo "⚠️ Failed to download artifacts - likely due to storage quota or missing artifacts"
+          echo "⚠️ Failed to download artifacts - Playwright report could not be deployed"
           echo "📊 This usually happens when:"
           echo "  - GitHub storage quota is exceeded"
           echo "  - Artifacts weren't uploaded due to quota limits"
           echo "  - Artifact retention period expired"
-          echo ""
-          echo "🔧 Creating minimal index page with explanation..."
 
-          # Create a basic index page explaining the situation
-          mkdir -p ./reports-temp
-          {
-            echo '<!DOCTYPE html>'
-            echo '<html>'
-            echo '<head>'
-            echo '    <title>Test Report - Artifact Issue</title>'
-            echo '    <style>'
-            echo '        body { font-family: Arial, sans-serif; margin: 40px; text-align: center; }'
-            echo '        .warning { background: #fff3cd; border: 1px solid #ffeaa7; padding: 20px; border-radius: 8px; margin: 20px 0; }'
-            echo '        .info { background: #d1ecf1; border: 1px solid #bee5eb; padding: 15px; border-radius: 8px; margin: 20px 0; }'
-            echo '    </style>'
-            echo '</head>'
-            echo '<body>'
-            echo '    <h1>🎭 Test Report Unavailable</h1>'
-            echo '    <div class="warning">'
-            echo '        <h3>⚠️ Artifact Storage Issue</h3>'
-            echo '        <p>The test report artifacts could not be deployed due to GitHub storage quota limits.</p>'
-            echo '    </div>'
-            echo '    <div class="info">'
-            echo '        <h4>📊 What this means:</h4>'
-            echo '        <ul style="text-align: left; display: inline-block;">'
-            echo '            <li>Tests likely completed successfully</li>'
-            echo '            <li>Reports were generated but could not be uploaded</li>'
-            echo '            <li>GitHub has storage quotas that reset periodically</li>'
-            echo '        </ul>'
-            echo '        <h4>🔧 Next steps:</h4>'
-            echo '        <ul style="text-align: left; display: inline-block;">'
-            echo '            <li>Reports will auto-deploy once quota is available</li>'
-            echo '            <li>Storage quota typically refreshes within 6-12 hours</li>'
-            echo '            <li>Check previous reports in the historical archive</li>'
-            echo '        </ul>'
-            echo '    </div>'
-            echo '    <p><a href="../index.html">← Back to Reports Archive</a></p>'
-            echo "    <p style=\"color: #666; font-size: 0.9em;\">Generated at: $(TZ='Asia/Jerusalem' date '+%B %d, %Y at %H:%M %Z')</p>"
-            echo '</body>'
-            echo '</html>'
-          } > ./reports-temp/index.html
-
-      - name: Organize reports
+      - name: Deploy Playwright report directly
         run: |
-          TIMESTAMP=$(date +"%Y-%m-%d_%H-%M-%S")
-          WORKFLOW_NAME="${{ github.event.workflow_run.name || github.event.inputs.source_workflow }}"
-          RUN_NUMBER="${{ github.event.workflow_run.run_number || github.run_number }}"
-          WORKFLOW_DIR=$(echo "$WORKFLOW_NAME" | sed 's/[^a-zA-Z0-9]/-/g' | tr '[:upper:]' '[:lower:]')
-
           if [ -d "./reports-temp" ] && [ "$(ls -A ./reports-temp)" ]; then
-            # For manual dispatch, try to extract the actual run number from the downloaded artifact
-            if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-              # Look for any artifact info files or try to determine from the content
-              if ls ./reports-temp/*/trace/*.json 2>/dev/null | head -1 | xargs grep -o "run-[0-9]*" | head -1; then
-                ACTUAL_RUN=$(ls ./reports-temp/*/trace/*.json 2>/dev/null | head -1 | xargs grep -o "run-[0-9]*" | head -1 | sed 's/run-//')
-                if [ -n "$ACTUAL_RUN" ]; then
-                  RUN_NUMBER="$ACTUAL_RUN"
-                  echo "Detected actual run number: $RUN_NUMBER"
-                fi
-              fi
-            fi
-            
-            # Create directories and copy reports
-            mkdir -p "./reports/${WORKFLOW_DIR}/${TIMESTAMP}_run-${RUN_NUMBER}" "./latest/${WORKFLOW_DIR}"
-            
-            # Copy the contents of the first artifact directory found (not the directory itself)
-            # This flattens the structure so we get the Playwright report directly
+            # Find the first artifact directory and deploy its contents directly as the root
             FIRST_ARTIFACT_DIR=$(find ./reports-temp -mindepth 1 -maxdepth 1 -type d | head -1)
             if [ -n "$FIRST_ARTIFACT_DIR" ] && [ -d "$FIRST_ARTIFACT_DIR" ]; then
-              cp -r "$FIRST_ARTIFACT_DIR"/* "./reports/${WORKFLOW_DIR}/${TIMESTAMP}_run-${RUN_NUMBER}/"
-              cp -r "$FIRST_ARTIFACT_DIR"/* "./latest/${WORKFLOW_DIR}/"
+              # Copy the Playwright report contents directly to the root
+              cp -r "$FIRST_ARTIFACT_DIR"/* ./
+              echo "✅ Playwright report deployed directly to root"
+              echo "REPORTS_AVAILABLE=true" >> $GITHUB_ENV
             else
-              # Fallback to old method if no subdirectory found
-              cp -r ./reports-temp/* "./reports/${WORKFLOW_DIR}/${TIMESTAMP}_run-${RUN_NUMBER}/"
-              cp -r ./reports-temp/* "./latest/${WORKFLOW_DIR}/"
+              # Fallback: copy contents directly
+              cp -r ./reports-temp/* ./
+              echo "✅ Playwright report deployed directly to root (fallback)"
+              echo "REPORTS_AVAILABLE=true" >> $GITHUB_ENV
             fi
-            
-            echo "✅ Reports organized successfully"
-            echo "REPORTS_AVAILABLE=true" >> $GITHUB_ENV
           else
-            echo "⚠️ No reports found or reports directory is empty"
-            echo "This likely indicates an artifact upload/download issue"
-            
-            # Create placeholder directories anyway for consistency
-            mkdir -p "./reports/${WORKFLOW_DIR}/${TIMESTAMP}_run-${RUN_NUMBER}" "./latest/${WORKFLOW_DIR}"
-            
-            # Create a placeholder file explaining the situation
-            {
-              echo '<!DOCTYPE html>'
-              echo '<html>'
-              echo '<head>'
-              echo '    <title>Test Report - Missing Artifacts</title>'
-              echo '    <style>'
-              echo '        body { font-family: Arial, sans-serif; margin: 40px; text-align: center; }'
-              echo '        .warning { background: #fff3cd; border: 1px solid #ffeaa7; padding: 20px; border-radius: 8px; margin: 20px 0; }'
-              echo '    </style>'
-              echo '</head>'
-              echo '<body>'
-              echo '    <h1>🎭 Test Report Unavailable</h1>'
-              echo '    <div class="warning">'
-              echo '        <h3>⚠️ Artifacts Not Available</h3>'
-              echo '        <p>Test reports could not be deployed due to missing artifacts.</p>'
-              echo '        <p>This typically happens when GitHub storage quota is exceeded.</p>'
-              echo '    </div>'
-              echo '    <p><a href="../../index.html">← Back to Reports Archive</a></p>'
-              echo '</body>'
-              echo '</html>'
-            } > "./latest/${WORKFLOW_DIR}/index.html"
-            
-            cp "./latest/${WORKFLOW_DIR}/index.html" "./reports/${WORKFLOW_DIR}/${TIMESTAMP}_run-${RUN_NUMBER}/index.html"
+            echo "⚠️ No reports found - no deployment will occur"
             echo "REPORTS_AVAILABLE=false" >> $GITHUB_ENV
-          fi
-
-          # Store for commit message
-          echo "WORKFLOW_DIR=${WORKFLOW_DIR}" >> $GITHUB_ENV
-          echo "TIMESTAMP=${TIMESTAMP}" >> $GITHUB_ENV
-          echo "ACTUAL_RUN_NUMBER=${RUN_NUMBER}" >> $GITHUB_ENV
-
-      - name: Cleanup old reports (keep last 10 per workflow)
-        run: |
-          if [ -d "./reports" ]; then
-              for workflow in ./reports/*/; do
-                  if [ -d "$workflow" ]; then
-                      # Keep only the 10 most recent reports per workflow
-                      cd "$workflow"
-                      ls -t | tail -n +11 | xargs -r rm -rf
-                      cd - > /dev/null
-                  fi
-              done
-          fi
-
-      - name: Generate index page
-        run: |
-          {
-            echo '<!DOCTYPE html>'
-            echo '<html>'
-            echo '<head>'
-            echo '    <title>Playwright Test Reports</title>'
-            echo '    <style>'
-            echo '        body { font-family: Arial, sans-serif; margin: 40px; }'
-            echo '        .header { border-bottom: 2px solid #eee; padding-bottom: 20px; margin-bottom: 30px; }'
-            echo '        .section { margin-bottom: 30px; }'
-            echo '        .latest-reports { background: #f5f5f5; padding: 20px; border-radius: 8px; }'
-            echo '        .historical-reports { margin-top: 30px; }'
-            echo '        .workflow-group { margin-bottom: 25px; border: 1px solid #ddd; border-radius: 8px; }'
-            echo '        .workflow-header { background: #f8f9fa; padding: 15px; font-weight: bold; border-bottom: 1px solid #ddd; }'
-            echo '        .report-list { padding: 15px; }'
-            echo '        .report-item { margin: 8px 0; }'
-            echo '        .report-link { color: #0366d6; text-decoration: none; }'
-            echo '        .report-link:hover { text-decoration: underline; }'
-            echo '        .timestamp { color: #666; font-size: 0.9em; }'
-            echo '        .latest-badge { background: #28a745; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; }'
-          } > index.html
-
-          echo "              </style>" >> index.html
-          echo "          </head>" >> index.html
-          echo "          <body>" >> index.html
-          echo "              <div class=\"header\">" >> index.html
-          echo "                  <h1>🎭 Playwright Test Reports</h1>" >> index.html
-          echo "                  <p>Historical test reports archive</p>" >> index.html
-          echo "              </div>" >> index.html
-
-          # Latest reports section
-          echo "              <div class=\"section latest-reports\">" >> index.html
-          echo "                  <h2>📊 Latest Reports</h2>" >> index.html
-
-          if [ -d "./latest" ]; then
-              for workflow in ./latest/*/; do
-                  if [ -d "$workflow" ]; then
-                      workflow_name=$(basename "$workflow")
-                      echo "                  <div class=\"report-item\">" >> index.html
-                      echo "                      <a href=\"./latest/$workflow_name/index.html\" class=\"report-link\">" >> index.html
-                      echo "                          ${workflow_name} <span class=\"latest-badge\">LATEST</span>" >> index.html
-                      echo "                      </a>" >> index.html
-                      echo "                  </div>" >> index.html
-                  fi
-              done
-          fi
-
-          echo "              </div>" >> index.html
-
-          # Historical reports section
-          echo "              <div class=\"section historical-reports\">" >> index.html
-          echo "                  <h2>📚 Historical Reports</h2>" >> index.html
-
-          if [ -d "./reports" ]; then
-              for workflow in ./reports/*/; do
-                  if [ -d "$workflow" ]; then
-                      workflow_name=$(basename "$workflow")
-                      echo "                  <div class=\"workflow-group\">" >> index.html
-                      echo "                      <div class=\"workflow-header\">$workflow_name</div>" >> index.html
-                      echo "                      <div class=\"report-list\">" >> index.html
-                      
-                      # List reports in reverse chronological order
-                      for report in $(ls -t "$workflow"/); do
-                          if [ -d "$workflow/$report" ]; then
-                              # Extract timestamp and run number for display
-                              display_name=$(echo "$report" | sed 's/_/ /g')
-                              echo "                          <div class=\"report-item\">" >> index.html
-                              echo "                              <a href=\"./reports/$workflow_name/$report/index.html\" class=\"report-link\">" >> index.html
-                              echo "                                  $display_name" >> index.html
-                              echo "                              </a>" >> index.html
-                              echo "                              <span class=\"timestamp\">$(TZ='Asia/Jerusalem' date -d "${report%_run-*}" +"%B %d, %Y at %H:%M" 2>/dev/null || echo "${report%_run-*}")</span>" >> index.html
-                              echo "                          </div>" >> index.html
-                          fi
-                      done
-                      
-                      echo "                      </div>" >> index.html
-                      echo "                  </div>" >> index.html
-                  fi
-              done
-          fi
-
-          echo "              </div>" >> index.html
-          echo "              <div style=\"margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; color: #666; font-size: 0.9em;\">" >> index.html
-          echo "                  Last updated: $(TZ='Asia/Jerusalem' date '+%B %d, %Y at %H:%M %Z')" >> index.html
-          echo "              </div>" >> index.html
-          echo "          </body>" >> index.html
-          echo "          </html>" >> index.html
-
-      - name: Cleanup old reports (keep last 10 per workflow)
-        run: |
-          if [ -d "./reports" ]; then
-              for workflow in ./reports/*/; do
-                  if [ -d "$workflow" ]; then
-                      # Keep only the 10 most recent reports per workflow
-                      cd "$workflow"
-                      ls -t | tail -n +11 | xargs -r rm -rf
-                      cd - > /dev/null
-                  fi
-              done
           fi
 
       - name: Upload artifact
@@ -338,16 +127,15 @@ jobs:
 
       - name: Add deployment status to summary
         run: |
-          echo "🎭 Playwright Reports Deployment Status" >> $GITHUB_STEP_SUMMARY
+          echo "🎭 Playwright Report Deployment Status" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           if [ "$REPORTS_AVAILABLE" = "true" ]; then
-            echo "✅ Status: Reports deployed successfully" >> $GITHUB_STEP_SUMMARY
-            echo "📊 Report URL: ${{ steps.deployment.outputs.page_url }}" >> $GITHUB_STEP_SUMMARY
-            echo "📚 Latest Report: ${{ steps.deployment.outputs.page_url }}latest/${WORKFLOW_DIR}/" >> $GITHUB_STEP_SUMMARY
-            echo "🗂️ Historical Archive: ${{ steps.deployment.outputs.page_url }}reports/${WORKFLOW_DIR}/" >> $GITHUB_STEP_SUMMARY
+            echo "✅ Status: Playwright HTML report deployed successfully" >> $GITHUB_STEP_SUMMARY
+            echo "📊 Direct Report URL: ${{ steps.deployment.outputs.page_url }}" >> $GITHUB_STEP_SUMMARY
+            echo "🎯 Access: GitHub Pages now opens directly to the Playwright test report" >> $GITHUB_STEP_SUMMARY
           else
-            echo "⚠️ Status: Deployment completed but artifacts were unavailable" >> $GITHUB_STEP_SUMMARY
-            echo "📦 Issue: Likely GitHub storage quota exceeded" >> $GITHUB_STEP_SUMMARY
+            echo "⚠️ Status: Deployment completed but test artifacts were unavailable" >> $GITHUB_STEP_SUMMARY
+            echo "📦 Issue: Likely GitHub storage quota exceeded or test artifacts missing" >> $GITHUB_STEP_SUMMARY
             echo "🔧 Action: Reports will auto-deploy once quota is available" >> $GITHUB_STEP_SUMMARY
             echo "📊 Site URL: ${{ steps.deployment.outputs.page_url }}" >> $GITHUB_STEP_SUMMARY
             echo "📋 Placeholder: Created with explanation of the issue" >> $GITHUB_STEP_SUMMARY
