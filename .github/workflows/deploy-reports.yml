@@ -103,18 +103,19 @@ jobs:
             if [ -n "$FIRST_ARTIFACT_DIR" ] && [ -d "$FIRST_ARTIFACT_DIR" ]; then
               echo "📁 Found artifact directory: $FIRST_ARTIFACT_DIR"
               
-              # First, copy all files and directories
-              cp -r "$FIRST_ARTIFACT_DIR"/* ./
+              # Copy all files except trace directory first
+              find "$FIRST_ARTIFACT_DIR" -mindepth 1 -maxdepth 1 ! -name "trace" -exec cp -r {} ./ \;
               
-              # Ensure the main HTML report index.html is preserved as the root index
-              if [ -f "$FIRST_ARTIFACT_DIR/index.html" ]; then
-                cp "$FIRST_ARTIFACT_DIR/index.html" ./index.html
-                echo "✅ Main HTML report index.html preserved as root"
+              # Copy trace directory if it exists (this preserves trace viewer)
+              if [ -d "$FIRST_ARTIFACT_DIR/trace" ]; then
+                cp -r "$FIRST_ARTIFACT_DIR/trace" ./
+                echo "📊 Trace viewer available at /trace/"
               fi
               
-              # If trace directory exists, move it to avoid conflicts
-              if [ -d "./trace" ] && [ -f "./trace/index.html" ]; then
-                echo "📊 Trace viewer available at /trace/"
+              # Ensure main HTML report is at root (this should already be there from first copy)
+              if [ -f "$FIRST_ARTIFACT_DIR/index.html" ]; then
+                cp "$FIRST_ARTIFACT_DIR/index.html" ./index.html
+                echo "✅ Main HTML report index.html at root"
               fi
               
               echo "✅ Playwright HTML report deployed successfully"
