@@ -52,63 +52,58 @@ jobs:
             # Get the actual test workflow conclusion from the deployment workflow context
             # The deploy-reports workflow is triggered by test workflows and we need to find the original test status
             
-            # Get triggering workflow info
-            TRIGGERING_WORKFLOW_NAME="${{ github.event.workflow_run.name }}"
-            TRIGGERING_HEAD_SHA="${{ github.event.workflow_run.head_sha }}"
+            # The Slack workflow is triggered by Deploy workflow completion
+            # The Deploy workflow is triggered by test workflow completion  
+            # We need to find which test workflow originally triggered the deployment
             
-            echo "Processing deployment for: $TRIGGERING_WORKFLOW_NAME" >&2
-            echo "Head SHA: $TRIGGERING_HEAD_SHA" >&2
+            # Get the Deploy workflow information
+            DEPLOY_WORKFLOW_NAME="${{ github.event.workflow_run.name }}"
+            DEPLOY_HEAD_SHA="${{ github.event.workflow_run.head_sha }}"
+            DEPLOY_RUN_ID="${{ github.event.workflow_run.id }}"
             
-            # Get the actual test workflow conclusion by querying GitHub API
-            # We need to find the test workflow run that triggered this deployment
+            echo "Deploy workflow: $DEPLOY_WORKFLOW_NAME" >&2
+            echo "Deploy HEAD SHA: $DEPLOY_HEAD_SHA" >&2
+            echo "Deploy Run ID: $DEPLOY_RUN_ID" >&2
+            
+            # Query the Deploy workflow run to find which test workflow triggered it
             REPO="${{ github.repository }}"
             TOKEN="${{ secrets.GITHUB_TOKEN }}"
+            
+            echo "Getting deploy workflow details..." >&2
+            DEPLOY_DETAILS=$(curl -s -H "Authorization: token $TOKEN" \
+              "https://api.github.com/repos/$REPO/actions/runs/$DEPLOY_RUN_ID")
+            
+            # Get the triggering workflow info from the deploy workflow
+            TRIGGERING_WORKFLOW_NAME=$(echo "$DEPLOY_DETAILS" | jq -r '.triggering_actor.login // "unknown"')
+            echo "Deploy triggered by: $TRIGGERING_WORKFLOW_NAME" >&2
             
             # Find the most recent test workflow run for this commit
             echo "Searching for test workflow runs for commit: $TRIGGERING_HEAD_SHA" >&2
             
-            # Query for Sanity Tests workflow runs with the same head SHA (with retry)
-            echo "Querying for Sanity Tests workflow..." >&2
-            for i in {1..3}; do
-              SANITY_STATUS=$(curl -s -H "Authorization: token $TOKEN" \
-                "https://api.github.com/repos/$REPO/actions/workflows/sanity.yml/runs?head_sha=$TRIGGERING_HEAD_SHA&per_page=1" \
-                | jq -r '.workflow_runs[0].conclusion // "not_found"')
-              
-              if [ "$SANITY_STATUS" != "not_found" ] && [ "$SANITY_STATUS" != "null" ]; then
-                echo "Found Sanity workflow on attempt $i: $SANITY_STATUS" >&2
-                break
-              fi
-              echo "Sanity query attempt $i: $SANITY_STATUS (retrying...)" >&2
-              sleep 2
-            done
+            # Simple approach: Find the most recent test workflows for this commit
+            echo "Finding test workflows for commit SHA: $DEPLOY_HEAD_SHA" >&2
             
-            # Query for Regression Tests workflow runs with the same head SHA (with retry)
-            echo "Querying for Regression Tests workflow..." >&2  
-            for i in {1..3}; do
-              REGRESSION_STATUS=$(curl -s -H "Authorization: token $TOKEN" \
-                "https://api.github.com/repos/$REPO/actions/workflows/nightly-regression.yml/runs?head_sha=$TRIGGERING_HEAD_SHA&per_page=1" \
-                | jq -r '.workflow_runs[0].conclusion // "not_found"')
-              
-              if [ "$REGRESSION_STATUS" != "not_found" ] && [ "$REGRESSION_STATUS" != "null" ]; then
-                echo "Found Regression workflow on attempt $i: $REGRESSION_STATUS" >&2
-                break
-              fi
-              echo "Regression query attempt $i: $REGRESSION_STATUS (retrying...)" >&2
-              sleep 2
-            done
+            # Query for all recent workflow runs and filter by our HEAD SHA and test workflow names
+            RECENT_RUNS=$(curl -s -H "Authorization: token $TOKEN" \
+              "https://api.github.com/repos/$REPO/actions/runs?per_page=50" \
+              | jq -r --arg sha "$DEPLOY_HEAD_SHA" \
+                '.workflow_runs[] | select(.head_sha == $sha and (.name == "Sanity Tests" or .name == "Regression Tests")) | "\(.name):\(.conclusion)"')
+            
+            echo "Found test workflows for this commit:" >&2
+            echo "$RECENT_RUNS" >&2
+            
+            # Extract statuses
+            SANITY_STATUS=$(echo "$RECENT_RUNS" | grep "^Sanity Tests:" | cut -d: -f2 | head -1)
+            REGRESSION_STATUS=$(echo "$RECENT_RUNS" | grep "^Regression Tests:" | cut -d: -f2 | head -1)
+            
+            # Set defaults if not found
+            SANITY_STATUS=${SANITY_STATUS:-"not_found"}
+            REGRESSION_STATUS=${REGRESSION_STATUS:-"not_found"}
             
             echo "Sanity workflow status: $SANITY_STATUS" >&2
             echo "Regression workflow status: $REGRESSION_STATUS" >&2
             
-            # Also check for any recent test workflows in the last 6 hours as fallback
-            RECENT_WORKFLOWS=$(curl -s -H "Authorization: token $TOKEN" \
-              "https://api.github.com/repos/$REPO/actions/runs?per_page=10&created=>=2025-09-03T02:00:00Z" \
-              | jq -r '.workflow_runs[] | select(.name | test("Sanity|Regression")) | select(.head_sha == "'$TRIGGERING_HEAD_SHA'") | .conclusion' \
-              | head -1)
-            
-            echo "Recent workflow check: $RECENT_WORKFLOWS" >&2
-            
-            # Determine the actual test status and workflow name
+            # Determine the actual test status and workflow name with improved logic
             if [ "$SANITY_STATUS" != "not_found" ] && [ "$SANITY_STATUS" != "null" ]; then
               TEST_STATUS="$SANITY_STATUS"
               WORKFLOW_NAME="Sanity Tests"
@@ -118,15 +113,27 @@ jobs:
               WORKFLOW_NAME="Regression Tests"
               echo "Found Regression Tests run with status: $TEST_STATUS" >&2
             else
-              # Fallback: check if deployment failed due to missing artifacts (indicates test failure)
-              if [ "${{ github.event.workflow_run.conclusion }}" == "failure" ]; then
-                TEST_STATUS="failure"
-                WORKFLOW_NAME="Unknown Test"
-                echo "Deployment failed - likely due to test failure" >&2
+              # Fallback: Try to find any recent test workflow for this repository
+              echo "No workflows found for this commit, checking recent test runs..." >&2
+              RECENT_TEST=$(curl -s -H "Authorization: token $TOKEN" \
+                "https://api.github.com/repos/$REPO/actions/runs?per_page=10" \
+                | jq -r '.workflow_runs[] | select(.name == "Sanity Tests" or .name == "Regression Tests") | "\(.name):\(.conclusion)" | @base64' | head -1 | base64 -d)
+              
+              if [ ! -z "$RECENT_TEST" ]; then
+                TEST_STATUS=$(echo "$RECENT_TEST" | cut -d: -f2)
+                WORKFLOW_NAME=$(echo "$RECENT_TEST" | cut -d: -f1)
+                echo "Using recent test workflow: $WORKFLOW_NAME with status: $TEST_STATUS" >&2
               else
-                TEST_STATUS="unknown"
-                WORKFLOW_NAME="Unknown Test"
-                echo "Could not determine test status" >&2
+                # Last resort: unknown status
+                if [ "${{ github.event.workflow_run.conclusion }}" == "failure" ]; then
+                  TEST_STATUS="failure"
+                  WORKFLOW_NAME="Unknown Test"
+                  echo "Deployment failed - likely due to test failure" >&2
+                else
+                  TEST_STATUS="unknown"
+                  WORKFLOW_NAME="Unknown Test"
+                  echo "Could not determine test status after all queries" >&2
+                fi
               fi
             fi
             
@@ -292,22 +299,6 @@ jobs:
                     "type": "mrkdwn",
                     "text": "📊 Deployment Status\n\n*Status:* ${{ steps.status.outputs.deployment_status == 'success' && '✅ DEPLOYED SUCCESSFULLY' || '❌ DEPLOYMENT FAILED' }}\n*Report URL:* https://itcb-2.github.io/ITCB-Testing/\n*Deployed at:* ${{ steps.status.outputs.israel_time }} (IDT)"
                   }
-                },
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "🔍 **Possible reasons:**\n• Direct deployment trigger without tests\n• Test workflows didn't complete before deployment\n• Test workflows failed to create artifacts\n• Manual deployment execution"
-                  }
-                },
-                {
-                  "type": "context",
-                  "elements": [
-                    {
-                      "type": "mrkdwn",
-                      "text": "📋 Deployment Workflow: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-                    }
-                  ]
                 }
               ]
             }
