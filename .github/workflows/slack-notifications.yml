@@ -88,36 +88,62 @@ jobs:
             # Simple approach: Find the most recent test workflows for this commit
             echo "Finding test workflows for commit SHA: $DEPLOY_HEAD_SHA" >&2
             
-            # Query for all recent workflow runs and filter by our HEAD SHA and test workflow names
-            echo "Querying GitHub API for workflow runs..." >&2
+            # Enhanced multi-strategy approach to find test workflows
+            echo "Querying GitHub API for workflow runs (Strategy 1: By commit SHA)..." >&2
             WORKFLOWS_RESPONSE=$(curl -s -H "Authorization: token $TOKEN" \
-              "https://api.github.com/repos/$REPO/actions/runs?per_page=50")
+              "https://api.github.com/repos/$REPO/actions/runs?per_page=100")
             
             # Debug: Check API response status
             API_STATUS=$(echo "$WORKFLOWS_RESPONSE" | jq -r '.message // "success"' 2>/dev/null || echo "parse_error")
             echo "API Response Status: $API_STATUS" >&2
             
-            # Check if API response is valid and has workflow_runs field
-            if [ "$WORKFLOWS_RESPONSE" = "null" ] || [ -z "$WORKFLOWS_RESPONSE" ] || [ "$API_STATUS" != "success" ]; then
-              echo "Error: GitHub API returned null, empty, or error response: $API_STATUS" >&2
-              RECENT_RUNS=""
-            else
-              # Check if workflow_runs exists and is not null
+            RECENT_RUNS=""
+            
+            # Strategy 1: Exact commit SHA match
+            if [ "$WORKFLOWS_RESPONSE" != "null" ] && [ ! -z "$WORKFLOWS_RESPONSE" ] && [ "$API_STATUS" = "success" ]; then
               WORKFLOW_RUNS_CHECK=$(echo "$WORKFLOWS_RESPONSE" | jq -r '.workflow_runs // empty' 2>/dev/null)
-              if [ -z "$WORKFLOW_RUNS_CHECK" ] || [ "$WORKFLOW_RUNS_CHECK" = "null" ]; then
-                echo "Warning: No workflow_runs found in API response" >&2
-                # Debug: Show what the API actually returned
-                echo "API Response preview:" >&2
-                echo "$WORKFLOWS_RESPONSE" | jq -r 'keys // empty' 2>/dev/null | head -5 >&2
-                RECENT_RUNS=""
-              else
+              if [ ! -z "$WORKFLOW_RUNS_CHECK" ] && [ "$WORKFLOW_RUNS_CHECK" != "null" ]; then
                 RECENT_RUNS=$(echo "$WORKFLOWS_RESPONSE" | jq -r --arg sha "$DEPLOY_HEAD_SHA" \
                   '.workflow_runs[]? | select(.head_sha == $sha and (.name == "Sanity Tests" or .name == "Regression Tests")) | "\(.name):\(.conclusion)"' 2>/dev/null || echo "")
+                echo "Strategy 1 - Found workflows by exact SHA: $(echo "$RECENT_RUNS" | wc -l) matches" >&2
               fi
+            fi
+            
+            # Strategy 2: If no exact match, find most recent test workflows within time window
+            if [ -z "$RECENT_RUNS" ] && [ "$WORKFLOWS_RESPONSE" != "null" ] && [ ! -z "$WORKFLOWS_RESPONSE" ]; then
+              echo "Strategy 2: Looking for recent test workflows within 1 hour of deploy..." >&2
+              DEPLOY_TIMESTAMP="${{ github.event.workflow_run.created_at }}"
+              echo "Deploy created at: $DEPLOY_TIMESTAMP" >&2
+              
+              # Get timestamp 1 hour before deploy
+              SEARCH_CUTOFF=$(date -d "$DEPLOY_TIMESTAMP - 1 hour" -Iseconds 2>/dev/null || date -u -d "$DEPLOY_TIMESTAMP - 1 hour" +"%Y-%m-%dT%H:%M:%SZ" 2>/dev/null || echo "")
+              echo "Searching for tests created after: $SEARCH_CUTOFF" >&2
+              
+              if [ ! -z "$SEARCH_CUTOFF" ]; then
+                RECENT_RUNS=$(echo "$WORKFLOWS_RESPONSE" | jq -r --arg cutoff "$SEARCH_CUTOFF" \
+                  '.workflow_runs[]? | select((.name == "Sanity Tests" or .name == "Regression Tests") and .created_at >= $cutoff) | "\(.name):\(.conclusion)" ' 2>/dev/null | head -2 || echo "")
+                echo "Strategy 2 - Found workflows by time window: $(echo "$RECENT_RUNS" | wc -l) matches" >&2
+              fi
+            fi
+            
+            # Strategy 3: Get the most recent test workflows (fallback)
+            if [ -z "$RECENT_RUNS" ] && [ "$WORKFLOWS_RESPONSE" != "null" ] && [ ! -z "$WORKFLOWS_RESPONSE" ]; then
+              echo "Strategy 3: Using most recent test workflows as fallback..." >&2
+              RECENT_RUNS=$(echo "$WORKFLOWS_RESPONSE" | jq -r \
+                '.workflow_runs[]? | select(.name == "Sanity Tests" or .name == "Regression Tests") | "\(.name):\(.conclusion)"' 2>/dev/null | head -2 || echo "")
+              echo "Strategy 3 - Found recent workflows: $(echo "$RECENT_RUNS" | wc -l) matches" >&2
             fi
             
             echo "Found test workflows for this commit:" >&2
             echo "$RECENT_RUNS" >&2
+            echo "Total workflow matches found: $(echo "$RECENT_RUNS" | grep -c ":" 2>/dev/null || echo 0)" >&2
+            
+            # Debug: Show what commits we're actually seeing in recent workflows
+            if [ "$WORKFLOWS_RESPONSE" != "null" ] && [ ! -z "$WORKFLOWS_RESPONSE" ]; then
+              echo "Recent commit SHAs seen in workflow runs:" >&2
+              echo "$WORKFLOWS_RESPONSE" | jq -r '.workflow_runs[]? | select(.name == "Sanity Tests" or .name == "Regression Tests") | "\(.head_sha) - \(.name) - \(.conclusion // "running")"' 2>/dev/null | head -5 >&2
+              echo "Target commit SHA: $DEPLOY_HEAD_SHA" >&2
+            fi
             
             # Extract statuses
             SANITY_STATUS=$(echo "$RECENT_RUNS" | grep "^Sanity Tests:" | cut -d: -f2 | head -1)
@@ -140,34 +166,67 @@ jobs:
               WORKFLOW_NAME="Regression Tests"
               echo "Found Regression Tests run with status: $TEST_STATUS" >&2
             else
-              # Fallback: Try to find any recent test workflow for this repository
-              echo "No workflows found for this commit, checking recent test runs..." >&2
+              # Enhanced fallback: Try multiple approaches to find recent test workflows
+              echo "No workflows found for this commit, trying enhanced fallback strategies..." >&2
               
+              # Strategy A: Direct query for recent test workflows
               RECENT_WORKFLOWS_RESPONSE=$(curl -s -H "Authorization: token $TOKEN" \
-                "https://api.github.com/repos/$REPO/actions/runs?per_page=10")
+                "https://api.github.com/repos/$REPO/actions/runs?per_page=20")
+              
+              RECENT_TEST=""
               
               # Check if API response is valid
-              if [ "$RECENT_WORKFLOWS_RESPONSE" = "null" ] || [ -z "$RECENT_WORKFLOWS_RESPONSE" ]; then
-                echo "Error: GitHub API returned null or empty response for recent workflows" >&2
-                RECENT_TEST=""
-              else
-                RECENT_TEST=$(echo "$RECENT_WORKFLOWS_RESPONSE" | jq -r '.workflow_runs[]? | select(.name == "Sanity Tests" or .name == "Regression Tests") | "\(.name):\(.conclusion)" | @base64' 2>/dev/null | head -1 | base64 -d 2>/dev/null || echo "")
+              if [ "$RECENT_WORKFLOWS_RESPONSE" != "null" ] && [ ! -z "$RECENT_WORKFLOWS_RESPONSE" ]; then
+                # Strategy A1: Look for workflows in the last 2 hours
+                DEPLOY_TIMESTAMP="${{ github.event.workflow_run.created_at }}"
+                SEARCH_CUTOFF=$(date -d "$DEPLOY_TIMESTAMP - 2 hours" -Iseconds 2>/dev/null || date -u -d "$DEPLOY_TIMESTAMP - 2 hours" +"%Y-%m-%dT%H:%M:%SZ" 2>/dev/null || echo "")
+                
+                if [ ! -z "$SEARCH_CUTOFF" ]; then
+                  echo "Fallback Strategy A1: Looking for test workflows after $SEARCH_CUTOFF" >&2
+                  RECENT_TEST=$(echo "$RECENT_WORKFLOWS_RESPONSE" | jq -r --arg cutoff "$SEARCH_CUTOFF" \
+                    '.workflow_runs[]? | select((.name == "Sanity Tests" or .name == "Regression Tests") and .created_at >= $cutoff and .conclusion != null) | "\(.name):\(.conclusion)" ' 2>/dev/null | head -1 || echo "")
+                fi
+                
+                # Strategy A2: If time-based search fails, get the most recent completed test workflow
+                if [ -z "$RECENT_TEST" ] || [ "$RECENT_TEST" = "null" ]; then
+                  echo "Fallback Strategy A2: Looking for most recent completed test workflow" >&2
+                  RECENT_TEST=$(echo "$RECENT_WORKFLOWS_RESPONSE" | jq -r \
+                    '.workflow_runs[]? | select((.name == "Sanity Tests" or .name == "Regression Tests") and .conclusion != null) | "\(.name):\(.conclusion)" ' 2>/dev/null | head -1 || echo "")
+                fi
+                
+                # Strategy A3: If still nothing, get any recent test workflow regardless of completion
+                if [ -z "$RECENT_TEST" ] || [ "$RECENT_TEST" = "null" ]; then
+                  echo "Fallback Strategy A3: Looking for any recent test workflow" >&2
+                  RECENT_TEST=$(echo "$RECENT_WORKFLOWS_RESPONSE" | jq -r \
+                    '.workflow_runs[]? | select(.name == "Sanity Tests" or .name == "Regression Tests") | "\(.name):\(.conclusion // "in_progress")" ' 2>/dev/null | head -1 || echo "")
+                fi
               fi
               
               if [ ! -z "$RECENT_TEST" ] && [ "$RECENT_TEST" != "null" ]; then
                 TEST_STATUS=$(echo "$RECENT_TEST" | cut -d: -f2)
                 WORKFLOW_NAME=$(echo "$RECENT_TEST" | cut -d: -f1)
-                echo "Using recent test workflow: $WORKFLOW_NAME with status: $TEST_STATUS" >&2
+                echo "Using fallback test workflow: $WORKFLOW_NAME with status: $TEST_STATUS" >&2
               else
-                # Last resort: unknown status
+                # Last resort: Check deployment status to infer test status
+                echo "All fallback strategies failed, inferring from deployment status..." >&2
                 if [ "${{ github.event.workflow_run.conclusion }}" == "failure" ]; then
                   TEST_STATUS="failure"
-                  WORKFLOW_NAME="Unknown Test"
-                  echo "Deployment failed - likely due to test failure" >&2
+                  WORKFLOW_NAME="Inferred Test"
+                  echo "Deployment failed - inferring test failure" >&2
                 else
-                  TEST_STATUS="unknown"
-                  WORKFLOW_NAME="Unknown Test"
-                  echo "Could not determine test status after all queries" >&2
+                  # Check if we can find ANY workflow for this commit (not just test workflows)
+                  ANY_WORKFLOW=$(echo "$WORKFLOWS_RESPONSE" | jq -r --arg sha "$DEPLOY_HEAD_SHA" \
+                    '.workflow_runs[]? | select(.head_sha == $sha) | .name' 2>/dev/null | head -1 || echo "")
+                  
+                  if [ ! -z "$ANY_WORKFLOW" ] && [ "$ANY_WORKFLOW" != "null" ]; then
+                    TEST_STATUS="unknown"
+                    WORKFLOW_NAME="Found Commit Workflows"
+                    echo "Found workflows for commit but no test workflows - status unknown" >&2
+                  else
+                    TEST_STATUS="unknown"
+                    WORKFLOW_NAME="No Matching Workflows"
+                    echo "Could not find any workflows for this commit SHA" >&2
+                  fi
                 fi
               fi
             fi
@@ -188,12 +247,15 @@ jobs:
             echo "artifact_issue=${ARTIFACT_ISSUE}" >> $GITHUB_OUTPUT
                      
             # Debug output
-            echo "Final values:" >&2
+            echo "=== FINAL ANALYSIS ===" >&2
             echo "  deployment_status: ${{ github.event.workflow_run.conclusion }}" >&2
             echo "  test_status: ${TEST_STATUS}" >&2
             echo "  workflow_name: ${WORKFLOW_NAME}" >&2
             echo "  artifact_issue: ${ARTIFACT_ISSUE}" >&2
             echo "  triggering_workflow: $TRIGGERING_WORKFLOW_NAME" >&2
+            echo "  deploy_head_sha: $DEPLOY_HEAD_SHA" >&2
+            echo "  workflow_detection_method: $([ ! -z "$RECENT_RUNS" ] && echo "commit_sha_match" || echo "fallback_strategy")" >&2
+            echo "===================" >&2
           fi
 
           # Get current date/time in Israel timezone
