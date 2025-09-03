@@ -67,15 +67,35 @@ jobs:
             # Find the most recent test workflow run for this commit
             echo "Searching for test workflow runs for commit: $TRIGGERING_HEAD_SHA" >&2
             
-            # Query for Sanity Tests workflow runs with the same head SHA
-            SANITY_STATUS=$(curl -s -H "Authorization: token $TOKEN" \
-              "https://api.github.com/repos/$REPO/actions/workflows/sanity.yml/runs?head_sha=$TRIGGERING_HEAD_SHA&per_page=1" \
-              | jq -r '.workflow_runs[0].conclusion // "not_found"')
+            # Query for Sanity Tests workflow runs with the same head SHA (with retry)
+            echo "Querying for Sanity Tests workflow..." >&2
+            for i in {1..3}; do
+              SANITY_STATUS=$(curl -s -H "Authorization: token $TOKEN" \
+                "https://api.github.com/repos/$REPO/actions/workflows/sanity.yml/runs?head_sha=$TRIGGERING_HEAD_SHA&per_page=1" \
+                | jq -r '.workflow_runs[0].conclusion // "not_found"')
+              
+              if [ "$SANITY_STATUS" != "not_found" ] && [ "$SANITY_STATUS" != "null" ]; then
+                echo "Found Sanity workflow on attempt $i: $SANITY_STATUS" >&2
+                break
+              fi
+              echo "Sanity query attempt $i: $SANITY_STATUS (retrying...)" >&2
+              sleep 2
+            done
             
-            # Query for Regression Tests workflow runs with the same head SHA  
-            REGRESSION_STATUS=$(curl -s -H "Authorization: token $TOKEN" \
-              "https://api.github.com/repos/$REPO/actions/workflows/nightly-regression.yml/runs?head_sha=$TRIGGERING_HEAD_SHA&per_page=1" \
-              | jq -r '.workflow_runs[0].conclusion // "not_found"')
+            # Query for Regression Tests workflow runs with the same head SHA (with retry)
+            echo "Querying for Regression Tests workflow..." >&2  
+            for i in {1..3}; do
+              REGRESSION_STATUS=$(curl -s -H "Authorization: token $TOKEN" \
+                "https://api.github.com/repos/$REPO/actions/workflows/nightly-regression.yml/runs?head_sha=$TRIGGERING_HEAD_SHA&per_page=1" \
+                | jq -r '.workflow_runs[0].conclusion // "not_found"')
+              
+              if [ "$REGRESSION_STATUS" != "not_found" ] && [ "$REGRESSION_STATUS" != "null" ]; then
+                echo "Found Regression workflow on attempt $i: $REGRESSION_STATUS" >&2
+                break
+              fi
+              echo "Regression query attempt $i: $REGRESSION_STATUS (retrying...)" >&2
+              sleep 2
+            done
             
             echo "Sanity workflow status: $SANITY_STATUS" >&2
             echo "Regression workflow status: $REGRESSION_STATUS" >&2
@@ -169,7 +189,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "📊 Report Deployment Status\n\n*Status:* ${{ steps.status.outputs.deployment_status == 'success' && '✅ DEPLOYED SUCCESSFULLY' || '⚠️ DEPLOYMENT HAD ISSUES' }}\n*Report URL:* https://itcb-2.github.io/ITCB-Testing/\n*Deployed at:* ${{ steps.status.outputs.israel_time }}"
+                    "text": "📊 Report Deployment Status\n\n*Status:* ${{ steps.status.outputs.deployment_status == 'success' && '✅ DEPLOYED SUCCESSFULLY' || '⚠️ DEPLOYMENT HAD ISSUES' }}\n*Report URL:* https://itcb-2.github.io/ITCB-Testing/\n*Deployed at:* ${{ steps.status.outputs.israel_time }} (IDT)"
                   }
                 },
                 {
@@ -215,7 +235,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "📊 Report Deployment Status\n\n*Status:* ${{ steps.status.outputs.deployment_status == 'success' && '✅ REPORTS DEPLOYED (Failed Test Results)' || '❌ DEPLOYMENT ALSO FAILED' }}\n*Report URL:* https://itcb-2.github.io/ITCB-Testing/\n*Deployed at:* ${{ steps.status.outputs.israel_time }}"
+                    "text": "📊 Report Deployment Status\n\n*Status:* ${{ steps.status.outputs.deployment_status == 'success' && '✅ REPORTS DEPLOYED (Failed Test Results)' || '❌ DEPLOYMENT ALSO FAILED' }}\n*Report URL:* https://itcb-2.github.io/ITCB-Testing/\n*Deployed at:* ${{ steps.status.outputs.israel_time }} (IDT)"
                   }
                 },
                 {
@@ -306,4 +326,4 @@ jobs:
             echo "📦 Artifact Issue: GitHub storage quota exceeded" >> $GITHUB_STEP_SUMMARY
             echo "⏳ Note: Storage quota typically refreshes within 6-12 hours" >> $GITHUB_STEP_SUMMARY
           fi
-          echo "⏰ Sent at: $(date)" >> $GITHUB_STEP_SUMMARY
+          echo "⏰ Sent at: ${{ steps.status.outputs.israel_time }} (IDT)" >> $GITHUB_STEP_SUMMARY
