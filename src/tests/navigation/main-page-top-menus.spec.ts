@@ -126,7 +126,7 @@ test.describe('Main Page - aboutITCB Menu Tests @regression', () => {
   test.beforeEach(async ({mainPage}) => {
     await mainPage.openMainPage()
   })
-  test('should navigate to ITCB About Us page and verify URL', async ({
+  test('should navigate to ITCB About Us page and verify URL @sanity', async ({
     topMenuMainPage,
   }) => {
     await topMenuMainPage.navigateToAboutUsPage()
