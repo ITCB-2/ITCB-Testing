@@ -80,6 +80,14 @@ jobs:
             echo "Sanity workflow status: $SANITY_STATUS" >&2
             echo "Regression workflow status: $REGRESSION_STATUS" >&2
             
+            # Also check for any recent test workflows in the last 6 hours as fallback
+            RECENT_WORKFLOWS=$(curl -s -H "Authorization: token $TOKEN" \
+              "https://api.github.com/repos/$REPO/actions/runs?per_page=10&created=>=2025-09-03T02:00:00Z" \
+              | jq -r '.workflow_runs[] | select(.name | test("Sanity|Regression")) | select(.head_sha == "'$TRIGGERING_HEAD_SHA'") | .conclusion' \
+              | head -1)
+            
+            echo "Recent workflow check: $RECENT_WORKFLOWS" >&2
+            
             # Determine the actual test status and workflow name
             if [ "$SANITY_STATUS" != "not_found" ] && [ "$SANITY_STATUS" != "null" ]; then
               TEST_STATUS="$SANITY_STATUS"
@@ -223,6 +231,61 @@ jobs:
                     {
                       "type": "mrkdwn",
                       "text": "📋 Workflow: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Notify Slack on Unknown Test Status
+        if: steps.status.outputs.test_status == 'unknown'
+        uses: slackapi/slack-github-action@v2.1.1
+        with:
+          webhook-type: incoming-webhook
+          payload: |
+            {
+              "channel": "#testing-updates",
+              "text": "🤷 Test Status Unknown - Deployment Completed",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "🤷 Test Status Unknown"
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "⚠️ **Unable to determine test results**\n\nNo test workflows (Sanity or Regression) were found for this deployment.\n\n*Repository:* ${{ github.repository }}\n*Branch:* ${{ github.ref_name }}\n*Commit:* ${{ github.sha }}"
+                  }
+                },
+                {
+                  "type": "divider"
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "📊 Deployment Status\n\n*Status:* ${{ steps.status.outputs.deployment_status == 'success' && '✅ DEPLOYED SUCCESSFULLY' || '❌ DEPLOYMENT FAILED' }}\n*Report URL:* https://itcb-2.github.io/ITCB-Testing/\n*Deployed at:* ${{ steps.status.outputs.israel_time }} (IDT)"
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "🔍 **Possible reasons:**\n• Direct deployment trigger without tests\n• Test workflows didn't complete before deployment\n• Test workflows failed to create artifacts\n• Manual deployment execution"
+                  }
+                },
+                {
+                  "type": "context",
+                  "elements": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "📋 Deployment Workflow: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                     }
                   ]
                 }
