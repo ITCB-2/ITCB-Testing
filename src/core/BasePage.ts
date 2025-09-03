@@ -36,7 +36,7 @@ export class BasePage extends LocatorUtils {
 
     // Create pattern that allows optional slash before query parameters
     const urlPattern = new RegExp(
-      '^' + escapeRegex(expectedURL).replace('\\/\\?', '\\/?\\?') + '$',
+      '^' + escapeRegex(expectedURL).replace('/\\?', '/?\\?') + '$',
     )
 
     try {
