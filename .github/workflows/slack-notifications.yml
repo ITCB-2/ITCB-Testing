@@ -27,6 +27,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
+      - name: Install jq for JSON parsing
+        run: |
+          sudo apt-get update && sudo apt-get install -y jq
+
       - name: Get test and deployment status
         id: status
         run: |
@@ -45,34 +49,64 @@ jobs:
             # For workflow_run events, we can access the triggering workflow information
             # The deploy-reports workflow is triggered by completed test workflows
             
-            # Extract triggering workflow info from the event context
+            # Get the actual test workflow conclusion from the deployment workflow context
+            # The deploy-reports workflow is triggered by test workflows and we need to find the original test status
+            
+            # Get triggering workflow info
             TRIGGERING_WORKFLOW_NAME="${{ github.event.workflow_run.name }}"
             TRIGGERING_HEAD_SHA="${{ github.event.workflow_run.head_sha }}"
             
             echo "Processing deployment for: $TRIGGERING_WORKFLOW_NAME" >&2
             echo "Head SHA: $TRIGGERING_HEAD_SHA" >&2
             
-            # Default values - we know this is triggered by the Deploy workflow which is triggered by test workflows
-            TEST_STATUS="unknown"
-            WORKFLOW_NAME="Sanity Tests"  # This is our main test workflow
-            ARTIFACT_ISSUE="false"
+            # Get the actual test workflow conclusion by querying GitHub API
+            # We need to find the test workflow run that triggered this deployment
+            REPO="${{ github.repository }}"
+            TOKEN="${{ secrets.GITHUB_TOKEN }}"
             
-            # Since deploy-reports is triggered on test completion, we can infer the test status
-            # based on whether the deployment was needed (deploy only runs after successful tests)
-            if [ "${{ github.event.workflow_run.conclusion }}" == "success" ]; then
-              # If deployment succeeded, the triggering test likely succeeded
-              TEST_STATUS="success"
-              echo "Deployment succeeded - inferring test success" >&2
-            elif [ "${{ github.event.workflow_run.conclusion }}" == "failure" ]; then
-              # If deployment failed, we need to check why
-              # Since deploy is only triggered after test success, this is likely an artifact/deployment issue
-              TEST_STATUS="success"  # Test likely succeeded but deployment had issues
-              ARTIFACT_ISSUE="true"
-              echo "Deployment failed - likely artifact/deployment issue after successful tests" >&2
+            # Find the most recent test workflow run for this commit
+            echo "Searching for test workflow runs for commit: $TRIGGERING_HEAD_SHA" >&2
+            
+            # Query for Sanity Tests workflow runs with the same head SHA
+            SANITY_STATUS=$(curl -s -H "Authorization: token $TOKEN" \
+              "https://api.github.com/repos/$REPO/actions/workflows/sanity.yml/runs?head_sha=$TRIGGERING_HEAD_SHA&per_page=1" \
+              | jq -r '.workflow_runs[0].conclusion // "not_found"')
+            
+            # Query for Regression Tests workflow runs with the same head SHA  
+            REGRESSION_STATUS=$(curl -s -H "Authorization: token $TOKEN" \
+              "https://api.github.com/repos/$REPO/actions/workflows/nightly-regression.yml/runs?head_sha=$TRIGGERING_HEAD_SHA&per_page=1" \
+              | jq -r '.workflow_runs[0].conclusion // "not_found"')
+            
+            echo "Sanity workflow status: $SANITY_STATUS" >&2
+            echo "Regression workflow status: $REGRESSION_STATUS" >&2
+            
+            # Determine the actual test status and workflow name
+            if [ "$SANITY_STATUS" != "not_found" ] && [ "$SANITY_STATUS" != "null" ]; then
+              TEST_STATUS="$SANITY_STATUS"
+              WORKFLOW_NAME="Sanity Tests"
+              echo "Found Sanity Tests run with status: $TEST_STATUS" >&2
+            elif [ "$REGRESSION_STATUS" != "not_found" ] && [ "$REGRESSION_STATUS" != "null" ]; then
+              TEST_STATUS="$REGRESSION_STATUS"
+              WORKFLOW_NAME="Regression Tests"
+              echo "Found Regression Tests run with status: $TEST_STATUS" >&2
             else
-              # Other statuses (cancelled, skipped, etc.)
-              TEST_STATUS="unknown"
-              echo "Deployment status: ${{ github.event.workflow_run.conclusion }}" >&2
+              # Fallback: check if deployment failed due to missing artifacts (indicates test failure)
+              if [ "${{ github.event.workflow_run.conclusion }}" == "failure" ]; then
+                TEST_STATUS="failure"
+                WORKFLOW_NAME="Unknown Test"
+                echo "Deployment failed - likely due to test failure" >&2
+              else
+                TEST_STATUS="unknown"
+                WORKFLOW_NAME="Unknown Test"
+                echo "Could not determine test status" >&2
+              fi
+            fi
+            
+            # Check if this is an artifact/deployment issue
+            ARTIFACT_ISSUE="false"
+            if [ "$TEST_STATUS" == "success" ] && [ "${{ github.event.workflow_run.conclusion }}" == "failure" ]; then
+              ARTIFACT_ISSUE="true"
+              echo "Tests passed but deployment failed - artifact issue" >&2
             fi
             
             # Additional context from the deploy workflow event
@@ -96,8 +130,8 @@ jobs:
           ISRAEL_TIME=$(TZ='Asia/Jerusalem' date '+%d-%m-%Y %H:%M:%S')
           echo "israel_time=$ISRAEL_TIME" >> $GITHUB_OUTPUT
 
-      - name: Notify Slack on Success
-        if: steps.status.outputs.deployment_status == 'success'
+      - name: Notify Slack on Test Success
+        if: steps.status.outputs.test_status == 'success'
         uses: slackapi/slack-github-action@v2.1.1
         with:
           webhook-type: incoming-webhook
@@ -117,7 +151,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "🧪 Test Workflow Status\n\n*Workflow:* ${{ steps.status.outputs.workflow_name }}\n*Status:* ${{ steps.status.outputs.test_status == 'success' && '✅ PASSED' || steps.status.outputs.test_status == 'failure' && '❌ FAILED' || '⏭️ SKIPPED' }}\n*Repository:* ${{ github.repository }}\n*Branch:* ${{ github.ref_name }}"
+                    "text": "🧪 Test Workflow Status\n\n*Workflow:* ${{ steps.status.outputs.workflow_name }}\n*Status:* ✅ PASSED\n*Repository:* ${{ github.repository }}\n*Branch:* ${{ github.ref_name }}"
                   }
                 },
                 {
@@ -127,14 +161,14 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "📊 Report Deployment Status\n\n*Status:* ✅ DEPLOYED SUCCESSFULLY\n*Report URL:* https://itcb-2.github.io/ITCB-Testing/\n*Deployed at:* ${{ steps.status.outputs.israel_time }}"
+                    "text": "📊 Report Deployment Status\n\n*Status:* ${{ steps.status.outputs.deployment_status == 'success' && '✅ DEPLOYED SUCCESSFULLY' || '⚠️ DEPLOYMENT HAD ISSUES' }}\n*Report URL:* https://itcb-2.github.io/ITCB-Testing/\n*Deployed at:* ${{ steps.status.outputs.israel_time }}"
                   }
                 },
                 {
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "${{ steps.status.outputs.test_status == 'success' && '🎉 Great work! All tests passed and reports are now live!' || steps.status.outputs.test_status == 'failure' && '⚠️ Action needed: Some tests failed. Check the detailed report above.' || '📊 Info: Test results are available in the report above.' }}"
+                    "text": "${{ steps.status.outputs.deployment_status == 'success' && '🎉 Great work! All tests passed and reports are now live!' || '✅ Tests passed but there were deployment issues. Reports may be delayed.' }}"
                   }
                 }
               ]
@@ -142,28 +176,28 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
-      - name: Notify Slack on Failure
-        if: steps.status.outputs.deployment_status == 'failure'
+      - name: Notify Slack on Test Failure
+        if: steps.status.outputs.test_status == 'failure'
         uses: slackapi/slack-github-action@v2.1.1
         with:
           webhook-type: incoming-webhook
           payload: |
             {
               "channel": "#testing-updates",
-              "text": "❌ Test Report Deployment Failed",
+              "text": "❌ Tests Failed!",
               "blocks": [
                 {
                   "type": "header",
                   "text": {
                     "type": "plain_text",
-                    "text": "${{ steps.status.outputs.artifact_issue == 'true' && '⚠️ Test Report Storage Issue' || '❌ Test Report Deployment Failed' }}"
+                    "text": "❌ Tests Failed!"
                   }
                 },
                 {
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "🧪 Test Workflow Status\n\n*Workflow:* ${{ steps.status.outputs.workflow_name }}\n*Status:* ${{ steps.status.outputs.test_status == 'success' && '✅ PASSED' || steps.status.outputs.test_status == 'failure' && '❌ FAILED' || '⏭️ SKIPPED' }}\n*Repository:* ${{ github.repository }}\n*Branch:* ${{ github.ref_name }}"
+                    "text": "🧪 Test Workflow Status\n\n*Workflow:* ${{ steps.status.outputs.workflow_name }}\n*Status:* ❌ FAILED\n*Repository:* ${{ github.repository }}\n*Branch:* ${{ github.ref_name }}"
                   }
                 },
                 {
@@ -173,14 +207,14 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "📊 Report Deployment Status\n\n*Status:* ❌ DEPLOYMENT FAILED\n${{ steps.status.outputs.artifact_issue == 'true' && '*Issue:* GitHub artifact storage quota exceeded\n*Note:* Storage quota typically refreshes within 6-12 hours\n*Action:* Reports will auto-deploy once quota is available' || '*Action Required:* Please check the deployment workflow logs' }}"
+                    "text": "📊 Report Deployment Status\n\n*Status:* ${{ steps.status.outputs.deployment_status == 'success' && '✅ REPORTS DEPLOYED (Failed Test Results)' || '❌ DEPLOYMENT ALSO FAILED' }}\n*Report URL:* https://itcb-2.github.io/ITCB-Testing/\n*Deployed at:* ${{ steps.status.outputs.israel_time }}"
                   }
                 },
                 {
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "${{ steps.status.outputs.artifact_issue == 'true' && '📊 Previous reports still available at:\n🔗 https://itcb-2.github.io/ITCB-Testing/' || '🔧 Team action needed - Check the workflow logs for deployment issues.\n🔗 Previous reports: https://itcb-2.github.io/ITCB-Testing/' }}"
+                    "text": "⚠️ **Action Required:** Some tests failed. Check the detailed test report above to see which tests need attention."
                   }
                 },
                 {
