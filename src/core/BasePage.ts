@@ -30,18 +30,24 @@ export class BasePage extends LocatorUtils {
   // Validate URL of the page
   protected async validateURL(expectedURL: string): Promise<void> {
     // Handle trailing slash inconsistency between environments
-    // Accept both "domain/?query" and "domain?query" formats
-    const currentUrl = this.page.url()
-    const normalizedExpected = expectedURL.replace('/?', '?')
-    const normalizedCurrent = currentUrl.replace('/?', '?')
+    // Create a regex pattern that accepts both "domain/?query" and "domain?query" formats
+    const escapeRegex = (str: string): string =>
+      str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
-    if (normalizedCurrent === normalizedExpected) {
-      // URLs match after normalization
-      return
+    // Create pattern that allows optional slash before query parameters
+    const urlPattern = new RegExp(
+      '^' + escapeRegex(expectedURL).replace('\\/\\?', '\\/?\\?') + '$',
+    )
+
+    try {
+      await expect(this.page).toHaveURL(urlPattern)
+    } catch (error) {
+      const currentUrl = this.page.url()
+      throw new Error(
+        `URL validation failed. Expected pattern: "${expectedURL}" (accepts both "/?query" and "?query"), ` +
+          `but got: "${currentUrl}". Error: ${error}`,
+      )
     }
-
-    // Fall back to standard validation
-    await expect(this.page).toHaveURL(expectedURL)
   }
   // Navigate to a specific URL
   protected async gotoURL(url: string): Promise<void> {
