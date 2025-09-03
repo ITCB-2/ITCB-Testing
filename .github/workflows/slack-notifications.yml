@@ -73,8 +73,13 @@ jobs:
             DEPLOY_DETAILS=$(curl -s -H "Authorization: token $TOKEN" \
               "https://api.github.com/repos/$REPO/actions/runs/$DEPLOY_RUN_ID")
             
-            # Get the triggering workflow info from the deploy workflow
-            TRIGGERING_WORKFLOW_NAME=$(echo "$DEPLOY_DETAILS" | jq -r '.triggering_actor.login // "unknown"')
+            # Check if API response is valid
+            if [ "$DEPLOY_DETAILS" = "null" ] || [ -z "$DEPLOY_DETAILS" ]; then
+              echo "Warning: Could not get deploy workflow details" >&2
+              TRIGGERING_WORKFLOW_NAME="unknown"
+            else
+              TRIGGERING_WORKFLOW_NAME=$(echo "$DEPLOY_DETAILS" | jq -r '.triggering_actor.login // "unknown"' 2>/dev/null || echo "unknown")
+            fi
             echo "Deploy triggered by: $TRIGGERING_WORKFLOW_NAME" >&2
             
             # Find the most recent test workflow run for this commit
@@ -84,10 +89,32 @@ jobs:
             echo "Finding test workflows for commit SHA: $DEPLOY_HEAD_SHA" >&2
             
             # Query for all recent workflow runs and filter by our HEAD SHA and test workflow names
-            RECENT_RUNS=$(curl -s -H "Authorization: token $TOKEN" \
-              "https://api.github.com/repos/$REPO/actions/runs?per_page=50" \
-              | jq -r --arg sha "$DEPLOY_HEAD_SHA" \
-                '.workflow_runs[] | select(.head_sha == $sha and (.name == "Sanity Tests" or .name == "Regression Tests")) | "\(.name):\(.conclusion)"')
+            echo "Querying GitHub API for workflow runs..." >&2
+            WORKFLOWS_RESPONSE=$(curl -s -H "Authorization: token $TOKEN" \
+              "https://api.github.com/repos/$REPO/actions/runs?per_page=50")
+            
+            # Debug: Check API response status
+            API_STATUS=$(echo "$WORKFLOWS_RESPONSE" | jq -r '.message // "success"' 2>/dev/null || echo "parse_error")
+            echo "API Response Status: $API_STATUS" >&2
+            
+            # Check if API response is valid and has workflow_runs field
+            if [ "$WORKFLOWS_RESPONSE" = "null" ] || [ -z "$WORKFLOWS_RESPONSE" ] || [ "$API_STATUS" != "success" ]; then
+              echo "Error: GitHub API returned null, empty, or error response: $API_STATUS" >&2
+              RECENT_RUNS=""
+            else
+              # Check if workflow_runs exists and is not null
+              WORKFLOW_RUNS_CHECK=$(echo "$WORKFLOWS_RESPONSE" | jq -r '.workflow_runs // empty' 2>/dev/null)
+              if [ -z "$WORKFLOW_RUNS_CHECK" ] || [ "$WORKFLOW_RUNS_CHECK" = "null" ]; then
+                echo "Warning: No workflow_runs found in API response" >&2
+                # Debug: Show what the API actually returned
+                echo "API Response preview:" >&2
+                echo "$WORKFLOWS_RESPONSE" | jq -r 'keys // empty' 2>/dev/null | head -5 >&2
+                RECENT_RUNS=""
+              else
+                RECENT_RUNS=$(echo "$WORKFLOWS_RESPONSE" | jq -r --arg sha "$DEPLOY_HEAD_SHA" \
+                  '.workflow_runs[]? | select(.head_sha == $sha and (.name == "Sanity Tests" or .name == "Regression Tests")) | "\(.name):\(.conclusion)"' 2>/dev/null || echo "")
+              fi
+            fi
             
             echo "Found test workflows for this commit:" >&2
             echo "$RECENT_RUNS" >&2
@@ -115,11 +142,19 @@ jobs:
             else
               # Fallback: Try to find any recent test workflow for this repository
               echo "No workflows found for this commit, checking recent test runs..." >&2
-              RECENT_TEST=$(curl -s -H "Authorization: token $TOKEN" \
-                "https://api.github.com/repos/$REPO/actions/runs?per_page=10" \
-                | jq -r '.workflow_runs[] | select(.name == "Sanity Tests" or .name == "Regression Tests") | "\(.name):\(.conclusion)" | @base64' | head -1 | base64 -d)
               
-              if [ ! -z "$RECENT_TEST" ]; then
+              RECENT_WORKFLOWS_RESPONSE=$(curl -s -H "Authorization: token $TOKEN" \
+                "https://api.github.com/repos/$REPO/actions/runs?per_page=10")
+              
+              # Check if API response is valid
+              if [ "$RECENT_WORKFLOWS_RESPONSE" = "null" ] || [ -z "$RECENT_WORKFLOWS_RESPONSE" ]; then
+                echo "Error: GitHub API returned null or empty response for recent workflows" >&2
+                RECENT_TEST=""
+              else
+                RECENT_TEST=$(echo "$RECENT_WORKFLOWS_RESPONSE" | jq -r '.workflow_runs[]? | select(.name == "Sanity Tests" or .name == "Regression Tests") | "\(.name):\(.conclusion)" | @base64' 2>/dev/null | head -1 | base64 -d 2>/dev/null || echo "")
+              fi
+              
+              if [ ! -z "$RECENT_TEST" ] && [ "$RECENT_TEST" != "null" ]; then
                 TEST_STATUS=$(echo "$RECENT_TEST" | cut -d: -f2)
                 WORKFLOW_NAME=$(echo "$RECENT_TEST" | cut -d: -f1)
                 echo "Using recent test workflow: $WORKFLOW_NAME with status: $TEST_STATUS" >&2
