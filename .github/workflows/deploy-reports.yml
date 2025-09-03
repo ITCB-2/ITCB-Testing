@@ -103,32 +103,35 @@ jobs:
             if [ -n "$FIRST_ARTIFACT_DIR" ] && [ -d "$FIRST_ARTIFACT_DIR" ]; then
               echo "📁 Found artifact directory: $FIRST_ARTIFACT_DIR"
               
-              # Store main report index.html temporarily
+              # Deploy the main HTML report to root
               if [ -f "$FIRST_ARTIFACT_DIR/index.html" ]; then
-                cp "$FIRST_ARTIFACT_DIR/index.html" ./main-index.html
-                echo "💾 Preserved main report index.html"
+                cp "$FIRST_ARTIFACT_DIR/index.html" ./index.html
+                echo "✅ Main HTML report deployed to root"
               fi
               
-              # Copy all files except trace directory first
-              find "$FIRST_ARTIFACT_DIR" -mindepth 1 -maxdepth 1 ! -name "trace" -exec cp -r {} ./ \;
+              # Copy all files except trace directory and index.html (already copied)
+              find "$FIRST_ARTIFACT_DIR" -mindepth 1 -maxdepth 1 ! -name "trace" ! -name "index.html" -exec cp -r {} ./ \;
               
-              # Copy trace directory if it exists (this preserves trace viewer)
+              # Copy trace directory if it exists, ensuring it stays in /trace/ subdirectory
               if [ -d "$FIRST_ARTIFACT_DIR/trace" ]; then
                 cp -r "$FIRST_ARTIFACT_DIR/trace" ./
                 echo "📊 Trace viewer available at /trace/"
-              fi
-              
-              # Restore main HTML report as root index.html (overriding any trace index.html)
-              if [ -f "./main-index.html" ]; then
-                mv ./main-index.html ./index.html
-                echo "✅ Main HTML report index.html restored at root"
+                
+                # Ensure the main report index.html is not overridden by trace index.html
+                if [ -f "$FIRST_ARTIFACT_DIR/index.html" ]; then
+                  cp "$FIRST_ARTIFACT_DIR/index.html" ./index.html
+                  echo "🔒 Main HTML report index.html secured at root (trace viewer stays in /trace/)"
+                fi
               fi
               
               echo "✅ Playwright HTML report deployed successfully"
               echo "REPORTS_AVAILABLE=true" >> $GITHUB_ENV
             else
-              # Fallback: copy contents directly
-              cp -r ./reports-temp/* ./
+              # Fallback: copy contents more carefully to avoid trace index.html override
+              if [ -f "./reports-temp/index.html" ]; then
+                cp "./reports-temp/index.html" ./index.html
+              fi
+              find ./reports-temp -mindepth 1 -maxdepth 1 ! -name "index.html" -exec cp -r {} ./ \;
               echo "✅ Playwright report deployed directly to root (fallback)"
               echo "REPORTS_AVAILABLE=true" >> $GITHUB_ENV
             fi
