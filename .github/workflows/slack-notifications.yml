@@ -19,6 +19,10 @@ on:
           - success
           - failure
 
+permissions:
+  actions: read # Required to query workflow runs via GitHub API
+  contents: read # Required to checkout repository
+
 jobs:
   notify-slack:
     runs-on: ubuntu-latest
