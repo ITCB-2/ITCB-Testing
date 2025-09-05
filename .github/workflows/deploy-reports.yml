@@ -154,7 +154,6 @@ jobs:
             echo "✅ Status: Playwright HTML report deployed successfully" >> $GITHUB_STEP_SUMMARY
             echo "📊 Direct Report URL: ${{ steps.deployment.outputs.page_url }}" >> $GITHUB_STEP_SUMMARY
             echo "🎯 Access: GitHub Pages opens directly to the Playwright test report" >> $GITHUB_STEP_SUMMARY
-            echo "📂 Trace Viewer: Available at ${{ steps.deployment.outputs.page_url }}trace/" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "🔍 Debug Info:" >> $GITHUB_STEP_SUMMARY
             echo "- Root index.html: $([ -f ./index.html ] && echo 'Present' || echo 'Missing')" >> $GITHUB_STEP_SUMMARY

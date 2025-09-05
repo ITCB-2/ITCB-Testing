@@ -103,12 +103,13 @@ jobs:
             
             RECENT_RUNS=""
             
-            # Strategy 1: Exact commit SHA match
+            # Strategy 1: Exact commit SHA match with timestamp sorting
             if [ "$WORKFLOWS_RESPONSE" != "null" ] && [ ! -z "$WORKFLOWS_RESPONSE" ] && [ "$API_STATUS" = "success" ]; then
               WORKFLOW_RUNS_CHECK=$(echo "$WORKFLOWS_RESPONSE" | jq -r '.workflow_runs // empty' 2>/dev/null)
               if [ ! -z "$WORKFLOW_RUNS_CHECK" ] && [ "$WORKFLOW_RUNS_CHECK" != "null" ]; then
                 RECENT_RUNS=$(echo "$WORKFLOWS_RESPONSE" | jq -r --arg sha "$DEPLOY_HEAD_SHA" \
-                  '.workflow_runs[]? | select(.head_sha == $sha and (.name == "Sanity Tests" or .name == "Regression Tests")) | "\(.name):\(.conclusion)"' 2>/dev/null || echo "")
+                  '.workflow_runs[]? | select(.head_sha == $sha and (.name == "Sanity Tests" or .name == "Regression Tests")) | "\(.created_at)|\(.name)|\(.conclusion)"' 2>/dev/null | \
+                  sort -r)
                 echo "Strategy 1 - Found workflows by exact SHA: $(echo "$RECENT_RUNS" | wc -l) matches" >&2
               fi
             fi
@@ -125,7 +126,8 @@ jobs:
               
               if [ ! -z "$SEARCH_CUTOFF" ]; then
                 RECENT_RUNS=$(echo "$WORKFLOWS_RESPONSE" | jq -r --arg cutoff "$SEARCH_CUTOFF" \
-                  '.workflow_runs[]? | select((.name == "Sanity Tests" or .name == "Regression Tests") and .created_at >= $cutoff) | "\(.name):\(.conclusion)" ' 2>/dev/null | head -2 || echo "")
+                  '.workflow_runs[]? | select((.name == "Sanity Tests" or .name == "Regression Tests") and .created_at >= $cutoff) | "\(.created_at)|\(.name)|\(.conclusion)" ' 2>/dev/null | \
+                  sort -r | head -2 || echo "")
                 echo "Strategy 2 - Found workflows by time window: $(echo "$RECENT_RUNS" | wc -l) matches" >&2
               fi
             fi
@@ -134,13 +136,14 @@ jobs:
             if [ -z "$RECENT_RUNS" ] && [ "$WORKFLOWS_RESPONSE" != "null" ] && [ ! -z "$WORKFLOWS_RESPONSE" ]; then
               echo "Strategy 3: Using most recent test workflows as fallback..." >&2
               RECENT_RUNS=$(echo "$WORKFLOWS_RESPONSE" | jq -r \
-                '.workflow_runs[]? | select(.name == "Sanity Tests" or .name == "Regression Tests") | "\(.name):\(.conclusion)"' 2>/dev/null | head -2 || echo "")
+                '.workflow_runs[]? | select(.name == "Sanity Tests" or .name == "Regression Tests") | "\(.created_at)|\(.name)|\(.conclusion)"' 2>/dev/null | \
+                sort -r | head -2 || echo "")
               echo "Strategy 3 - Found recent workflows: $(echo "$RECENT_RUNS" | wc -l) matches" >&2
             fi
             
             echo "Found test workflows for this commit:" >&2
             echo "$RECENT_RUNS" >&2
-            echo "Total workflow matches found: $(echo "$RECENT_RUNS" | grep -c ":" 2>/dev/null || echo 0)" >&2
+            echo "Total workflow matches found: $(echo "$RECENT_RUNS" | grep -c "|" 2>/dev/null || echo 0)" >&2
             
             # Debug: Show what commits we're actually seeing in recent workflows
             if [ "$WORKFLOWS_RESPONSE" != "null" ] && [ ! -z "$WORKFLOWS_RESPONSE" ]; then
@@ -149,9 +152,12 @@ jobs:
               echo "Target commit SHA: $DEPLOY_HEAD_SHA" >&2
             fi
             
-            # Extract statuses
-            SANITY_STATUS=$(echo "$RECENT_RUNS" | grep "^Sanity Tests:" | cut -d: -f2 | head -1)
-            REGRESSION_STATUS=$(echo "$RECENT_RUNS" | grep "^Regression Tests:" | cut -d: -f2 | head -1)
+            # Extract statuses with timestamps to determine which ran most recently
+            SANITY_INFO=$(echo "$RECENT_RUNS" | grep "|Sanity Tests|" | head -1)
+            REGRESSION_INFO=$(echo "$RECENT_RUNS" | grep "|Regression Tests|" | head -1)
+            
+            SANITY_STATUS=$(echo "$SANITY_INFO" | cut -d'|' -f3)
+            REGRESSION_STATUS=$(echo "$REGRESSION_INFO" | cut -d'|' -f3)
             
             # Set defaults if not found
             SANITY_STATUS=${SANITY_STATUS:-"not_found"}
@@ -160,15 +166,30 @@ jobs:
             echo "Sanity workflow status: $SANITY_STATUS" >&2
             echo "Regression workflow status: $REGRESSION_STATUS" >&2
             
-            # Determine the actual test status and workflow name with improved logic
-            if [ "$SANITY_STATUS" != "not_found" ] && [ "$SANITY_STATUS" != "null" ]; then
-              TEST_STATUS="$SANITY_STATUS"
-              WORKFLOW_NAME="Sanity Tests"
-              echo "Found Sanity Tests run with status: $TEST_STATUS" >&2
-            elif [ "$REGRESSION_STATUS" != "not_found" ] && [ "$REGRESSION_STATUS" != "null" ]; then
-              TEST_STATUS="$REGRESSION_STATUS"
-              WORKFLOW_NAME="Regression Tests"
-              echo "Found Regression Tests run with status: $TEST_STATUS" >&2
+            # Determine the actual test status and workflow name based on which workflow actually triggered this deployment
+            # First, try to get more detailed info including timestamps to determine the most recent
+            if [ "$WORKFLOWS_RESPONSE" != "null" ] && [ ! -z "$WORKFLOWS_RESPONSE" ]; then
+              # Get the most recent test workflow for this commit with timestamp
+              MOST_RECENT_TEST=$(echo "$WORKFLOWS_RESPONSE" | jq -r --arg sha "$DEPLOY_HEAD_SHA" \
+                '.workflow_runs[]? | select(.head_sha == $sha and (.name == "Sanity Tests" or .name == "Regression Tests")) | "\(.created_at)|\(.name)|\(.conclusion)"' 2>/dev/null | \
+                sort -r | head -1)
+              
+              if [ ! -z "$MOST_RECENT_TEST" ] && [ "$MOST_RECENT_TEST" != "null" ]; then
+                MOST_RECENT_WORKFLOW=$(echo "$MOST_RECENT_TEST" | cut -d'|' -f2)
+                MOST_RECENT_STATUS=$(echo "$MOST_RECENT_TEST" | cut -d'|' -f3)
+                MOST_RECENT_TIME=$(echo "$MOST_RECENT_TEST" | cut -d'|' -f1)
+                
+                TEST_STATUS="$MOST_RECENT_STATUS"
+                WORKFLOW_NAME="$MOST_RECENT_WORKFLOW"
+                echo "Found most recent test workflow: $WORKFLOW_NAME at $MOST_RECENT_TIME with status: $TEST_STATUS" >&2
+              elif [ "$SANITY_STATUS" != "not_found" ] && [ "$SANITY_STATUS" != "null" ]; then
+                TEST_STATUS="$SANITY_STATUS"
+                WORKFLOW_NAME="Sanity Tests"
+                echo "Fallback: Found Sanity Tests run with status: $TEST_STATUS" >&2
+              elif [ "$REGRESSION_STATUS" != "not_found" ] && [ "$REGRESSION_STATUS" != "null" ]; then
+                TEST_STATUS="$REGRESSION_STATUS"
+                WORKFLOW_NAME="Regression Tests"
+                echo "Fallback: Found Regression Tests run with status: $TEST_STATUS" >&2
             else
               # Enhanced fallback: Try multiple approaches to find recent test workflows
               echo "No workflows found for this commit, trying enhanced fallback strategies..." >&2
@@ -188,28 +209,49 @@ jobs:
                 if [ ! -z "$SEARCH_CUTOFF" ]; then
                   echo "Fallback Strategy A1: Looking for test workflows after $SEARCH_CUTOFF" >&2
                   RECENT_TEST=$(echo "$RECENT_WORKFLOWS_RESPONSE" | jq -r --arg cutoff "$SEARCH_CUTOFF" \
-                    '.workflow_runs[]? | select((.name == "Sanity Tests" or .name == "Regression Tests") and .created_at >= $cutoff and .conclusion != null) | "\(.name):\(.conclusion)" ' 2>/dev/null | head -1 || echo "")
+                    '.workflow_runs[]? | select((.name == "Sanity Tests" or .name == "Regression Tests") and .created_at >= $cutoff and .conclusion != null) | "\(.created_at)|\(.name)|\(.conclusion)" ' 2>/dev/null | \
+                    sort -r | head -1 || echo "")
                 fi
                 
                 # Strategy A2: If time-based search fails, get the most recent completed test workflow
                 if [ -z "$RECENT_TEST" ] || [ "$RECENT_TEST" = "null" ]; then
                   echo "Fallback Strategy A2: Looking for most recent completed test workflow" >&2
                   RECENT_TEST=$(echo "$RECENT_WORKFLOWS_RESPONSE" | jq -r \
-                    '.workflow_runs[]? | select((.name == "Sanity Tests" or .name == "Regression Tests") and .conclusion != null) | "\(.name):\(.conclusion)" ' 2>/dev/null | head -1 || echo "")
+                    '.workflow_runs[]? | select((.name == "Sanity Tests" or .name == "Regression Tests") and .conclusion != null) | "\(.created_at)|\(.name)|\(.conclusion)" ' 2>/dev/null | \
+                    sort -r | head -1 || echo "")
                 fi
                 
                 # Strategy A3: If still nothing, get any recent test workflow regardless of completion
                 if [ -z "$RECENT_TEST" ] || [ "$RECENT_TEST" = "null" ]; then
                   echo "Fallback Strategy A3: Looking for any recent test workflow" >&2
                   RECENT_TEST=$(echo "$RECENT_WORKFLOWS_RESPONSE" | jq -r \
-                    '.workflow_runs[]? | select(.name == "Sanity Tests" or .name == "Regression Tests") | "\(.name):\(.conclusion // "in_progress")" ' 2>/dev/null | head -1 || echo "")
+                    '.workflow_runs[]? | select(.name == "Sanity Tests" or .name == "Regression Tests") | "\(.created_at)|\(.name)|\(.conclusion // "in_progress")" ' 2>/dev/null | \
+                    sort -r | head -1 || echo "")
                 fi
               fi
               
               if [ ! -z "$RECENT_TEST" ] && [ "$RECENT_TEST" != "null" ]; then
-                TEST_STATUS=$(echo "$RECENT_TEST" | cut -d: -f2)
-                WORKFLOW_NAME=$(echo "$RECENT_TEST" | cut -d: -f1)
-                echo "Using fallback test workflow: $WORKFLOW_NAME with status: $TEST_STATUS" >&2
+                # Parse the most recent test with timestamp info if available
+                if echo "$RECENT_TEST" | grep -q "|"; then
+                  # Format: "timestamp|name|status" or "name|status"
+                  if [ "$(echo "$RECENT_TEST" | grep -o '|' | wc -l)" -eq 2 ]; then
+                    # Has timestamp
+                    TEST_STATUS=$(echo "$RECENT_TEST" | cut -d'|' -f3)
+                    WORKFLOW_NAME=$(echo "$RECENT_TEST" | cut -d'|' -f2)
+                    RECENT_TIME=$(echo "$RECENT_TEST" | cut -d'|' -f1)
+                    echo "Using fallback test workflow with timestamp: $WORKFLOW_NAME at $RECENT_TIME with status: $TEST_STATUS" >&2
+                  else
+                    # No timestamp, format: "name|status"
+                    TEST_STATUS=$(echo "$RECENT_TEST" | cut -d'|' -f2)
+                    WORKFLOW_NAME=$(echo "$RECENT_TEST" | cut -d'|' -f1)
+                    echo "Using fallback test workflow: $WORKFLOW_NAME with status: $TEST_STATUS" >&2
+                  fi
+                else
+                  # Old format: "name:status"
+                  TEST_STATUS=$(echo "$RECENT_TEST" | cut -d: -f2)
+                  WORKFLOW_NAME=$(echo "$RECENT_TEST" | cut -d: -f1)
+                  echo "Using fallback test workflow (old format): $WORKFLOW_NAME with status: $TEST_STATUS" >&2
+                fi
               else
                 # Last resort: Check deployment status to infer test status
                 echo "All fallback strategies failed, inferring from deployment status..." >&2
