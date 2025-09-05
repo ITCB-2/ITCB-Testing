@@ -307,6 +307,7 @@ jobs:
           # Get current date/time in Israel timezone
           ISRAEL_TIME=$(TZ='Asia/Jerusalem' date '+%d-%m-%Y %H:%M:%S')
           echo "israel_time=$ISRAEL_TIME" >> $GITHUB_OUTPUT
+          fi
 
       - name: Notify Slack on Test Success
         if: steps.status.outputs.test_status == 'success'
