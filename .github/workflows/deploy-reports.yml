@@ -84,34 +84,13 @@ jobs:
             if [ -f "./reports-temp/index.html" ]; then
               echo "📊 Found main HTML report in reports-temp root"
               
-              # Create a clear deployment strategy:
-              # 1. Copy the main HTML report as the root index.html
+              # Copy the main HTML report and its assets (excluding trace)
               cp "./reports-temp/index.html" ./index.html
               echo "✅ Main HTML report set as root index.html"
               
-              # 2. Copy all other files and directories EXCEPT trace
+              # Copy all other files and directories EXCEPT trace directory
               find "./reports-temp" -mindepth 1 -maxdepth 1 ! -name "trace" ! -name "index.html" -exec cp -r {} ./ \;
               echo "📂 Copied report assets (excluding trace directory)"
-              
-              # 3. Handle trace directory separately to avoid conflicts
-              if [ -d "./reports-temp/trace" ]; then
-                # Remove any existing trace directory first
-                rm -rf ./trace
-                # Copy trace directory
-                cp -r "./reports-temp/trace" ./trace
-                echo "📊 Trace viewer installed at /trace/ subdirectory"
-                
-                # 4. CRITICAL: Re-ensure main index.html is at root (not overwritten)
-                cp "./reports-temp/index.html" ./index.html
-                echo "🔒 ROOT index.html secured (main HTML report)"
-                
-                # 5. Verify the structure
-                echo "📋 Deployment structure:"
-                echo "  - Root index.html: $([ -f ./index.html ] && echo 'HTML Report ✅' || echo 'MISSING ❌')"
-                echo "  - Trace viewer: $([ -f ./trace/index.html ] && echo '/trace/ ✅' || echo 'No trace viewer')"
-              else
-                echo "📊 No trace directory found in report"
-              fi
               
               echo "REPORTS_AVAILABLE=true" >> $GITHUB_ENV
               echo "✅ Playwright HTML report deployed successfully"
@@ -123,7 +102,7 @@ jobs:
               if [ -n "$FIRST_ARTIFACT_DIR" ] && [ -f "$FIRST_ARTIFACT_DIR/index.html" ]; then
                 echo "📁 Found nested artifact directory: $FIRST_ARTIFACT_DIR"
                 cp "$FIRST_ARTIFACT_DIR/index.html" ./index.html
-                find "$FIRST_ARTIFACT_DIR" -mindepth 1 -maxdepth 1 ! -name "index.html" -exec cp -r {} ./ \;
+                find "$FIRST_ARTIFACT_DIR" -mindepth 1 -maxdepth 1 ! -name "trace" ! -name "index.html" -exec cp -r {} ./ \;
                 echo "✅ Fallback deployment completed"
                 echo "REPORTS_AVAILABLE=true" >> $GITHUB_ENV
               else
@@ -156,9 +135,8 @@ jobs:
             echo "🎯 Access: GitHub Pages opens directly to the Playwright test report" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "🔍 Debug Info:" >> $GITHUB_STEP_SUMMARY
-            echo "- Root index.html: $([ -f ./index.html ] && echo 'Present' || echo 'Missing')" >> $GITHUB_STEP_SUMMARY
-            echo "- Root index.html size: $([ -f ./index.html ] && wc -c < ./index.html || echo 'N/A') bytes" >> $GITHUB_STEP_SUMMARY
-            echo "- Trace index.html: $([ -f ./trace/index.html ] && echo 'Present' || echo 'Missing')" >> $GITHUB_STEP_SUMMARY
+            echo "- Report index.html: $([ -f ./index.html ] && echo 'Present' || echo 'Missing')" >> $GITHUB_STEP_SUMMARY
+            echo "- Report size: $([ -f ./index.html ] && wc -c < ./index.html || echo 'N/A') bytes" >> $GITHUB_STEP_SUMMARY
             echo "- Data directory: $([ -d ./data ] && echo 'Present' || echo 'Missing')" >> $GITHUB_STEP_SUMMARY
           else
             echo "⚠️ Status: Deployment completed but test artifacts were unavailable" >> $GITHUB_STEP_SUMMARY
