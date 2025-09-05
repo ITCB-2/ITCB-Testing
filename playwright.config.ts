@@ -33,8 +33,8 @@ export default defineConfig({
       return 0 // No retries for other CI tests
     }
   })(),
-  /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 2 : undefined,
+  /* Optimize parallel tests on CI. */
+  workers: process.env.CI ? 4 : undefined,
   /* Filter tests by tags - example: @sanity, @regression */
   grep: process.env.TEST_TAGS ? new RegExp(process.env.TEST_TAGS) : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */

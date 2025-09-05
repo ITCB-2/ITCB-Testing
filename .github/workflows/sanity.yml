@@ -78,8 +78,8 @@ jobs:
           echo "🧪 Sanity Tests Completed" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           if [ "${{ steps.upload-artifacts.outcome }}" == "success" ]; then
-            echo "📊 Reports available at: https://itcb-2.github.io/ITCB-Testing/" >> $GITHUB_STEP_SUMMARY
-            echo "✅ Artifacts: Successfully uploaded" >> $GITHUB_STEP_SUMMARY
+            echo "✅ Artifacts: Successfully uploaded for deployment" >> $GITHUB_STEP_SUMMARY
+            echo "📦 Report name: sanity-playwright-report-${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
           else
             echo "⚠️ Artifacts: Upload failed (storage quota issue)" >> $GITHUB_STEP_SUMMARY
             echo "🔧 Reports: Generated locally but not uploaded" >> $GITHUB_STEP_SUMMARY
