@@ -46,7 +46,7 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Verify Playwright installation
-        run: npx playwright install --with-deps chromium
+        run: npx playwright --version
       - name: Run All Tests (Regression)
         run: npx playwright test
 
