@@ -84,13 +84,28 @@ jobs:
             if [ -f "./reports-temp/index.html" ]; then
               echo "📊 Found main HTML report in reports-temp root"
               
-              # Copy the main HTML report and its assets (excluding trace)
+              # Copy the main HTML report as the root index.html
               cp "./reports-temp/index.html" ./index.html
               echo "✅ Main HTML report set as root index.html"
               
-              # Copy all other files and directories EXCEPT trace directory
+              # Copy all other files and directories EXCEPT trace (we'll handle trace separately)
               find "./reports-temp" -mindepth 1 -maxdepth 1 ! -name "trace" ! -name "index.html" -exec cp -r {} ./ \;
               echo "📂 Copied report assets (excluding trace directory)"
+              
+              # Handle trace directory separately for trace viewer
+              if [ -d "./reports-temp/trace" ]; then
+                # Remove any existing trace directory first
+                rm -rf ./trace
+                # Copy trace directory
+                cp -r "./reports-temp/trace" ./trace
+                echo "📊 Trace viewer installed at /trace/ subdirectory"
+                
+                # Ensure main index.html is still at root (not overwritten)
+                cp "./reports-temp/index.html" ./index.html
+                echo "🔒 Root index.html secured (main HTML report)"
+              else
+                echo "📊 No trace directory found in report"
+              fi
               
               echo "REPORTS_AVAILABLE=true" >> $GITHUB_ENV
               echo "✅ Playwright HTML report deployed successfully"
@@ -102,8 +117,8 @@ jobs:
               if [ -n "$FIRST_ARTIFACT_DIR" ] && [ -f "$FIRST_ARTIFACT_DIR/index.html" ]; then
                 echo "📁 Found nested artifact directory: $FIRST_ARTIFACT_DIR"
                 cp "$FIRST_ARTIFACT_DIR/index.html" ./index.html
-                find "$FIRST_ARTIFACT_DIR" -mindepth 1 -maxdepth 1 ! -name "trace" ! -name "index.html" -exec cp -r {} ./ \;
-                echo "✅ Fallback deployment completed"
+                find "$FIRST_ARTIFACT_DIR" -mindepth 1 -maxdepth 1 ! -name "index.html" -exec cp -r {} ./ \;
+                echo "✅ Fallback deployment completed (includes trace if present)"
                 echo "REPORTS_AVAILABLE=true" >> $GITHUB_ENV
               else
                 echo "❌ No valid HTML report found anywhere"
@@ -137,6 +152,7 @@ jobs:
             echo "🔍 Debug Info:" >> $GITHUB_STEP_SUMMARY
             echo "- Report index.html: $([ -f ./index.html ] && echo 'Present' || echo 'Missing')" >> $GITHUB_STEP_SUMMARY
             echo "- Report size: $([ -f ./index.html ] && wc -c < ./index.html || echo 'N/A') bytes" >> $GITHUB_STEP_SUMMARY
+            echo "- Trace viewer: $([ -f ./trace/index.html ] && echo 'Available at /trace/' || echo 'Not available')" >> $GITHUB_STEP_SUMMARY
             echo "- Data directory: $([ -d ./data ] && echo 'Present' || echo 'Missing')" >> $GITHUB_STEP_SUMMARY
           else
             echo "⚠️ Status: Deployment completed but test artifacts were unavailable" >> $GITHUB_STEP_SUMMARY
