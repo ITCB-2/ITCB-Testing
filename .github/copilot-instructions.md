@@ -28,6 +28,7 @@ src/
 ├── fixtures/       # Custom Playwright fixtures for dependency injection
 ├── helpers/        # Environment utilities, shared functions
 ├── data/           # URLs, test constants (environment-aware)
+├── types/          # TypeScript interfaces and type definitions
 └── tests/          # Test specification files
 ```
 
@@ -98,6 +99,8 @@ npm test               # Run all Playwright tests
 npm run test:chrome    # Run tests in Chromium only
 npm run test:debug     # Run tests with Playwright inspector
 npm run test:headed    # Run tests in headed mode
+npm run test:sanity    # Run critical @sanity tagged tests (~5-10 min)
+npm run test:regression # Run comprehensive @regression tests (~30-45 min)
 npm run report         # Open HTML test report
 npm run codegen        # Launch Playwright code generator
 ```
@@ -112,6 +115,16 @@ npm run codegen        # Launch Playwright code generator
 - Use destructured page objects from fixtures in tests (e.g., `{loginPage}`)
 - Access environment variables only via `envUtils.ts`
 - Use TypeScript interfaces for test data in `@/data`
+- Tag tests appropriately: `@sanity` for critical tests, `@regression` for comprehensive tests
+
+## Test Classification & Tagging
+
+- **@sanity**: Critical functionality tests, fast execution (~5-10 min total)
+  - Applied at `test.describe()` level: `test.describe('Feature Tests @sanity', () => {...})`
+  - Run with: `npm run test:sanity`
+- **@regression**: Comprehensive validation tests, longer execution acceptable (~30-45 min)
+  - Applied at `test.describe()` level: `test.describe('Feature Tests @regression', () => {...})`
+  - Run with: `npm run test:regression`
 
 ## Locator Strategy
 
