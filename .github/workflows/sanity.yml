@@ -20,7 +20,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       BASE_URL: ${{ secrets.BASE_URL }}
-      TEST_TAGS: '@sanity'
     steps:
       - uses: actions/checkout@v4
 
@@ -33,10 +32,11 @@ jobs:
         run: npm ci
 
       - name: Install Playwright browsers
-        run: npx playwright install --with-deps
+        run: npx playwright install
 
       - name: Verify Playwright installation
         run: npx playwright --version
+
       - name: Run Sanity Tests
         run: npm run test:sanity
 
