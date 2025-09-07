@@ -35,8 +35,8 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
 
-      - name: Run All Tests (Regression)
-        run: npx playwright test
+      - name: Run Regression Tests
+        run: npm run test:regression
 
       # Try to upload artifacts, but continue if quota is hit
       - name: Upload artifacts (with quota fallback)
