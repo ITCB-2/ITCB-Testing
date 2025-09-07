@@ -1,17 +1,17 @@
-import js from '@eslint/js'
-import tseslint from '@typescript-eslint/eslint-plugin'
+import {configs} from '@eslint/js'
+import * as tseslint from '@typescript-eslint/eslint-plugin'
 import tsParser from '@typescript-eslint/parser'
 import prettierConfig from 'eslint-config-prettier'
-import playwright from 'eslint-plugin-playwright'
-import prettierPlugin from 'eslint-plugin-prettier'
+import * as playwright from 'eslint-plugin-playwright'
+import * as prettierPlugin from 'eslint-plugin-prettier'
 
 export default [
-  // ESLint JS recommended config
+  // Fix for ESLint JS recommended config
   {
-    ...js.configs.recommended,
+    ...configs.recommended,
     files: ['**/*.{js,ts}'],
   },
-  // Prettier config
+  // Prettier config - properly import as default
   prettierConfig,
   {
     files: ['**/*.ts'],
@@ -21,7 +21,7 @@ export default [
         ecmaVersion: 2022,
         sourceType: 'module',
         project: './tsconfig.json',
-        tsconfigRootDir: '.',
+        tsconfigRootDir: import.meta.dirname, // Use absolute path
       },
     },
     plugins: {
