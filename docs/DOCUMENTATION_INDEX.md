@@ -32,7 +32,7 @@
 
 **Goal**: Configure automation and monitoring
 
-1. **[../.github/WORKFLOWS.md](../.github/WORKFLOWS.md)** - GitHub Actions workflows
+1. **[WORKFLOWS.md](../.github/WORKFLOWS.md)** - GitHub Actions workflows
 2. **[GITHUB_PAGES_SETUP.md](GITHUB_PAGES_SETUP.md)** - Automated report hosting
 3. **[TESTING.md](TESTING.md)** - Test scheduling and strategies
 4. **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** - CI troubleshooting
