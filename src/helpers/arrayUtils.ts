@@ -1,4 +1,4 @@
-export const findItemByProperty = <T, K extends keyof T>(
+export const findItemByProperty = <T extends {}, K extends keyof T>(
   array: readonly T[],
   propertyName: K,
   expectedValue: T[K],
