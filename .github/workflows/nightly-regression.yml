@@ -53,11 +53,7 @@ jobs:
       - name: Handle artifact upload failure
         if: ${{ !cancelled() && steps.upload-artifacts.outcome == 'failure' }}
         run: |
-          echo "⚠️ Artifact upload failed (likely storage quota)"
-          echo "📁 Report files generated:"
           find playwright-report -type f -name "*.html" | head -10
-          echo ""
-          echo "📊 Report size:"
           du -sh playwright-report/ || echo "No report directory found"
 
       - name: Add test results to summary
