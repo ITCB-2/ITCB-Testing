@@ -8,24 +8,53 @@ The ITCB Testing Framework uses GitHub Actions to provide a comprehensive CI/CD 
 
 ## 🏗️ Workflow Architecture
 
-```mermaid
-graph TD
-    A[📋 Sanity Tests<br/>Every 2 hours] --> E[📊 Deploy Reports]
-    B[🌙 Regression Tests<br/>Daily 2 AM UTC] --> E
-    C[🔧 Manual Triggers] --> E
-    E --> F[📱 Slack Notifications]
-    D[🧹 Artifact Cleanup<br/>Daily 2 AM UTC] --> G[💾 Storage Management]
+```
+WORKFLOW ARCHITECTURE:
+Developer Push/PR → Code Quality Check → Pass/Fail → Merge Allowed/Blocked
 
-    style A fill:#e1f5fe
-    style B fill:#f3e5f5
-    style E fill:#fff3e0
-    style F fill:#e8f5e8
-    style D fill:#fce4ec
+TESTING WORKFLOWS:
+Sanity Tests (Every 2 hours) → Deploy Reports → Slack Notifications
+Regression Tests (Daily 2 AM) → Deploy Reports → Slack Notifications
+Artifact Cleanup (Daily 2 AM) → Storage Management
 ```
 
 ## 📋 Core Workflows
 
-### 1. Sanity Tests (`sanity.yml`)
+### 1. Code Quality Check (`code-quality.yml`)
+
+**🎯 Purpose**: Automated code quality validation for pull requests and commits
+
+**⚙️ Triggers**:
+
+```yaml
+push: [main, master, develop]
+pull_request: [main, master, develop]
+```
+
+**🔍 Quality Gates**:
+
+- **ESLint**: Code linting with zero-warning policy
+- **Prettier**: Code formatting validation
+- **TypeScript**: Type checking and compilation
+
+**⚙️ Configuration**:
+
+```yaml
+timeout: 60 minutes
+browser: N/A (code quality only)
+retention: 7 days (on failure)
+artifact: test-results (failure cases only)
+```
+
+**🛡️ Quality Assurance**:
+
+- Blocks merging if quality gates fail
+- Provides detailed feedback on issues
+- Caches dependencies for faster execution
+
+---
+
+### 2. Sanity Tests (`sanity.yml`)
 
 **🎯 Purpose**: Fast feedback loop for critical functionality
 
@@ -57,7 +86,7 @@ artifact: sanity-playwright-report-{run_number}
 
 ---
 
-### 2. Regression Tests (`nightly-regression.yml`)
+### 3. Regression Tests (`nightly-regression.yml`)
 
 **🎯 Purpose**: Comprehensive daily validation
 
@@ -89,7 +118,7 @@ artifact: regression-playwright-report-{run_number}
 
 ---
 
-### 3. Deploy Reports (`deploy-reports.yml`)
+### 4. Deploy Reports (`deploy-reports.yml`)
 
 **🎯 Purpose**: Publishes test results to GitHub Pages
 
@@ -124,7 +153,7 @@ workflow_run:
 
 ---
 
-### 4. Slack Notifications (`slack-notifications.yml`)
+### 5. Slack Notifications (`slack-notifications.yml`)
 
 **🎯 Purpose**: Team communication and status updates
 
@@ -158,7 +187,7 @@ Failure Message:
 
 ---
 
-### 5. Artifact Cleanup (`cleanup-artifacts.yml`)
+### 6. Artifact Cleanup (`cleanup-artifacts.yml`)
 
 **🎯 Purpose**: Automated storage management and quota prevention
 
@@ -275,6 +304,8 @@ Local Development:
 ### **Workflow Dependencies**
 
 ```
+Code Quality Check (on PR/push) → Merge Protection
+     ↓
 Test Workflows → Deploy Reports → Slack Notifications
      ↓
 Artifact Cleanup (storage management)
@@ -322,6 +353,7 @@ permissions:
 
 ### **Performance Metrics**
 
+- ⏱️ Code quality check: ~2-5 minutes
 - ⏱️ Sanity tests: ~5-10 minutes
 - ⏱️ Regression tests: ~30-45 minutes
 - ⏱️ Report deployment: ~2-3 minutes
@@ -331,6 +363,7 @@ permissions:
 
 | **Workflow**        | **Automatic**        | **Manual** | **Dependency**  |
 | ------------------- | -------------------- | ---------- | --------------- |
+| Code Quality Check  | On push/PR           | ❌         | None            |
 | Sanity Tests        | Every 2 hours        | ✅         | None            |
 | Regression Tests    | Daily 2 AM           | ✅         | None            |
 | Deploy Reports      | On test completion   | ✅         | Test workflows  |
@@ -355,21 +388,27 @@ All workflows support manual triggering via GitHub Actions UI:
 
 ### **Common Issues**
 
-1. **Workflow fails with "Environment variable not set"**
+1. **Code Quality workflow fails**
+   - Check ESLint configuration and fix linting errors
+   - Run `npm run fix` locally to auto-fix formatting issues
+   - Verify TypeScript compilation with `npm run type-check`
+   - Ensure all dependencies are properly installed
+
+2. **Workflow fails with "Environment variable not set"**
    - Check that required repository secrets are configured
    - Verify secret names match exactly (case-sensitive)
 
-2. **Reports not deploying**
+3. **Reports not deploying**
    - Ensure GitHub Pages is enabled
    - Check deploy-reports workflow logs
    - Verify test workflows completed successfully
 
-3. **Slack notifications not working**
+4. **Slack notifications not working**
    - Verify `SLACK_WEBHOOK_URL` secret is set
    - Check Slack webhook URL is valid
    - Ensure channel permissions are correct
 
-4. **Storage quota exceeded**
+5. **Storage quota exceeded**
    - Run manual artifact cleanup workflow
    - Check cleanup workflow logs
    - Verify retention settings are appropriate
