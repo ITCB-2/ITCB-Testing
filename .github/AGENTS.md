@@ -1,4 +1,4 @@
-# Copilot Instructions
+# AI Agent Instructions
 
 ## Project Overview
 
