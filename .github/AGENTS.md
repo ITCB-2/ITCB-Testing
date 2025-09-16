@@ -1,154 +1,100 @@
-# AI Agent Instructions
+# AI Coding Agent Guide
 
-## Project Overview
+Purpose: Make agents instantly productive in this Playwright + TypeScript test framework by codifying how this repo is structured, how to run it, and how to extend it safely.
 
-This project is a Playwright test automation framework built with TypeScript using the Page Object Model (POM) pattern. It is designed for end-to-end testing of web applications with a focus on maintainability, reusability, and scalability.
+## Project Shape (big picture)
 
-## Architecture Overview
+- Test stack: Playwright + TypeScript using a 3-layer model.
+- Layers: `core/` (foundations), `pages/` (Page Objects), `tests/` (specs) with fixtures in `fixtures/` and locators in `locators/`.
+- Path alias: use `@/` for internal imports (see `tsconfig.json`). Example: `import {MainPage} from '@/pages'`.
+- Test dir: Playwright runs specs from `src/tests` (see `playwright.config.ts`).
 
-### Three-Layer Architecture
+## How Things Work
 
-1. **Core Layer**: `BasePage` (extends `LocatorUtils`) provides reusable methods for all page objects
-2. **Page Layer**: Specific page objects that implement business actions
-3. **Test Layer**: Test specs that use injected page objects via custom fixtures
+- Page Objects extend `BasePage` (which extends `LocatorUtils`) for shared actions and locator extraction.
+- Locators are centralized under `src/locators/**`; prefer role-based objects over raw selector strings.
+- Fixtures (`src/fixtures/testSetup.ts`, re-exported by `src/fixtures/index.ts`) inject ready-to-use page objects into tests (e.g., `{mainPage, topMenuMainPage, ...}`) via the custom `test` export. Import from `@/fixtures`.
+- Environment: load secrets/URLs via `.env` and `getEnvCredentials(...)` in `src/helpers/envUtils.ts`—do not read `process.env` directly in tests/pages.
+- Playwright config: retries only in CI and only when tag-filtering (via `TEST_TAGS`) for `@sanity`/`@regression`; traces/videos/screenshots kept on failures.
 
-### Key Dependencies
+## Conventions That Matter
 
-- All page objects automatically injected via `testSetup.ts` fixtures
-- Centralized environment variable access through `envUtils.ts`
-- Automatic fallback locator strategies in `LocatorUtils.ts`
+- Page Objects: `*Page` classes in `src/pages/**` extending `BasePage`; expose high-level business actions only.
+- Locator names: `UPPER_SNAKE_CASE` with `_LOCATORS` suffix (e.g., `LOGIN_PAGE_LOCATORS`).
+- Locators: use `StringOrRoleLocatorType` from `src/types/locatorTypes.ts`.
+  - Preferred: `{ role: 'button', name: 'Submit' }` or with parent `{ parent: '.form', role: 'textbox', name: 'Username' }`.
+- Tests: place under `src/tests/**`, name with `.spec.ts`. Import the custom `test` from `@/fixtures` (not from `@playwright/test`).
+- Steps: group meaningful actions with `test.step(...)` inside page methods where helpful.
+- Tags: classify suites with `@sanity` or `@regression` in describe titles to enable targeted runs (see commands below).
+- Lint/format: ESLint + Prettier are enforced; Prettier violations fail CI. Follow rules in `eslint.config.ts` (tests have relaxed rules).
+- Locator resolution (from code):
+  - For string locators: `page.locator(...) → page.getByLabel(...) → page.getByText(...)`.
+  - For role locators: `page.getByRole(role, {name})`, with optional `parent` via `page.locator(parent).getByRole(...)`.
 
-## Project Structure
+## Typical Addition (minimal example)
 
-```
-src/
-├── core/           # BasePage, LocatorUtils - foundation classes
-├── pages/          # Page Object Model classes
-├── locators/       # Centralized element locators (separate from pages)
-├── fixtures/       # Custom Playwright fixtures for dependency injection
-├── helpers/        # Environment utilities, shared functions
-├── data/           # URLs, test constants (environment-aware)
-├── types/          # TypeScript interfaces and type definitions
-└── tests/          # Test specification files
-```
-
-## Critical Patterns & Conventions
-
-- **Page objects**: `*Page` (e.g., `LoginPage`, `HomePage`) - always extend `BasePage`
-- **Locators**: `UPPER_SNAKE_CASE` with `_LOCATORS` suffix (e.g., `LOGIN_PAGE_LOCATORS`)
-- **Test files**: end with `.spec.ts`
-- **Import alias**: Use `@/` for all internal imports (configured in tsconfig.json)
-
-### Complete Example Pattern
-
-```typescript
-// src/locators/Login_Page.ts
+```ts
+// src/locators/content-pages/Login_Page.ts
 export const LOGIN_PAGE_LOCATORS = {
-  submitButton: {role: 'button', name: 'Submit'},
-  formSection: {
-    usernameField: {role: 'textbox', name: 'Username'},
-    passwordField: {role: 'textbox', name: 'Password'},
-  },
+  form: {parent: '#login', role: 'textbox', name: 'Username'},
+  submit: {role: 'button', name: 'Submit'},
 } as const
 
 // src/pages/LoginPage.ts
+import {BasePage} from '@/core/BasePage'
+import {BASE_URL} from '@/data'
+import {LOGIN_PAGE_LOCATORS as L} from '@/locators/content-pages/Login_Page'
 export class LoginPage extends BasePage {
-  async navigateToPage(): Promise<void> {
-    await test.step('Navigate to Login Page', async () => {
-      const {usernameField} = LOGIN_PAGE_LOCATORS.formSection
-      await this.page.goto(BASE_URL)
-      await this.validateVisibility(usernameField)
-    })
+  async navigateTo(): Promise<void> {
+    await this.gotoURL(BASE_URL + '/login')
+  }
+  async validateLoaded(): Promise<void> {
+    await this.validateVisibility(L.form)
   }
 }
 
-// src/tests/login.spec.ts
-test.describe('Login Tests', () => {
-  test('should validate login', async ({loginPage}) => {
-    await loginPage.navigateToPage()
-    await loginPage.performLogin()
+// src/tests/main.spec.ts (fixture-based injection)
+import {test} from '@/fixtures'
+test.describe('Main Page @sanity', () => {
+  test('loads and shows content', async ({mainPage}) => {
+    await mainPage.openMainPage()
+    await mainPage.validateContactOnMainPage()
   })
 })
 ```
 
-### Fixture-Based Dependency Injection
+## Run, Debug, Quality
 
-```typescript
-// src/fixtures/testSetup.ts - Auto-injection pattern
-const test = base.extend<PageFixtures>({
-  loginPage: async ({page}, use) => await use(new LoginPage(page)),
-  homePage: async ({page}, use) => await use(new HomePage(page)),
-})
-```
+- Install once: `npm install && npx playwright install`
+- All tests: `npm test`
+- Sanity set: `npm run test:sanity` (sets `TEST_TAGS='@sanity'`)
+- Regression set: `npm run test:regression`
+- Chromium only: `npm run test:chrome`
+- Debug inspector: `npm run test:debug`
+- Report viewer: `npm run report`
+- Quality gates: `npm run check` (lint + format check + `tsc`)
+- Auto-fix: `npm run fix`
+- Lint only: `npm run lint:check`
+- Format check: `npm run format:check`
 
-## Development Workflow & Commands
+Notes
 
-### Quality Automation (Pre-commit Hooks via Husky)
+- CI/GitHub Actions use the same scripts; retries apply only in CI when `TEST_TAGS` targets `@sanity`/`@regression` (see `playwright.config.ts`).
+- Prefer role-based locators from `src/locators/**` and avoid inline CSS/XPath in tests.
+- Access env via `getEnvCredentials('KEY')`; define keys in `.env` locally (never commit secrets).
+- Keep page classes small; move cross-cutting helpers to `src/helpers/**`.
 
-```bash
-npm run check          # Lint + format + TypeScript check
-npm run fix            # Auto-fix formatting and linting issues
-npm run lint:check     # CI-friendly lint check (max-warnings 0)
-npm run format:check   # CI-friendly format check
-```
+## Environment & URLs
 
-### Testing Commands
+- Define `BASE_URL` in `.env` (e.g., `BASE_URL=https://www.example.com`).
+- `src/data/urls.ts` exposes `BASE_URL` via `getEnvCredentials('BASE_URL')`.
+- In pages, import `BASE_URL` from `@/data` and compose full paths when navigating (e.g., `await this.gotoURL(BASE_URL + '/login')`).
 
-```bash
-npm test               # Run all Playwright tests
-npm run test:chrome    # Run tests in Chromium only
-npm run test:debug     # Run tests with Playwright inspector
-npm run test:headed    # Run tests in headed mode
-npm run test:sanity    # Run critical @sanity tagged tests (~5-10 min)
-npm run test:regression # Run comprehensive @regression tests (~30-45 min)
-npm run report         # Open HTML test report
-npm run codegen        # Launch Playwright code generator
-```
+Reference Files
 
-### Development Pattern: Always use VS Code tasks for these commands when available
-
-## Core Guidelines
-
-- All page objects extend `BasePage` and import locators from separate files
-- Use `test.step()` for grouping logical actions in page object methods
-- Locators support both string and role-based objects; prefer role-based for accessibility
-- Use destructured page objects from fixtures in tests (e.g., `{loginPage}`)
-- Access environment variables only via `envUtils.ts`
-- Use TypeScript interfaces for test data in `@/data`
-- Tag tests appropriately: `@sanity` for critical tests, `@regression` for comprehensive tests
-
-## Test Classification & Tagging
-
-- **@sanity**: Critical functionality tests, fast execution (~5-10 min total)
-  - Applied at `test.describe()` level: `test.describe('Feature Tests @sanity', () => {...})`
-  - Run with: `npm run test:sanity`
-- **@regression**: Comprehensive validation tests, longer execution acceptable (~30-45 min)
-  - Applied at `test.describe()` level: `test.describe('Feature Tests @regression', () => {...})`
-  - Run with: `npm run test:regression`
-
-## Locator Strategy
-
-- Automatic fallback: CSS/XPath → getByLabel → getByText → getByRole
-- Locator type: `string | {parent?: string; role: string; name: string}`
-
-## Best Practices
-
-- Keep page objects focused and reusable; use helper functions for common actions
-- Prefer role-based locators and descriptive error messages
-- Implement retry logic for flaky tests
-
-## Environment & Data
-
-- Use `.env` for secrets (never hardcode)
-- Configure multiple environments in Playwright config
-- Store test data in `@/data` using interfaces
-
-## Error Handling
-
-- Throw descriptive errors with context
-- Use try-catch for locator fallbacks
-- Validate environment variables on startup
-
----
-
-This file is intentionally concise. For standard Playwright/TypeScript practices, follow the official docs. Focus here is on unique project patterns and conventions.
+- `src/core/BasePage.ts`, `src/core/LocatorUtils.ts` — shared actions and locator extraction
+- `src/fixtures/index.ts`, `src/fixtures/testSetup.ts` — fixture-based dependency injection
+- `src/data/urls.ts` — environment-aware URLs
+- `src/types/locatorTypes.ts` — locator typing contract
+- `playwright.config.ts` — test dir, reporters, retries, tags
+- `package.json` — scripts for test/quality
