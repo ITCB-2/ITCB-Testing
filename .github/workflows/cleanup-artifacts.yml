@@ -1,9 +1,9 @@
 name: Cleanup Old Artifacts
 
 on:
-  # Run cleanup every 24 hours
+  # Run cleanup every 6 hours to handle frequent test runs
   schedule:
-    - cron: '0 2 * * *'
+    - cron: '0 */6 * * *'
 
   # Manual trigger for immediate cleanup
   workflow_dispatch:
@@ -11,7 +11,7 @@ on:
       days_to_keep:
         description: 'Number of days to keep artifacts'
         required: true
-        default: '3'
+        default: '1'
         type: choice
         options:
           - '1'

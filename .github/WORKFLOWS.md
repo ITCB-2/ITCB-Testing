@@ -42,7 +42,7 @@ pull_request: [main, master, develop]
 ```yaml
 timeout: 60 minutes
 browser: N/A (code quality only)
-retention: 7 days (on failure)
+retention: 2 days (on failure)
 artifact: test-results (failure cases only)
 ```
 
@@ -74,7 +74,7 @@ artifact: test-results (failure cases only)
 ```yaml
 timeout: 60 minutes
 browser: All (chromium, firefox, webkit)
-retention: 3 days
+retention: 2 days
 artifact: sanity-playwright-report-{run_number}
 ```
 
@@ -106,7 +106,7 @@ artifact: sanity-playwright-report-{run_number}
 ```yaml
 timeout: 120 minutes
 browser: All (chromium, firefox, webkit)
-retention: 7 days
+retention: 2 days
 artifact: regression-playwright-report-{run_number}
 ```
 
@@ -196,7 +196,7 @@ Failure Message:
 **🧹 Cleanup Strategy**:
 
 ```yaml
-default_retention: 3 days
+default_retention: 2 days
 configurable_options: [1, 2, 3, 7 days]
 dry_run_support: Preview before deletion
 api_integration: GitHub REST API
