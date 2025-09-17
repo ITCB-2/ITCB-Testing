@@ -42,7 +42,7 @@ pull_request: [main, master, develop]
 ```yaml
 timeout: 60 minutes
 browser: N/A (code quality only)
-retention: 7 days (on failure)
+retention: 2 days (on failure)
 artifact: test-results (failure cases only)
 ```
 
@@ -74,7 +74,7 @@ artifact: test-results (failure cases only)
 ```yaml
 timeout: 60 minutes
 browser: All (chromium, firefox, webkit)
-retention: 3 days
+retention: 2 days
 artifact: sanity-playwright-report-{run_number}
 ```
 
@@ -106,7 +106,7 @@ artifact: sanity-playwright-report-{run_number}
 ```yaml
 timeout: 120 minutes
 browser: All (chromium, firefox, webkit)
-retention: 7 days
+retention: 2 days
 artifact: regression-playwright-report-{run_number}
 ```
 
@@ -196,7 +196,7 @@ Failure Message:
 **🧹 Enhanced Cleanup Strategy**:
 
 ```yaml
-default_retention: 30 days
+default_retention: 2 days
 max_artifacts_per_workflow: 5
 configurable_age_options: [7, 14, 30, 60 days]
 configurable_count_options: [3, 5, 10, 20 artifacts]
@@ -209,7 +209,7 @@ api_integration: GitHub REST API with pagination
 
 1. **Scan** all repository artifacts with pagination support
 2. **Group** artifacts by workflow type (sanity, regression, quality)
-3. **Apply Age Policy**: Delete artifacts older than retention period (default: 30 days)
+3. **Apply Age Policy**: Delete artifacts older than retention period (default: 2 days)
 4. **Apply Count Policy**: Keep only latest N artifacts per workflow type (default: 5)
 5. **Delete** artifacts that violate either policy via GitHub API
 6. **Report** storage saved, remaining artifacts, and recommendations
@@ -263,7 +263,7 @@ schedule:
 ```
 
 - **Dual-policy** artifact cleanup (age + count based)
-- **30-day default** retention with configurable options
+- **2-day default** retention with configurable options
 - **Latest 5 artifacts** per workflow type retention
 - **Proactive scheduling** before test execution
 - **Storage intelligence** with usage recommendations

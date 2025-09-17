@@ -204,7 +204,7 @@ src/tests/
 - 🚀 **Parallel Execution**: Tests run concurrently across browsers
 - 🎯 **Smart Scheduling**: Frequent sanity tests, comprehensive nightly runs
 - 🔄 **Automatic Retries**: CI retries flaky tests automatically
-- 📊 **Efficient Reporting**: 30-day artifact retention with detailed traces
+- 📊 **Efficient Reporting**: 2-day artifact retention with detailed traces
 
 ### **Manual Test Triggers**
 
@@ -244,12 +244,12 @@ workflow_dispatch:
 
 | **Artifact Type**   | **Retention Period** | **Count Limit**   | **Contents**                      |
 | ------------------- | -------------------- | ----------------- | --------------------------------- |
-| **Test Reports**    | 30 days              | Latest 5 per type | HTML reports, screenshots, videos |
-| **Trace Files**     | 30 days              | Latest 5 per type | Playwright execution traces       |
-| **Quality Results** | 7 days               | Latest 5 per type | Linting results, compilation logs |
+| **Test Reports**    | 2 days               | Latest 5 per type | HTML reports, screenshots, videos |
+| **Trace Files**     | 2 days               | Latest 5 per type | Playwright execution traces       |
+| **Quality Results** | 2 days               | Latest 5 per type | Linting results, compilation logs |
 
 **🧹 Automated Cleanup**: Daily at 1:00 AM UTC (before scheduled tests)
-**📋 Dual Policy**: Age-based (30 days) + Count-based (latest 5) retention
+**📋 Dual Policy**: Age-based (2 days) + Count-based (latest 5) retention
 **🎯 Storage Management**: Prevents quota exceeded errors proactively
 
 ## 🛠️ Test Development & Maintenance
