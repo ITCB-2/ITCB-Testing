@@ -75,11 +75,36 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: 'npm'
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
       - name: Run Sanity Tests
         run: npm run test:sanity
 
+  upload-test-results:
+    name: Upload Test Results
+    runs-on: ubuntu-latest
+    needs: sanity-tests
+    if: always()
+    timeout-minutes: 5
+    steps:
       - name: Upload test results for artifact job
-        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: sanity-test-results-${{ github.run_number }}
@@ -89,7 +114,7 @@ jobs:
   upload-artifacts:
     name: Upload Test Artifacts
     runs-on: ubuntu-latest
-    needs: sanity-tests
+    needs: upload-test-results
     if: ${{ !cancelled() }}
     continue-on-error: true
     timeout-minutes: 10
