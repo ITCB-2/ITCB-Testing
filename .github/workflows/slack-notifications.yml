@@ -173,10 +173,10 @@ jobs:
               elif [ "$REGRESSION_STATUS" != "not_found" ] && [ "$REGRESSION_STATUS" != "null" ]; then
                 TEST_STATUS="$REGRESSION_STATUS"
                 WORKFLOW_NAME="Regression Tests"
+              fi
 
             else
               # Enhanced fallback: Try multiple approaches to find recent test workflows
-
 
               # Strategy A: Direct query for recent test workflows
               RECENT_WORKFLOWS_RESPONSE=$(curl -s -H "Authorization: token $TOKEN" \
