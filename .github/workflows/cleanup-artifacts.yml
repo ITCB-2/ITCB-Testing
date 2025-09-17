@@ -11,7 +11,7 @@ on:
       days_to_keep:
         description: 'Number of days to keep artifacts'
         required: true
-        default: '3'
+        default: '1'
         type: choice
         options:
           - '3'
