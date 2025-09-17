@@ -47,7 +47,7 @@ jobs:
         with:
           name: regression-playwright-report-${{ github.run_number }}
           path: playwright-report/
-          retention-days: 7
+          retention-days: 2
 
       # Fallback: Show report info if upload failed
       - name: Handle artifact upload failure

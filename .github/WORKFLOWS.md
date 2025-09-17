@@ -42,7 +42,7 @@ pull_request: [main, master, develop]
 ```yaml
 timeout: 60 minutes
 browser: N/A (code quality only)
-retention: 7 days (on failure)
+retention: 2 days (on failure)
 artifact: test-results (failure cases only)
 ```
 
@@ -74,7 +74,7 @@ artifact: test-results (failure cases only)
 ```yaml
 timeout: 60 minutes
 browser: All (chromium, firefox, webkit)
-retention: 3 days
+retention: 2 days
 artifact: sanity-playwright-report-{run_number}
 ```
 
@@ -106,7 +106,7 @@ artifact: sanity-playwright-report-{run_number}
 ```yaml
 timeout: 120 minutes
 browser: All (chromium, firefox, webkit)
-retention: 7 days
+retention: 2 days
 artifact: regression-playwright-report-{run_number}
 ```
 
@@ -191,30 +191,48 @@ Failure Message:
 
 **🎯 Purpose**: Automated storage management and quota prevention
 
-**⏰ Schedule**: Daily at 2:00 AM UTC (`0 2 * * *`)
+**⏰ Schedule**: Daily at 1:00 AM UTC (`0 1 * * *`) - one hour before regression tests
 
-**🧹 Cleanup Strategy**:
+**🧹 Enhanced Cleanup Strategy**:
 
 ```yaml
-default_retention: 3 days
-configurable_options: [1, 2, 3, 7 days]
+default_retention: 2 days
+max_artifacts_per_workflow: 5
+configurable_age_options: [7, 14, 30, 60 days]
+configurable_count_options: [3, 5, 10, 20 artifacts]
 dry_run_support: Preview before deletion
-api_integration: GitHub REST API
+dual_policy_system: Age-based + Count-based retention
+api_integration: GitHub REST API with pagination
 ```
 
 **📊 Cleanup Process**:
 
-1. **Scan** all repository artifacts
-2. **Calculate** storage usage
-3. **Identify** artifacts older than retention period
-4. **Delete** expired artifacts via GitHub API
-5. **Report** storage saved and remaining artifacts
+1. **Scan** all repository artifacts with pagination support
+2. **Group** artifacts by workflow type (sanity, regression, quality)
+3. **Apply Age Policy**: Delete artifacts older than retention period (default: 2 days)
+4. **Apply Count Policy**: Keep only latest N artifacts per workflow type (default: 5)
+5. **Delete** artifacts that violate either policy via GitHub API
+6. **Report** storage saved, remaining artifacts, and recommendations
+
+**📋 Dual Retention Policies**:
+
+- **Age-based**: Removes artifacts older than specified days (prevents unlimited accumulation)
+- **Count-based**: Keeps only the latest N artifacts per workflow type (prevents workflow spam)
+- **Combined**: An artifact is deleted if it violates EITHER policy
 
 **⚙️ Manual Options**:
 
-- **Days to Keep**: 1, 2, 3, or 7 days
+- **Days to Keep**: 7, 14, 30, or 60 days
+- **Max Artifacts per Workflow**: 3, 5, 10, or 20 artifacts
 - **Dry Run**: Preview deletions without executing
 - **Immediate Execution**: For quota emergencies
+
+**🚀 Storage Intelligence**:
+
+- Groups artifacts by workflow type for targeted cleanup
+- Provides storage usage analysis and recommendations
+- Warns when approaching GitHub's 1 GB storage limit
+- Suggests optimal retention settings based on current usage
 
 ## 🛡️ Resilience & Fallback Strategies
 
@@ -236,31 +254,35 @@ api_integration: GitHub REST API
 - Provides helpful error context
 - Maintains CI pipeline availability
 
-#### **Tier 2: Preventive Maintenance**
+#### **Tier 2: Enhanced Preventive Maintenance**
 
 ```yaml
-# Daily cleanup at 2 AM UTC
+# Daily cleanup at 1 AM UTC - before test workflows
 schedule:
-  - cron: '0 2 * * *'
+  - cron: '0 1 * * *'
 ```
 
-- Automated artifact cleanup
-- Configurable retention periods
-- Proactive storage management
+- **Dual-policy** artifact cleanup (age + count based)
+- **2-day default** retention with configurable options
+- **Latest 5 artifacts** per workflow type retention
+- **Proactive scheduling** before test execution
+- **Storage intelligence** with usage recommendations
 
 #### **Tier 3: Emergency Response**
 
 ```yaml
-# Manual cleanup with custom settings
+# Manual cleanup with enhanced dual-policy settings
 workflow_dispatch:
   inputs:
-    days_to_keep: ['1', '2', '3', '7']
+    days_to_keep: ['7', '14', '30', '60']
+    max_artifacts_per_workflow: ['3', '5', '10', '20']
     dry_run: ['true', 'false']
 ```
 
-- Immediate manual cleanup
-- Preview mode for safety
-- Flexible retention policies
+- **Immediate dual-policy** cleanup (age + count based)
+- **Preview mode** for safety with detailed analysis
+- **Flexible retention** policies for different scenarios
+- **Emergency response** for quota issues
 
 ### Test Execution Resilience
 
@@ -287,7 +309,8 @@ Local Development:
 ### **Daily Schedule (UTC)**
 
 ```
-02:00 - Regression Tests + Artifact Cleanup
+01:00 - Enhanced Artifact Cleanup (dual-policy: 30-day + latest-5)
+02:00 - Regression Tests + Report Deployment
 04:00 - Sanity Tests
 06:00 - Sanity Tests
 08:00 - Sanity Tests
@@ -304,11 +327,13 @@ Local Development:
 ### **Workflow Dependencies**
 
 ```
+Enhanced Artifact Cleanup (01:00 UTC)
+     ↓
 Code Quality Check (on PR/push) → Merge Protection
      ↓
 Test Workflows → Deploy Reports → Slack Notifications
      ↓
-Artifact Cleanup (storage management)
+Continuous Storage Management
 ```
 
 ## 🔧 Configuration & Secrets
@@ -363,12 +388,12 @@ permissions:
 
 | **Workflow**        | **Automatic**        | **Manual** | **Dependency**  |
 | ------------------- | -------------------- | ---------- | --------------- |
+| Artifact Cleanup    | Daily 1 AM           | ✅         | None            |
 | Code Quality Check  | On push/PR           | ❌         | None            |
 | Sanity Tests        | Every 2 hours        | ✅         | None            |
 | Regression Tests    | Daily 2 AM           | ✅         | None            |
 | Deploy Reports      | On test completion   | ✅         | Test workflows  |
 | Slack Notifications | On deploy completion | ✅         | Deploy workflow |
-| Artifact Cleanup    | Daily 2 AM           | ✅         | None            |
 
 ## 🔧 Manual Workflow Triggers
 
