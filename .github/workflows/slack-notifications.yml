@@ -24,9 +24,18 @@ permissions:
   contents: read # Required to checkout repository
 
 jobs:
-  notify-slack:
+  analyze-status:
+    name: Analyze Test and Deployment Status
     runs-on: ubuntu-latest
     if: always()
+    timeout-minutes: 10
+    outputs:
+      deployment_status: ${{ steps.status.outputs.deployment_status }}
+      trigger: ${{ steps.status.outputs.trigger }}
+      test_status: ${{ steps.status.outputs.test_status }}
+      workflow_name: ${{ steps.status.outputs.workflow_name }}
+      artifact_issue: ${{ steps.status.outputs.artifact_issue }}
+      israel_time: ${{ steps.status.outputs.israel_time }}
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -273,10 +282,15 @@ jobs:
           # Get current date/time in Israel timezone
           ISRAEL_TIME=$(TZ='Asia/Jerusalem' date '+%d-%m-%Y %H:%M:%S')
           echo "israel_time=$ISRAEL_TIME" >> $GITHUB_OUTPUT
-          fi
 
+  notify-success:
+    name: Notify Slack on Test Success
+    runs-on: ubuntu-latest
+    needs: analyze-status
+    if: needs.analyze-status.outputs.test_status == 'success'
+    timeout-minutes: 5
+    steps:
       - name: Notify Slack on Test Success
-        if: steps.status.outputs.test_status == 'success'
         uses: slackapi/slack-github-action@v2.1.1
         with:
           webhook-type: incoming-webhook
@@ -296,7 +310,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "🧪 Test Workflow Status\n\n*Workflow:* ${{ steps.status.outputs.workflow_name }}\n*Status:* ✅ PASSED\n*Repository:* ${{ github.repository }}\n*Branch:* ${{ github.ref_name }}"
+                    "text": "🧪 Test Workflow Status\n\n*Workflow:* ${{ needs.analyze-status.outputs.workflow_name }}\n*Status:* ✅ PASSED\n*Repository:* ${{ github.repository }}\n*Branch:* ${{ github.ref_name }}"
                   }
                 },
                 {
@@ -306,14 +320,14 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "📊 Report Deployment Status\n\n*Status:* ${{ steps.status.outputs.deployment_status == 'success' && '✅ DEPLOYED SUCCESSFULLY' || '⚠️ DEPLOYMENT HAD ISSUES' }}\n*Report URL:* https://itcb-2.github.io/ITCB-Testing/\n*Deployed at:* ${{ steps.status.outputs.israel_time }} (IDT)"
+                    "text": "📊 Deployment Status\n\n*Status:* ${{ needs.analyze-status.outputs.deployment_status == 'success' && '✅ DEPLOYED SUCCESSFULLY' || '❌ DEPLOYMENT FAILED' }}\n*Report URL:* https://itcb-2.github.io/ITCB-Testing/"
                   }
                 },
                 {
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "${{ steps.status.outputs.deployment_status == 'success' && '🎉 Great work! All tests passed and reports are now live!' || '✅ Tests passed but there were deployment issues. Reports may be delayed.' }}"
+                    "text": "${{ needs.analyze-status.outputs.deployment_status == 'success' && '🎉 Great work! All tests passed and reports are now live!' || '✅ Tests passed but there were deployment issues. Reports may be delayed.' }}"
                   }
                 }
               ]
@@ -321,8 +335,14 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
+  notify-failure:
+    name: Notify Slack on Test Failure
+    runs-on: ubuntu-latest
+    needs: analyze-status
+    if: needs.analyze-status.outputs.test_status == 'failure'
+    timeout-minutes: 5
+    steps:
       - name: Notify Slack on Test Failure
-        if: steps.status.outputs.test_status == 'failure'
         uses: slackapi/slack-github-action@v2.1.1
         with:
           webhook-type: incoming-webhook
@@ -342,7 +362,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "🧪 Test Workflow Status\n\n*Workflow:* ${{ steps.status.outputs.workflow_name }}\n*Status:* ❌ FAILED\n*Repository:* ${{ github.repository }}\n*Branch:* ${{ github.ref_name }}"
+                    "text": "🧪 Test Workflow Status\n\n*Workflow:* ${{ needs.analyze-status.outputs.workflow_name }}\n*Status:* ❌ FAILED\n*Repository:* ${{ github.repository }}\n*Branch:* ${{ github.ref_name }}"
                   }
                 },
                 {
@@ -352,7 +372,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "📊 Report Deployment Status\n\n*Status:* ${{ steps.status.outputs.deployment_status == 'success' && '✅ REPORTS DEPLOYED (Failed Test Results)' || '❌ DEPLOYMENT ALSO FAILED' }}\n*Report URL:* https://itcb-2.github.io/ITCB-Testing/\n*Deployed at:* ${{ steps.status.outputs.israel_time }} (IDT)"
+                    "text": "📊 Report Deployment Status\n\n*Status:* ${{ needs.analyze-status.outputs.deployment_status == 'success' && '✅ REPORTS DEPLOYED (Failed Test Results)' || '❌ DEPLOYMENT ALSO FAILED' }}\n*Report URL:* https://itcb-2.github.io/ITCB-Testing/\n*Deployed at:* ${{ needs.analyze-status.outputs.israel_time }} (IDT)"
                   }
                 },
                 {
@@ -376,8 +396,14 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
+  notify-unknown:
+    name: Notify Slack on Unknown Test Status
+    runs-on: ubuntu-latest
+    needs: analyze-status
+    if: needs.analyze-status.outputs.test_status == 'unknown'
+    timeout-minutes: 5
+    steps:
       - name: Notify Slack on Unknown Test Status
-        if: steps.status.outputs.test_status == 'unknown'
         uses: slackapi/slack-github-action@v2.1.1
         with:
           webhook-type: incoming-webhook
@@ -415,16 +441,23 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
+  summary:
+    name: Add Notification Summary
+    runs-on: ubuntu-latest
+    needs: [analyze-status, notify-success, notify-failure, notify-unknown]
+    if: always()
+    timeout-minutes: 5
+    steps:
       - name: Add notification status to summary
         run: |
           echo "📱 Slack Notification Sent!" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "📊 Deployment Status: ${{ steps.status.outputs.deployment_status }}" >> $GITHUB_STEP_SUMMARY
-          echo "🧪 Test Status: ${{ steps.status.outputs.test_status }}" >> $GITHUB_STEP_SUMMARY
-          echo "🔄 Workflow: ${{ steps.status.outputs.workflow_name }}" >> $GITHUB_STEP_SUMMARY
-          echo "🔔 Trigger: ${{ steps.status.outputs.trigger }}" >> $GITHUB_STEP_SUMMARY
-          if [ "${{ steps.status.outputs.artifact_issue }}" == "true" ]; then
+          echo "📊 Deployment Status: ${{ needs.analyze-status.outputs.deployment_status }}" >> $GITHUB_STEP_SUMMARY
+          echo "🧪 Test Status: ${{ needs.analyze-status.outputs.test_status }}" >> $GITHUB_STEP_SUMMARY
+          echo "🔄 Workflow: ${{ needs.analyze-status.outputs.workflow_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "🔔 Trigger: ${{ needs.analyze-status.outputs.trigger }}" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ needs.analyze-status.outputs.artifact_issue }}" == "true" ]; then
             echo "📦 Artifact Issue: GitHub storage quota exceeded" >> $GITHUB_STEP_SUMMARY
             echo "⏳ Note: Storage quota typically refreshes within 6-12 hours" >> $GITHUB_STEP_SUMMARY
           fi
-          echo "⏰ Sent at: ${{ steps.status.outputs.israel_time }} (IDT)" >> $GITHUB_STEP_SUMMARY
+          echo "⏰ Sent at: ${{ needs.analyze-status.outputs.israel_time }} (IDT)" >> $GITHUB_STEP_SUMMARY
