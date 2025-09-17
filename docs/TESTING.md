@@ -242,11 +242,15 @@ workflow_dispatch:
 
 #### **Artifact Management**
 
-| **Artifact Type**   | **Retention Period** | **Contents**                      |
-| ------------------- | -------------------- | --------------------------------- |
-| **Test Reports**    | 30 days              | HTML reports, screenshots, videos |
-| **Trace Files**     | 30 days              | Playwright execution traces       |
-| **Quality Results** | 7 days               | Linting results, compilation logs |
+| **Artifact Type**   | **Retention Period** | **Count Limit**   | **Contents**                      |
+| ------------------- | -------------------- | ----------------- | --------------------------------- |
+| **Test Reports**    | 30 days              | Latest 5 per type | HTML reports, screenshots, videos |
+| **Trace Files**     | 30 days              | Latest 5 per type | Playwright execution traces       |
+| **Quality Results** | 7 days               | Latest 5 per type | Linting results, compilation logs |
+
+**🧹 Automated Cleanup**: Daily at 1:00 AM UTC (before scheduled tests)
+**📋 Dual Policy**: Age-based (30 days) + Count-based (latest 5) retention
+**🎯 Storage Management**: Prevents quota exceeded errors proactively
 
 ## 🛠️ Test Development & Maintenance
 
