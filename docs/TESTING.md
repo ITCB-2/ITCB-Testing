@@ -244,9 +244,9 @@ workflow_dispatch:
 
 | **Artifact Type**   | **Retention Period** | **Contents**                      |
 | ------------------- | -------------------- | --------------------------------- |
-| **Test Reports**    | 2 days               | HTML reports, screenshots, videos |
-| **Trace Files**     | 2 days               | Playwright execution traces       |
-| **Quality Results** | 2 days               | Linting results, compilation logs |
+| **Test Reports**    | 30 days              | HTML reports, screenshots, videos |
+| **Trace Files**     | 30 days              | Playwright execution traces       |
+| **Quality Results** | 7 days               | Linting results, compilation logs |
 
 ## 🛠️ Test Development & Maintenance
 
