@@ -14,10 +14,10 @@ on:
         default: '1'
         type: choice
         options:
+          - '1'
+          - '2'
           - '3'
-          - '5'
-          - '10'
-          - '20'
+          - '7'
       dry_run:
         description: 'Dry run - only show what would be deleted'
         required: true
