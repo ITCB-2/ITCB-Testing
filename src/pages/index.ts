@@ -1,10 +1,10 @@
-export * from './main-content/MainPage'
-export * from './main-content/SlidersMainPage'
+export * from './main-content/MainPage.ts'
+export * from './main-content/SlidersMainPage.ts'
 
-export * from './navigation/BottomMenuMainPage'
-export * from './navigation/TopMenuMainPage'
+export * from './navigation/BottomMenuMainPage.ts'
+export * from './navigation/TopMenuMainPage.ts'
 
-export * from './content-pages/CommunityMembersSharingPage'
-export * from './content-pages/DesicionMakerPage'
-export * from './content-pages/ImportantFactsPage'
-export * from './content-pages/OurCertificationPage'
+export * from './content-pages/CommunityMembersSharingPage.ts'
+export * from './content-pages/DesicionMakerPage.ts'
+export * from './content-pages/ImportantFactsPage.ts'
+export * from './content-pages/OurCertificationPage.ts'

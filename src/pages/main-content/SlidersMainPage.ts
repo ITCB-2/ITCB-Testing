@@ -1,7 +1,7 @@
 import {test} from '@/fixtures'
 import {SLIDERS_MAIN_PAGE_LOCATORS} from '@/locators'
+import {MainPage} from '@/pages'
 import {expect, type Page} from '@playwright/test'
-import {MainPage} from './MainPage'
 
 export class SlidersMainPage extends MainPage {
   constructor(page: Page) {

@@ -2,6 +2,7 @@
   "name": "itcb-testing",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "playwright test",
     "test:chrome": "playwright test --project=chromium",
@@ -17,7 +18,7 @@
     "prepare": "husky",
     "lint:check": "eslint src/**/*.ts --max-warnings 0 --no-warn-ignored",
     "format:check": "prettier --check src/**/*.ts",
-    "check": "npm run lint:check && npm run format:check && npx tsc --noEmit",
+    "check": "npm run lint:check && npm run format:check && npx tsc",
     "fix": "prettier --write src/**/*.ts && eslint src/**/*.ts --fix --no-warn-ignored",
     "trigger-ci": "git commit --allow-empty -m \"trigger CI workflows for testing\" && git push"
   },

@@ -1,1 +1,1 @@
-export * from './testSetup'
+export * from './testSetup.ts'
