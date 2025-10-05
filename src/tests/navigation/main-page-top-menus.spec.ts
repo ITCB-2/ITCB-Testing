@@ -1,4 +1,4 @@
-import {test} from '@/fixtures'
+import {test} from '../../fixtures/testSetup'
 
 test.describe('Main Page - Why ISTQB Menu Tests @regression', () => {
   test.beforeEach(async ({mainPage}) => {

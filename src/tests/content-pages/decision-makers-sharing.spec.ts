@@ -1,5 +1,5 @@
-import {test} from '@/fixtures'
-import {DECISION_MAKERS_SHARING_PAGE_LOCATORS} from '@/locators'
+import {test} from '../../fixtures/testSetup'
+import {DECISION_MAKERS_SHARING_PAGE_LOCATORS} from '../../locators/content-pages/Decision_Makers_Sharing'
 
 test.describe('Decision Makers Sharing Page Tests @regression', () => {
   test.beforeEach(async ({mainPage}) => {

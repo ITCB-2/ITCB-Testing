@@ -1,5 +1,5 @@
-import {test} from '@/fixtures'
-import {OUR_CERTIFICATIONS_PAGE_LOCATOR} from '@/locators'
+import {test} from '../../fixtures/testSetup'
+import {OUR_CERTIFICATIONS_PAGE_LOCATOR} from '../../locators/content-pages/Our_Certification'
 
 test.describe('Our Certifications Page Tests @regression', () => {
   test.beforeEach(async ({mainPage}) => {

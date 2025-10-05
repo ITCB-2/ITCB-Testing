@@ -1,15 +1,13 @@
-import {
-  BottomMenuMainPage,
-  CommunityMembersSharingPage,
-  DecisionMakerPage,
-  ImportantFactsPage,
-  MainPage,
-  OurCertificationPage,
-  SlidersMainPage,
-  TopMenuMainPage,
-} from '@/pages'
-import type {PageFixtures} from '@/types'
 import {test as base} from '@playwright/test'
+import {CommunityMembersSharingPage} from '../pages/content-pages/CommunityMembersSharingPage'
+import {DecisionMakerPage} from '../pages/content-pages/DesicionMakerPage'
+import {ImportantFactsPage} from '../pages/content-pages/ImportantFactsPage'
+import {OurCertificationPage} from '../pages/content-pages/OurCertificationPage'
+import {MainPage} from '../pages/main-content/MainPage'
+import {SlidersMainPage} from '../pages/main-content/SlidersMainPage'
+import {BottomMenuMainPage} from '../pages/navigation/BottomMenuMainPage'
+import {TopMenuMainPage} from '../pages/navigation/TopMenuMainPage'
+import type {PageFixtures} from '../types/fixtureTypes'
 
 export const test = base.extend<PageFixtures>({
   context: async ({browser}, use) => {

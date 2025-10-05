@@ -1,5 +1,5 @@
-import {test} from '@/fixtures'
-import {COMMUNITY_MEMBERS_SHARING_PAGE_LOCATORS} from '@/locators'
+import {test} from '../../fixtures/testSetup'
+import {COMMUNITY_MEMBERS_SHARING_PAGE_LOCATORS} from '../../locators/content-pages/Community_Members_Sharing'
 
 test.describe('Community Members Sharing Page Tests @regression', () => {
   test.beforeEach(async ({mainPage}) => {

@@ -1,26 +1,24 @@
-import {BASE_URL} from '@/data'
-import {test} from '@/fixtures'
-import {
-  ABOUT_US_PAGE_LOCATORS,
-  BOTTOM_MENU_MAIN_PAGE_LOCATORS,
-  DECISION_MAKERS_SHARING_PAGE_LOCATORS,
-  EVENTS_SUMMARIES_PAGE_LOCATORS,
-  HOW_TO_PREPARE_TO_ISTQB_PAGE_LOCATOR,
-  IMPORTANT_FACTS_PAGE_LOCATORS,
-  INTERNATIONAL_CONFERENCES_PAGE_LOCATORS,
-  ITCB_MAGAZINE_PAGE_LOCATORS,
-  MEMBERS_OF_COMMUNITY_SHARING_PAGE_LOCATORS,
-  OUR_CERTIFICATIONS_PAGE_LOCATOR,
-  OUR_PARTNERS_PAGE_LOCATORS,
-  PODCASTS_PAGE_LOCATORS,
-  QUESTIONS_AND_ANSWERS_PAGE_LOCATORS,
-  SYLLABUS_INFO_PAGE_LOCATORS,
-  TERMS_GLOSSARY_PAGE_LOCATORS,
-  TIPS_PAGE_LOCATORS,
-  USEFUL_LINKS_LOCATORS,
-} from '@/locators'
-import {MainPage} from '@/pages'
 import {expect, type Page} from '@playwright/test'
+import {BASE_URL} from '../../data/urls'
+import {test} from '../../fixtures/testSetup'
+import {ABOUT_US_PAGE_LOCATORS} from '../../locators/content-pages/About_Us'
+import {DECISION_MAKERS_SHARING_PAGE_LOCATORS} from '../../locators/content-pages/Decision_Makers_Sharing'
+import {EVENTS_SUMMARIES_PAGE_LOCATORS} from '../../locators/content-pages/Events_Summaries'
+import {HOW_TO_PREPARE_TO_ISTQB_PAGE_LOCATOR} from '../../locators/content-pages/How_To_Prepare_To_ISTQB'
+import {IMPORTANT_FACTS_PAGE_LOCATORS} from '../../locators/content-pages/Important_Facts'
+import {INTERNATIONAL_CONFERENCES_PAGE_LOCATORS} from '../../locators/content-pages/International_Conferences'
+import {ITCB_MAGAZINE_PAGE_LOCATORS} from '../../locators/content-pages/ITCB_Magazine'
+import {MEMBERS_OF_COMMUNITY_SHARING_PAGE_LOCATORS} from '../../locators/content-pages/Members_Of_Community_Sharing'
+import {OUR_CERTIFICATIONS_PAGE_LOCATOR} from '../../locators/content-pages/Our_Certification'
+import {OUR_PARTNERS_PAGE_LOCATORS} from '../../locators/content-pages/Our_Partners'
+import {PODCASTS_PAGE_LOCATORS} from '../../locators/content-pages/Podcasts'
+import {QUESTIONS_AND_ANSWERS_PAGE_LOCATORS} from '../../locators/content-pages/Questions_And_Answers'
+import {SYLLABUS_INFO_PAGE_LOCATORS} from '../../locators/content-pages/Syllabus_Info'
+import {TERMS_GLOSSARY_PAGE_LOCATORS} from '../../locators/content-pages/Terms_Glossary'
+import {TIPS_PAGE_LOCATORS} from '../../locators/content-pages/Tips'
+import {USEFUL_LINKS_LOCATORS} from '../../locators/content-pages/Useful_Links'
+import {BOTTOM_MENU_MAIN_PAGE_LOCATORS} from '../../locators/navigation/Bottom_Main_Menu'
+import {MainPage} from '../main-content/MainPage'
 
 export class BottomMenuMainPage extends MainPage {
   constructor(page: Page) {

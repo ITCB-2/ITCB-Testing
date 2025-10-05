@@ -1,4 +1,4 @@
-import {test} from '@/fixtures'
+import {test} from '../../fixtures/testSetup'
 
 test.describe('Main Page Validate Content Tests @sanity', () => {
   test.beforeEach(async ({mainPage}) => {
