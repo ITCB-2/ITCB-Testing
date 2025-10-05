@@ -1,8 +1,10 @@
+import {
+  BasePage,
+  findItemByProperty,
+  test,
+} from '@netanelh2/playwright-framework'
 import {expect, type Page} from '@playwright/test'
-import {BasePage} from '../../core/BasePage'
 import {BASE_URL} from '../../data/urls'
-import {test} from '../../fixtures/testSetup'
-import {findItemByProperty} from '../../helpers/arrayUtils'
 import {IMPORTANT_FACTS_PAGE_LOCATORS} from '../../locators/content-pages/Important_Facts'
 import {OUR_CERTIFICATIONS_PAGE_LOCATOR} from '../../locators/content-pages/Our_Certification'
 import {MAIN_PAGE_LOCATORS} from '../../locators/main-content/Main_Page'

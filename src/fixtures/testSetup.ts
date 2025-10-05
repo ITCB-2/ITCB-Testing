@@ -1,4 +1,4 @@
-import {test as base} from '@playwright/test'
+import {test as baseTest} from '@netanelh2/playwright-framework'
 import {CommunityMembersSharingPage} from '../pages/content-pages/CommunityMembersSharingPage'
 import {DecisionMakerPage} from '../pages/content-pages/DesicionMakerPage'
 import {ImportantFactsPage} from '../pages/content-pages/ImportantFactsPage'
@@ -9,16 +9,7 @@ import {BottomMenuMainPage} from '../pages/navigation/BottomMenuMainPage'
 import {TopMenuMainPage} from '../pages/navigation/TopMenuMainPage'
 import type {PageFixtures} from '../types/fixtureTypes'
 
-export const test = base.extend<PageFixtures>({
-  context: async ({browser}, use) => {
-    const context = await browser.newContext()
-    await use(context)
-    await context.close()
-  },
-  page: async ({context}, use) => {
-    const page = await context.newPage()
-    await use(page)
-  },
+export const test = baseTest.extend<PageFixtures>({
   mainPage: async ({page}, use) => {
     await use(new MainPage(page))
   },

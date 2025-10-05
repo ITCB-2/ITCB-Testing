@@ -1,7 +1,9 @@
+import {
+  BasePage,
+  findItemByProperty,
+  test,
+} from '@netanelh2/playwright-framework'
 import {type Page} from '@playwright/test'
-import {BasePage} from '../../core/BasePage'
-import {test} from '../../fixtures/testSetup'
-import {findItemByProperty} from '../../helpers/arrayUtils'
 import {DECISION_MAKERS_SHARING_PAGE_LOCATORS} from '../../locators/content-pages/Decision_Makers_Sharing'
 
 type DecisionMakerBoxName =

@@ -1,7 +1,9 @@
+import {
+  BasePage,
+  findItemByProperty,
+  test,
+} from '@netanelh2/playwright-framework'
 import {type Page} from '@playwright/test'
-import {BasePage} from '../../core/BasePage'
-import {test} from '../../fixtures/testSetup'
-import {findItemByProperty} from '../../helpers/arrayUtils'
 import {OUR_CERTIFICATIONS_PAGE_LOCATOR} from '../../locators/content-pages/Our_Certification'
 
 type OurCertificationBoxName =
