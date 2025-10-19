@@ -17,7 +17,7 @@ jobs:
   cleanup-storage:
     name: Cleanup Storage Before Tests
     runs-on: ubuntu-latest
-    continue-on-error: true
+    continue-on-error: false
     timeout-minutes: 10
     steps:
       - name: Trigger artifact cleanup
@@ -67,6 +67,7 @@ jobs:
     name: Run Sanity Tests
     runs-on: ubuntu-latest
     needs: setup-environment
+    continue-on-error: true
     timeout-minutes: 60
     env:
       BASE_URL: ${{ secrets.BASE_URL }}
