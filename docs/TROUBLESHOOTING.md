@@ -89,12 +89,12 @@ npx playwright install chromium # Install specific browser
 
 ### Code Quality Issues
 
-**Problem**: ESLint/Prettier conflicts
+**Problem**: Biome.js conflicts
 **Solution**:
 
 ```bash
 npm run fix                     # Auto-fix formatting
-npm run lint:check             # Check for remaining issues
+npm run check                  # Check for remaining issues
 ```
 
 **Problem**: TypeScript compilation errors

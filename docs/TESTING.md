@@ -188,7 +188,7 @@ src/tests/
 
 #### **🔧 Quality Gates**
 
-- ✅ **Automated Code Quality**: ESLint + Prettier + TypeScript validation
+- ✅ **Automated Code Quality**: Biome.js + TypeScript validation
 - ✅ **Zero Warnings Policy**: Builds fail on any linting warnings
 - ✅ **Pre-commit Hooks**: Local quality checks before commits
 
@@ -255,6 +255,7 @@ workflow_dispatch:
 #### **Classification Guidelines**
 
 1. **@sanity**: Critical functionality that MUST work for basic system operation
+
    - Maximum 15-20 minutes total execution time
    - Core user journeys only
    - High-value, high-frequency functionality

@@ -121,13 +121,13 @@ Regular documentation health checks:
 - **Structure Improvements**: Enhance navigation and cross-references
 - **Currency Checks**: Ensure information matches current codebase
 
-## 🔗 External Resources
+### **External Resources**
 
 ### **Framework Documentation**
 
 - **[Playwright Docs](https://playwright.dev/)** - Official testing framework guide
+- **[Biome.js Docs](https://biomejs.dev/)** - Code quality and formatting tool
 - **[TypeScript Handbook](https://www.typescriptlang.org/docs/)** - Language reference
-- **[ESLint Rules](https://eslint.org/docs/rules/)** - Code quality standards
 
 ### **Project Resources**
 

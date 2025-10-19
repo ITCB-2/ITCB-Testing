@@ -33,8 +33,7 @@ pull_request: [main, master, develop]
 
 **🔍 Quality Gates**:
 
-- **ESLint**: Code linting with zero-warning policy
-- **Prettier**: Code formatting validation
+- **Biome**: Combined linting and formatting with zero-warning policy
 - **TypeScript**: Type checking and compilation
 
 **⚙️ Configuration**:
@@ -339,6 +338,7 @@ Continuous Storage Management
 ### **Required Repository Secrets**
 
 1. **`BASE_URL`**
+
    - **Purpose**: Target application URL
    - **Example**: `https://www.itcb.org.il`
    - **Used by**: Sanity & Regression tests
@@ -412,21 +412,25 @@ All workflows support manual triggering via GitHub Actions UI:
 ### **Common Issues**
 
 1. **Code Quality workflow fails**
-   - Check ESLint configuration and fix linting errors
-   - Run `npm run fix` locally to auto-fix formatting issues
+
+   - Check Biome configuration and fix linting/formatting errors
+   - Run `npm run check` locally to identify issues
    - Verify TypeScript compilation with `npm run type-check`
    - Ensure all dependencies are properly installed
 
 2. **Workflow fails with "Environment variable not set"**
+
    - Check that required repository secrets are configured
    - Verify secret names match exactly (case-sensitive)
 
 3. **Reports not deploying**
+
    - Ensure GitHub Pages is enabled
    - Check deploy-reports workflow logs
    - Verify test workflows completed successfully
 
 4. **Slack notifications not working**
+
    - Verify `SLACK_WEBHOOK_URL` secret is set
    - Check Slack webhook URL is valid
    - Ensure channel permissions are correct

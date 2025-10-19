@@ -60,16 +60,15 @@ npm run fix                # Auto-fix all formatting & linting issues
 # 2. Development tools
 npm run test:debug         # Step-by-step test debugging
 npm run test:headed        # Watch tests execute in browser
-npm run codegen            # Generate test code using Playwright
-npm run report             # View test results in browser
+npm run codegen           # Generate test code using Playwright
+npm run report            # View test results in browser
 ```
 
 ### **⚡ Pre-commit Automation (Husky)**
 
 Every commit automatically runs:
 
-- ✅ **ESLint** (zero warnings enforced)
-- ✅ **Prettier** (consistent formatting)
+- ✅ **Biome.js** (zero warnings enforced)
 - ✅ **TypeScript** compilation check
 - ✅ **Staged files** formatting fix
 
@@ -270,22 +269,12 @@ async performCriticalAction(): Promise<void> {
 
 ### **🔧 Code Quality Standards**
 
-#### **Import Organization**
+#### **Biome.js Best Practices**
 
-```typescript
-// ✅ Correct import order
-import {BasePage} from '@/core' // Framework imports first
-import {test} from '@/fixtures' // Test utilities
-import {USER_PROFILE_LOCATORS} from '@/locators' // Project imports
-import {expect, type Page} from '@playwright/test' // External libraries last
-```
-
-#### **TypeScript Best Practices**
-
-- 🔒 **Use strict types**: Avoid `any`, prefer specific interfaces
-- 📝 **Document complex types**: Use JSDoc for business logic interfaces
-- ⚡ **Leverage inference**: Let TypeScript infer simple types
-- 🛡️ **Validate inputs**: Check parameters in public methods
+- 🔒 **Zero warnings policy**: All Biome.js rules must pass
+- 📝 **Consistent formatting**: Automatic formatting with Biome.js
+- ⚡ **Fast execution**: Combined linting and formatting in one tool
+- 🛡️ **TypeScript integration**: Built-in TypeScript support
 
 ### **🌍 Environment Management**
 
@@ -381,6 +370,7 @@ export const getTestConfig = (): TestConfig => ({
 For GitHub Actions workflows to function properly, configure these repository-level secrets:
 
 1. **`BASE_URL`** - Target application URL for testing
+
    - Go to: Repository Settings → Secrets and variables → Actions
    - Add new repository secret: `BASE_URL=https://www.itcb.org.il`
    - Used by: Sanity tests, Nightly regression tests

@@ -26,7 +26,7 @@ Purpose: Make agents instantly productive in this Playwright + TypeScript test f
 - Tests: place under `src/tests/**`, name with `.spec.ts`. Import the custom `test` from `@/fixtures` (not from `@playwright/test`).
 - Steps: group meaningful actions with `test.step(...)` inside page methods where helpful.
 - Tags: classify suites with `@sanity` or `@regression` in describe titles to enable targeted runs (see commands below).
-- Lint/format: ESLint + Prettier are enforced; Prettier violations fail CI. Follow rules in `eslint.config.ts` (tests have relaxed rules).
+- Lint/format: Biome.js is enforced; formatting violations fail CI. Follow rules in `biome.json` (tests have relaxed rules).
 - Locator resolution (from code):
   - For string locators: `page.locator(...) → page.getByLabel(...) → page.getByText(...)`.
   - For role locators: `page.getByRole(role, {name})`, with optional `parent` via `page.locator(parent).getByRole(...)`.

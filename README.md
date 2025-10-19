@@ -143,7 +143,7 @@ The retry system automatically detects:
 
 - **🎭 [Playwright](https://playwright.dev/)** - Modern web testing framework
 - **📘 [TypeScript](https://www.typescriptlang.org/)** - Type-safe JavaScript
-- **🔧 [ESLint](https://eslint.org/) + [Prettier](https://prettier.io/)** - Code quality and formatting
+- **🔧 [Biome](https://biomejs.dev/)** - Code quality and formatting
 - **🎣 [Husky](https://typicode.github.io/husky/)** - Git hooks for quality gates
 - **⚡ [GitHub Actions](https://github.com/features/actions)** - CI/CD automation
 
