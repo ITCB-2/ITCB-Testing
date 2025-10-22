@@ -4,18 +4,21 @@
 
 ## 🎯 Overview
 
-The ITCB Testing Framework uses GitHub Actions to provide a comprehensive CI/CD pipeline that ensures code quality, runs automated tests, generates reports, and notifies the team of results. The pipeline is designed for resilience, with intelligent fallback mechanisms for storage quota issues.
+The ITCB Testing Framework uses GitHub Actions to provide a comprehensive CI/CD pipeline that ensures code quality, runs automated tests, generates reports, and notifies the team of results. The pipeline features a modular, reusable architecture with intelligent fallback mechanisms for storage quota issues.
 
 ## 🏗️ Workflow Architecture
 
 ```
-WORKFLOW ARCHITECTURE:
+MODULAR WORKFLOW ARCHITECTURE:
 Developer Push/PR → Code Quality Check → Pass/Fail → Merge Allowed/Blocked
 
-TESTING WORKFLOWS:
-Sanity Tests (Every 2 hours) → Deploy Reports → Slack Notifications
-Regression Tests (Daily 2 AM) → Deploy Reports → Slack Notifications
-Artifact Cleanup (Daily 2 AM) → Storage Management
+TESTING WORKFLOWS (Modular Design):
+Sanity Tests → Test Runner (Generic) → Deploy Reports → Slack Notifications
+Regression Tests → Test Runner (Generic) → Deploy Reports → Slack Notifications
+Future Tests → Test Runner (Generic) → Deploy Reports → Slack Notifications
+
+SUPPORTING WORKFLOWS:
+Artifact Cleanup → Storage Management & Quota Prevention
 ```
 
 ## 📋 Core Workflows
@@ -53,14 +56,65 @@ artifact: test-results (failure cases only)
 
 ---
 
-### 2. Sanity Tests (`sanity.yml`)
+### 2. Test Runner (`test-runner.yml`) - **🆕 Generic Test Execution Engine**
 
-**🎯 Purpose**: Fast feedback loop for critical functionality
+**🎯 Purpose**: Reusable workflow that executes any type of Playwright tests with consistent behavior
+
+**⚙️ Trigger**: Called by specific test workflows (Sanity, Regression, Future tests)
+
+**🔧 Configurable Parameters**:
+
+```yaml
+inputs:
+  test_type: 'sanity' | 'regression' | 'e2e' | 'smoke' | custom
+  test_command: 'npm run test:sanity' | 'npm run test:regression' | custom
+  retention_days: 3 | 7 | custom (artifact retention)
+  test_description: 'Sanity Tests' | 'Regression Tests' | custom
+  cleanup_before_run: true | false (run cleanup first)
+  timeout_minutes: 60 | 120 | custom
+  test_tags: '@sanity' | '@regression' | custom Playwright tags
+```
+
+**🎭 Test Execution Flow**:
+
+1. **Optional Cleanup**: Runs artifact cleanup if enabled
+2. **Environment Setup**: Node.js, dependencies, Playwright browsers
+3. **Test Execution**: Runs specified command with proper environment
+4. **Artifact Upload**: Always uploads reports (even on failure)
+5. **Error Handling**: Fails workflow with helpful error messages
+6. **Summary**: Provides clean test completion status
+
+**🛠️ Reusable Design**:
+
+- **Any Test Type**: Supports sanity, regression, e2e, smoke, or custom tests
+- **Flexible Configuration**: All parameters are customizable
+- **Consistent Behavior**: Same setup, caching, and error handling for all tests
+- **Future-Ready**: Adding new test types requires minimal configuration
+
+---
+
+### 3. Sanity Tests (`sanity.yml`)
+
+**🎯 Purpose**: Fast feedback loop for critical functionality using the generic Test Runner
 
 **⏰ Schedule**:
 
 - **Automatic**: Every 2 hours (`0 */2 * * *`)
 - **Manual**: On-demand via GitHub Actions UI
+
+**🔧 Implementation**:
+
+```yaml
+jobs:
+  run-sanity-tests:
+    uses: ./.github/workflows/test-runner.yml
+    with:
+      test_type: 'sanity'
+      test_command: 'npm run test:sanity'
+      test_description: 'Sanity Tests'
+      retention_days: '3'
+      cleanup_before_run: 'true'
+```
 
 **🎭 Test Scope**:
 
@@ -71,28 +125,36 @@ artifact: test-results (failure cases only)
 **⚙️ Configuration**:
 
 ```yaml
-timeout: 60 minutes
+timeout: 60 minutes (inherited from Test Runner)
 browser: All (chromium, firefox, webkit)
-retention: 2 days
-artifact: sanity-playwright-report-{run_number}
+retention: 3 days
+artifact: playwright-report-sanity-{run_number}
 ```
-
-**🛡️ Resilience Features**:
-
-- Storage quota fallback with `continue-on-error`
-- Intelligent error reporting
-- Automatic retry logic for critical tests
 
 ---
 
-### 3. Regression Tests (`nightly-regression.yml`)
+### 4. Regression Tests (`nightly-regression.yml`)
 
-**🎯 Purpose**: Comprehensive daily validation
+**🎯 Purpose**: Comprehensive daily validation using the generic Test Runner
 
 **⏰ Schedule**:
 
 - **Automatic**: Daily at 2:00 AM UTC (`0 2 * * *`)
 - **Manual**: On-demand via GitHub Actions UI
+
+**🔧 Implementation**:
+
+```yaml
+jobs:
+  run-regression-tests:
+    uses: ./.github/workflows/test-runner.yml
+    with:
+      test_type: 'regression'
+      test_command: 'npm run test:regression'
+      test_description: 'Regression Tests'
+      retention_days: '7'
+      cleanup_before_run: 'true'
+```
 
 **🎭 Test Scope**:
 
@@ -103,58 +165,57 @@ artifact: sanity-playwright-report-{run_number}
 **⚙️ Configuration**:
 
 ```yaml
-timeout: 120 minutes
+timeout: 120 minutes (inherited from Test Runner)
 browser: All (chromium, firefox, webkit)
-retention: 2 days
-artifact: regression-playwright-report-{run_number}
+retention: 7 days
+artifact: playwright-report-regression-{run_number}
 ```
-
-**📊 Extended Coverage**:
-
-- Full regression testing
-- Performance validation
-- Visual regression testing
 
 ---
 
-### 4. Deploy Reports (`deploy-reports.yml`)
+### 5. Deploy Reports (`deploy-reports.yml`)
 
-**🎯 Purpose**: Publishes test results to GitHub Pages
+**🎯 Purpose**: Publishes test results to GitHub Pages with enhanced flexibility
 
 **⚙️ Trigger Logic**:
 
 ```yaml
 workflow_run:
-  workflows: ['Sanity Tests', 'Regression Tests']
-  types: [completed]
+  types: [completed] # Any workflow completion
 ```
 
-**📊 Process Flow**:
+**🧠 Smart Detection**:
 
-1. **Wait** for test workflow completion
-2. **Download** latest test artifacts
-3. **Extract** HTML reports and assets
-4. **Organize** reports by workflow and timestamp
-5. **Deploy** to GitHub Pages
-6. **Trigger** Slack notifications
+- **Universal Trigger**: Responds to ANY workflow completion
+- **Intelligent Artifact Resolution**: Automatically finds test artifacts
+- **Generic Support**: Works with current and future test workflows
+- **Fallback Handling**: Creates helpful pages when artifacts are missing
+
+**📊 Enhanced Process Flow**:
+
+1. **Detect Workflow**: Identifies which workflow completed
+2. **Resolve Artifacts**: Uses API to find playwright-report artifacts
+3. **Extract & Organize**: Handles nested directory structures
+4. **Deploy**: Publishes to GitHub Pages with proper error handling
+5. **Notify**: Triggers Slack notifications with contextual information
 
 **🌐 Output**:
 
 - **Live Reports**: `https://itcb-2.github.io/ITCB-Testing/`
-- **Latest**: `/latest/{workflow-name}/`
-- **Historical**: `/reports/{workflow-name}/{timestamp}/`
+- **Automatic Detection**: Works with any `playwright-report-*` artifacts
+- **Fallback Pages**: Helpful messages when reports are unavailable
 
-**🧹 Maintenance**:
+**🎯 Key Improvements**:
 
-- Keeps last 10 reports per workflow
-- Automatic cleanup of old reports
-- Organized directory structure
+- **No Hardcoded Names**: Works with any test workflow
+- **API-Based Discovery**: Finds artifacts dynamically
+- **Better Error Context**: Shows workflow names and run numbers in fallbacks
 
 ---
 
-### 5. Slack Notifications (`slack-notifications.yml`)
+### 6. Slack Notifications (`slack-notifications.yml`)
 
-**🎯 Purpose**: Team communication and status updates
+**🎯 Purpose**: Team communication and status updates with enhanced context
 
 **📱 Trigger**: When deploy workflow completes
 
@@ -162,31 +223,31 @@ workflow_run:
 
 **🌍 Timezone**: Israel (Asia/Jerusalem)
 
-**💬 Notification Content**:
+**🧠 Smart Context Detection**:
+
+- **Dynamic Test Names**: Extracts actual test type from artifact names
+- **Workflow Context**: Shows "Sanity Tests", "Regression Tests", etc.
+- **Flexible URLs**: Uses deployment URLs with repository-based fallbacks
+
+**💬 Enhanced Notification Content**:
 
 ```yaml
 Success Message:
-  - ✅ Test status with contextual emoji
+  - ✅ Test status with workflow-specific names
   - 🔗 Direct links to live reports
   - 📊 Workflow execution details
   - 🕐 Israel timezone timestamps
 
 Failure Message:
-  - ❌ Clear failure indicators
+  - ❌ Clear failure indicators with test context
   - 🔧 Action required notifications
   - 📋 Direct links to workflow logs
   - 🆘 Team escalation context
 ```
 
-**🎨 Smart Messaging**:
-
-- **Success**: Celebratory tone with report links
-- **Failure**: Action-oriented with debugging links
-- **Context**: Workflow name, trigger type, timestamps
-
 ---
 
-### 6. Artifact Cleanup (`cleanup-artifacts.yml`)
+### 7. Artifact Cleanup (`cleanup-artifacts.yml`)
 
 **🎯 Purpose**: Automated storage management and quota prevention
 
@@ -224,84 +285,35 @@ api_integration: GitHub REST API with pagination
 - **Dry Run**: Preview deletions without executing
 - **Immediate Execution**: For quota emergencies
 
-**🚀 Storage Intelligence**:
+---
 
-- Groups artifacts by workflow type for targeted cleanup
-- Provides storage usage analysis and recommendations
-- Warns when approaching GitHub's 1 GB storage limit
-- Suggests optimal retention settings based on current usage
+## 🏗️ Modular Architecture Benefits
 
-## 🛡️ Resilience & Fallback Strategies
+### **🔧 Reusability**
 
-### Storage Quota Management
+- **Single Test Runner**: Handles all test types with consistent behavior
+- **Shared Components**: Cleanup, deployment, and notifications work for all workflows
+- **Easy Extension**: Adding new test types requires minimal configuration
 
-**🚨 Problem**: GitHub has storage quotas that can block CI pipelines
+### **🛡️ Maintainability**
 
-**✅ Solution**: Multi-tier fallback approach
+- **Centralized Logic**: Test execution logic in one place
+- **Consistent Updates**: Changes to test behavior apply to all workflows
+- **Simplified Debugging**: Single source of truth for test execution
 
-#### **Tier 1: Graceful Degradation**
+### **🚀 Scalability**
 
-```yaml
-- name: Upload artifacts (with quota fallback)
-  continue-on-error: true
-  id: upload-artifacts
-```
+- **Future Test Types**: E2E, Smoke, Performance tests easily added
+- **Custom Configurations**: Each test type can have unique settings
+- **Parallel Execution**: Multiple test workflows can run simultaneously
 
-- Tests continue even if upload fails
-- Provides helpful error context
-- Maintains CI pipeline availability
+### **🎯 Flexibility**
 
-#### **Tier 2: Enhanced Preventive Maintenance**
+- **Optional Features**: Cleanup, custom timeouts, tags all configurable
+- **Smart Defaults**: Sensible defaults with override capability
+- **Context Awareness**: Workflows adapt based on their configuration
 
-```yaml
-# Daily cleanup at 1 AM UTC - before test workflows
-schedule:
-  - cron: '0 1 * * *'
-```
-
-- **Dual-policy** artifact cleanup (age + count based)
-- **2-day default** retention with configurable options
-- **Latest 5 artifacts** per workflow type retention
-- **Proactive scheduling** before test execution
-- **Storage intelligence** with usage recommendations
-
-#### **Tier 3: Emergency Response**
-
-```yaml
-# Manual cleanup with enhanced dual-policy settings
-workflow_dispatch:
-  inputs:
-    days_to_keep: ['7', '14', '30', '60']
-    max_artifacts_per_workflow: ['3', '5', '10', '20']
-    dry_run: ['true', 'false']
-```
-
-- **Immediate dual-policy** cleanup (age + count based)
-- **Preview mode** for safety with detailed analysis
-- **Flexible retention** policies for different scenarios
-- **Emergency response** for quota issues
-
-### Test Execution Resilience
-
-**🔄 Intelligent Retry Logic**:
-
-```yaml
-CI Environment:
-  @sanity tests: 2 retries (critical functionality)
-  @regression tests: 2 retries (stability assurance)
-  General tests: 0 retries (fast feedback)
-
-Local Development:
-  All tests: 0 retries (immediate feedback)
-```
-
-**⚡ Fast Failure Detection**:
-
-- Immediate local feedback
-- CI retries only for tagged critical tests
-- Balanced speed vs. reliability
-
-## 📊 Workflow Execution Timeline
+## Workflow Execution Timeline
 
 ### **Daily Schedule (UTC)**
 
@@ -328,7 +340,7 @@ Enhanced Artifact Cleanup (01:00 UTC)
      ↓
 Code Quality Check (on PR/push) → Merge Protection
      ↓
-Test Workflows → Deploy Reports → Slack Notifications
+Test Workflows → Test Runner → Deploy Reports → Slack Notifications
      ↓
 Continuous Storage Management
 ```
@@ -377,6 +389,7 @@ permissions:
 ### **Performance Metrics**
 
 - ⏱️ Code quality check: ~2-5 minutes
+- ⏱️ Test Runner setup: ~2-3 minutes
 - ⏱️ Sanity tests: ~5-10 minutes
 - ⏱️ Regression tests: ~30-45 minutes
 - ⏱️ Report deployment: ~2-3 minutes
@@ -384,14 +397,15 @@ permissions:
 
 ## 🎯 Workflow Triggers Summary
 
-| **Workflow**        | **Automatic**        | **Manual** | **Dependency**  |
-| ------------------- | -------------------- | ---------- | --------------- |
-| Artifact Cleanup    | Daily 1 AM           | ✅         | None            |
-| Code Quality Check  | On push/PR           | ❌         | None            |
-| Sanity Tests        | Every 2 hours        | ✅         | None            |
-| Regression Tests    | Daily 2 AM           | ✅         | None            |
-| Deploy Reports      | On test completion   | ✅         | Test workflows  |
-| Slack Notifications | On deploy completion | ✅         | Deploy workflow |
+| **Workflow**        | **Automatic**         | **Manual** | **Dependency**  |
+| ------------------- | --------------------- | ---------- | --------------- |
+| Artifact Cleanup    | Daily 1 AM            | ✅         | None            |
+| Code Quality Check  | On push/PR            | ❌         | None            |
+| Test Runner         | ❌ (Called by others) | ❌         | Test workflows  |
+| Sanity Tests        | Every 2 hours         | ✅         | Test Runner     |
+| Regression Tests    | Daily 2 AM            | ✅         | Test Runner     |
+| Deploy Reports      | On test completion    | ✅         | Test workflows  |
+| Slack Notifications | On deploy completion  | ✅         | Deploy workflow |
 
 ## 🔧 Manual Workflow Triggers
 
@@ -436,9 +450,15 @@ All workflows support manual triggering via GitHub Actions UI:
    - Ensure channel permissions are correct
 
 5. **Storage quota exceeded**
+
    - Run manual artifact cleanup workflow
    - Check cleanup workflow logs
    - Verify retention settings are appropriate
+
+6. **New test workflow not deploying**
+   - Ensure artifacts are named `playwright-report-{type}-{run_number}`
+   - Check that workflow completes successfully
+   - Verify deploy workflow can access the artifacts
 
 ### **Debugging Steps**
 
