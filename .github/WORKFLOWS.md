@@ -107,7 +107,7 @@ inputs:
 ```yaml
 jobs:
   run-sanity-tests:
-    uses: ./.github/workflows/test-runner.yml
+    uses: ./.github/workflows/core-test-runner.yml
     with:
       test_type: 'sanity'
       test_command: 'npm run test:sanity'
@@ -147,7 +147,7 @@ artifact: playwright-report-sanity-{run_number}
 ```yaml
 jobs:
   run-regression-tests:
-    uses: ./.github/workflows/test-runner.yml
+    uses: ./.github/workflows/core-test-runner.yml
     with:
       test_type: 'regression'
       test_command: 'npm run test:regression'
