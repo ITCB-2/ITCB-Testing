@@ -15,7 +15,7 @@ on:
 
 jobs:
   run-regression-tests:
-    uses: ./.github/workflows/test-runner.yml
+    uses: ./.github/workflows/core/test-runner.yml
     with:
       test_type: 'regression'
       test_command: 'npm run test:regression'

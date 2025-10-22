@@ -15,7 +15,7 @@ on:
 
 jobs:
   run-sanity-tests:
-    uses: ./.github/workflows/test-runner.yml
+    uses: ./.github/workflows/core/test-runner.yml
     with:
       test_type: 'sanity'
       test_command: 'npm run test:sanity'

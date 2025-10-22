@@ -39,7 +39,7 @@ jobs:
   cleanup-storage:
     name: Cleanup Storage Before Tests
     if: inputs.cleanup_before_run == 'true'
-    uses: ./.github/workflows/cleanup-artifacts.yml
+    uses: ./.github/workflows/code/cleanup-artifacts.yml
 
   setup-environment:
     name: Setup Test Environment
