@@ -2,6 +2,7 @@ name: Deploy Playwright HTML Report to GitHub Pages
 
 on:
   workflow_run:
+    workflows: ['Sanity Tests', 'Regression Tests']
     types:
       - completed
   workflow_dispatch:
