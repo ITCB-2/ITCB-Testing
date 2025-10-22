@@ -1,4 +1,4 @@
-name: Deploy Playwright HTML Report to GitHub Pages
+name: Deploy Reports to GitHub Pages
 
 on:
   workflow_run:
