@@ -35,6 +35,10 @@ on:
         required: false
         type: string
 
+permissions:
+  actions: write
+  contents: read
+
 jobs:
   cleanup-storage:
     name: Cleanup Storage Before Tests
