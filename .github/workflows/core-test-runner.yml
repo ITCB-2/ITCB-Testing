@@ -29,7 +29,7 @@ on:
       timeout_minutes:
         description: 'Timeout for test execution in minutes'
         required: false
-        type: string
+        type: number
       test_tags:
         description: 'Playwright test tags to run'
         required: false
