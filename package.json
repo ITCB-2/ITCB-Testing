@@ -33,17 +33,17 @@
 	"homepage": "https://github.com/ITCB-2/ITCB-Testing#readme",
 	"description": "",
 	"devDependencies": {
-		"@biomejs/biome": "2.2.6",
-		"@faker-js/faker": "^9.3.0",
-		"@netanelh2/playwright-framework": "^3.0.5",
-		"@playwright/test": "^1.49.1",
-		"@types/node": "^24.2.1",
-		"dotenv": "^17.2.1",
+		"@biomejs/biome": "2.2.7",
+		"@faker-js/faker": "^10.1.0",
+		"@netanelh2/playwright-framework": "^4.1.0",
+		"@playwright/test": "^1.56.1",
+		"@types/node": "^24.9.1",
+		"dotenv": "^17.2.3",
 		"husky": "^9.1.7",
-		"jiti": "^2.4.2",
-		"lint-staged": "^16.1.5",
+		"jiti": "^2.6.1",
+		"lint-staged": "^16.2.5",
 		"ts-node": "^10.9.2",
-		"typescript": "^5.7.2"
+		"typescript": "^5.9.3"
 	},
 	"lint-staged": {
 		"*": [
