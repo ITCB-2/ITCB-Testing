@@ -1,6 +1,5 @@
 import {test} from '@netanelh2/playwright-framework'
 import {expect, type Page} from '@playwright/test'
-import {BASE_URL} from '../../data/urls'
 import {ABOUT_US_PAGE_LOCATORS} from '../../locators/content-pages/About_Us'
 import {DECISION_MAKERS_SHARING_PAGE_LOCATORS} from '../../locators/content-pages/Decision_Makers_Sharing'
 import {EVENTS_SUMMARIES_PAGE_LOCATORS} from '../../locators/content-pages/Events_Summaries'
@@ -198,7 +197,7 @@ export class TopMenuMainPage extends MainPage {
 			await this.validateVisibility(aboutUsLink)
 			await this.clickOnElement(aboutUsLink)
 			const pageContent = this.page.getByText('ITCB® - Israel Testing')
-			await this.validateURL(`${BASE_URL}/?todo=about`)
+			await this.validateURL(`/about`)
 			await expect(pageContent).toContainText('ITCB® - Israel Testing')
 		})
 	}

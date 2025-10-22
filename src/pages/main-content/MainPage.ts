@@ -4,7 +4,6 @@ import {
 	test,
 } from '@netanelh2/playwright-framework'
 import {expect, type Page} from '@playwright/test'
-import {BASE_URL} from '../../data/urls'
 import {IMPORTANT_FACTS_PAGE_LOCATORS} from '../../locators/content-pages/Important_Facts'
 import {OUR_CERTIFICATIONS_PAGE_LOCATOR} from '../../locators/content-pages/Our_Certification'
 import {MAIN_PAGE_LOCATORS} from '../../locators/main-content/Main_Page'
@@ -19,7 +18,7 @@ export class MainPage extends BasePage {
 	async openMainPage(): Promise<void> {
 		await test.step('Open Main Page', async () => {
 			const {importantFactsTitle} = MAIN_PAGE_LOCATORS.importantFactsSection
-			await this.page.goto(BASE_URL)
+			await this.page.goto('/')
 			await this.pressOkToCookies()
 			await this.validateText(importantFactsTitle, 'עובדות שחשוב שתדע')
 		})

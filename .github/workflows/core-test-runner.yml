@@ -95,6 +95,15 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
 
+      - name: Debug BASE_URL
+        run: |
+          if [ -z "$BASE_URL" ]; then
+            echo "::error::BASE_URL environment variable is not set or empty"
+            exit 1
+          else
+            echo "BASE_URL is set (length: ${#BASE_URL})"
+          fi
+
       - name: Run ${{ inputs.test_description }}
         id: run-tests
         run: ${{ inputs.test_command }}
