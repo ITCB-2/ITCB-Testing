@@ -71,7 +71,7 @@ jobs:
     continue-on-error: true
     timeout-minutes: ${{ inputs.timeout_minutes}}
     env:
-      BASE_URL: ${{ secrets.BASE_URL }}
+      BASE_URL: https://www.itcb.org.il
       TEST_TAGS: ${{ inputs.test_tags}}
     steps:
       - uses: actions/checkout@v4
