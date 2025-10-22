@@ -12,6 +12,9 @@ on:
         description: 'Reason for running tests manually'
         required: false
         default: 'Manual sanity test run'
+      base_url:
+        description: 'Base URL for the application (optional, overrides secret)'
+        required: false
 
 permissions:
   actions: write
@@ -28,3 +31,4 @@ jobs:
       cleanup_before_run: 'true'
       timeout_minutes: 60
       test_tags: '@sanity'
+      base_url: ${{ inputs.base_url }}

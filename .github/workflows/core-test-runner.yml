@@ -34,6 +34,10 @@ on:
         description: 'Playwright test tags to run'
         required: false
         type: string
+      base_url:
+        description: 'Base URL for the application (overrides secret if provided)'
+        required: false
+        type: string
 
 permissions:
   actions: write
@@ -71,7 +75,7 @@ jobs:
     continue-on-error: false
     timeout-minutes: ${{ inputs.timeout_minutes}}
     env:
-      BASE_URL: ${{ secrets.BASE_URL }}
+      BASE_URL: ${{ inputs.base_url || secrets.BASE_URL }}
       TEST_TAGS: ${{ inputs.test_tags}}
     steps:
       - uses: actions/checkout@v4
@@ -94,15 +98,6 @@ jobs:
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
-
-      - name: Debug BASE_URL
-        run: |
-          if [ -z "$BASE_URL" ]; then
-            echo "::error::BASE_URL environment variable is not set or empty"
-            exit 1
-          else
-            echo "BASE_URL is set (length: ${#BASE_URL})"
-          fi
 
       - name: Run ${{ inputs.test_description }}
         id: run-tests
