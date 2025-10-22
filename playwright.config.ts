@@ -1,4 +1,3 @@
-import {getEnvCredentials} from '@netanelh2/playwright-framework'
 import {defineConfig, devices} from '@playwright/test'
 
 export default defineConfig({
@@ -20,7 +19,7 @@ export default defineConfig({
 		['list'],
 	],
 	use: {
-		baseURL: getEnvCredentials('BASE_URL'),
+		baseURL: 'https://www.itcb.org.il',
 		trace: 'on',
 		screenshot: {
 			mode: 'only-on-failure',
