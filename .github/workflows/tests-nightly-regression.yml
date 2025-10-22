@@ -13,6 +13,10 @@ on:
         required: false
         default: 'Manual regression test run'
 
+permissions:
+  actions: write
+  contents: read
+
 jobs:
   run-regression-tests:
     uses: ./.github/workflows/core-test-runner.yml

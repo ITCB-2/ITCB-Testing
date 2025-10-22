@@ -13,6 +13,10 @@ on:
         required: false
         default: 'Manual sanity test run'
 
+permissions:
+  actions: write
+  contents: read
+
 jobs:
   run-sanity-tests:
     uses: ./.github/workflows/core-test-runner.yml
