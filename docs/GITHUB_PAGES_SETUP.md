@@ -116,10 +116,10 @@ When reports cannot be deployed:
 
 ```
 ├── .github/workflows/
-│   ├── deploy-reports.yml      # Modified: Direct Playwright report deployment
-│   ├── sanity.yml             # Modified: Added report deployment
-│   ├── nightly-regression.yml # Modified: Added report deployment
-│   └── code-quality.yml       # Modified: Added test execution
+│   ├── core-deploy-reports.yml      # Modified: Direct Playwright report deployment
+│   ├── tests-sanity.yml             # Modified: Added report deployment
+│   ├── tests-regression.yml # Modified: Added report deployment
+│   └── core-quality.yml       # Modified: Added test execution
 └── docs/
     └── GITHUB_PAGES_SETUP.md  # This file
 ```

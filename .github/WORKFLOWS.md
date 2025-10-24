@@ -133,12 +133,14 @@ artifact: playwright-report-sanity-{run_number}
 
 ---
 
-### 4. Regression Tests (`nightly-regression.yml`)
+### 4. Regression Tests (`tests-regression.yml`)
 
 **🎯 Purpose**: Comprehensive daily validation using the generic Test Runner
 
 **⏰ Schedule**:
 
+```yaml
+cron: '0 2 * * *'
 - **Automatic**: Daily at 2:00 AM UTC (`0 2 * * *`)
 - **Manual**: On-demand via GitHub Actions UI
 
