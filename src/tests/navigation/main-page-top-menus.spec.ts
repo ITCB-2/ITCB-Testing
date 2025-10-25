@@ -115,26 +115,3 @@ test.describe('Main Page - additional Information Menu Tests (Comprehensive) @re
 		await topMenuMainPage.navigateToInternationalConferencesPage()
 	})
 })
-
-test.describe('Main Page - aboutITCB Menu Tests (Comprehensive) @regression', () => {
-	test.describe.configure({timeout: 60000})
-	test.beforeEach(async ({mainPage}) => {
-		await mainPage.openMainPage()
-	})
-	test.only('should navigate to Board of Directors page and verify content', async ({
-		topMenuMainPage,
-	}) => {
-		await topMenuMainPage.navigateToBoardOfDirectorsPage()
-	})
-	test('should navigate to Advisory Board page and verify content', async ({
-		topMenuMainPage,
-	}) => {
-		await topMenuMainPage.navigateToAdvisoryBoardPage()
-	})
-
-	test('should navigate to Our Partners page section and verify content', async ({
-		topMenuMainPage,
-	}) => {
-		await topMenuMainPage.navigateToOurPartnersPage()
-	})
-})

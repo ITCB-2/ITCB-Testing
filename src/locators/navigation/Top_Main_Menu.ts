@@ -24,20 +24,10 @@ export const TOP_MENU_MAIN_PAGE_LOCATORS = {
 	},
 	ISTQBContent: {
 		button: {parent: '#navbarScroll', role: 'button', name: 'תכני ®ISTQB'},
-		SyllabusAndSampleExamsLink: {
-			parent: '#navbarScroll',
-			role: 'link',
-			name: 'סילבוסים ובחינות לדוגמה',
-		},
 		termsGlossaryLink: {
 			parent: '#navbarScroll',
 			role: 'link',
 			name: 'מילון מונחים',
-		},
-		listOfCertifiedTestersLink: {
-			parent: '#navbarScroll',
-			role: 'link',
-			name: 'רשימת מוסמכים',
 		},
 		syllabusInfoLink: {
 			parent: '#navbarScroll',
@@ -97,11 +87,6 @@ export const TOP_MENU_MAIN_PAGE_LOCATORS = {
 	},
 	aboutITCB: {
 		button: {parent: '#navbarScroll', role: 'button', name: 'אודות ®ITCB'},
-		aboutUsLink: {
-			parent: '#navbarScroll',
-			role: 'link',
-			name: 'קצת עלינו',
-		},
 		boardOfDirectorsLink: {
 			parent: '#navbarScroll',
 			role: 'link',

@@ -3,10 +3,6 @@ export const MAIN_PAGE_LOCATORS = {
 		role: 'img',
 		name: 'Logo',
 	},
-	title: {
-		role: 'heading',
-		name: 'עובדות שחשוב שתדע',
-	},
 	acceptCookiesButton: {
 		role: 'button',
 		name: 'הבנתי!',

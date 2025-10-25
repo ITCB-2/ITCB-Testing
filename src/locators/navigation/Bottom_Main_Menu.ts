@@ -22,19 +22,9 @@ export const BOTTOM_MENU_MAIN_PAGE_LOCATORS = {
 		},
 	},
 	ISTQBContent: {
-		SyllabusAndSampleExamsLink: {
-			role: 'link',
-			name: 'סילבוסים ובחינות לדוגמה',
-			parent: 'footer',
-		},
 		termsGlossaryLink: {
 			role: 'link',
 			name: 'מילון מונחים',
-			parent: 'footer',
-		},
-		listOfCertifiedTestersLink: {
-			role: 'link',
-			name: 'רשימת מוסמכים',
 			parent: 'footer',
 		},
 		syllabusInfoLink: {
