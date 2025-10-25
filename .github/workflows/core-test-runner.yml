@@ -70,7 +70,7 @@ jobs:
 
       - name: Run ${{ inputs.test_description }}
         id: run-tests
-        run: docker run --rm -v $(pwd)/playwright-report:/app/playwright-report test-runner:latest npx playwright test
+        run: docker run --rm -e TEST_TAGS -v $(pwd)/playwright-report:/app/playwright-report test-runner:latest npx playwright test
 
       - name: Upload Playwright Report
         if: always()
