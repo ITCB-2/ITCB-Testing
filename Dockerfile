@@ -27,7 +27,7 @@ RUN mkdir -p /app/playwright-report
 RUN chown -R pwuser:pwuser /app
 
 # Create entrypoint script to handle permissions
-RUN echo '#!/bin/bash\nchown -R pwuser:pwuser /app/playwright-report\nexec "$@"' > /entrypoint.sh && chmod +x /entrypoint.sh
+RUN echo '#!/bin/bash\nif [ -w "/app/playwright-report" ]; then chown -R pwuser:pwuser /app/playwright-report 2>/dev/null || true; fi\nexec "$@"' > /entrypoint.sh && chmod +x /entrypoint.sh
 
 # Switch to pwuser (non-root user pre-created in Playwright image)
 USER pwuser
