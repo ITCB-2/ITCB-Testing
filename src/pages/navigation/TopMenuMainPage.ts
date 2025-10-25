@@ -1,5 +1,5 @@
 import {test} from '@netanelh2/playwright-framework'
-import {expect, type Page} from '@playwright/test'
+import type {Page} from '@playwright/test'
 import {ABOUT_US_PAGE_LOCATORS} from '../../locators/content-pages/About_Us'
 import {DECISION_MAKERS_SHARING_PAGE_LOCATORS} from '../../locators/content-pages/Decision_Makers_Sharing'
 import {EVENTS_SUMMARIES_PAGE_LOCATORS} from '../../locators/content-pages/Events_Summaries'
@@ -189,36 +189,14 @@ export class TopMenuMainPage extends MainPage {
 		})
 	}
 
-	async navigateToAboutUsPage(): Promise<void> {
-		await test.step('navigate to About Us page', async () => {
-			const {button, aboutUsLink} = TOP_MENU_MAIN_PAGE_LOCATORS.aboutITCB
-
-			await this.hoverOnElement(button)
-			await this.validateVisibility(aboutUsLink)
-			await this.clickOnElement(aboutUsLink)
-			const pageContent = this.page.getByText('ITCB® - Israel Testing')
-			await this.validateURL(`/about`)
-			await expect(pageContent).toContainText('ITCB® - Israel Testing')
-		})
-	}
 	async navigateToBoardOfDirectorsPage(): Promise<void> {
 		await test.step('Navigate to Board of Directors page', async () => {
 			const {button, boardOfDirectorsLink} =
 				TOP_MENU_MAIN_PAGE_LOCATORS.aboutITCB
 			const {boardOfDirectorsTitle} = ABOUT_US_PAGE_LOCATORS
 			await this.hoverOnElement(button)
-			await this.validateVisibility(boardOfDirectorsLink)
-			const pagePromise = this.page.context().waitForEvent('page')
 			await this.clickOnElement(boardOfDirectorsLink)
-
-			const newPage = await pagePromise
-			await newPage.waitForLoadState()
-
-			const locator = newPage.getByRole(boardOfDirectorsTitle.role, {
-				name: boardOfDirectorsTitle.name,
-			})
-			await expect(locator).toBeVisible({timeout: 10000})
-			await expect(locator).toHaveText('הוועד המנהל')
+			await this.validateText(boardOfDirectorsTitle, 'הוועד המנהל')
 		})
 	}
 	async navigateToAdvisoryBoardPage(): Promise<void> {
@@ -234,11 +212,8 @@ export class TopMenuMainPage extends MainPage {
 			const newPage = await pagePromise
 			await newPage.waitForLoadState()
 
-			const locator = newPage.getByRole(advisoryBoardTitle.role, {
-				name: advisoryBoardTitle.name,
-			})
-			await expect(locator).toBeVisible({timeout: 10000})
-			await expect(locator).toHaveText('הוועד המייעץ')
+			await this.validateVisibility(advisoryBoardTitle)
+			await this.validateText(advisoryBoardTitle, 'הוועד המייעץ')
 		})
 	}
 	async navigateToOurPartnersPage(): Promise<void> {

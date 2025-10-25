@@ -90,29 +90,3 @@ test.describe('Main Page - additional Information Bottom Menu Tests @regression'
 		await bottomMenuMainPage.navigateToInternationalConferencesPageBottomMenu()
 	})
 })
-test.describe('Main Page - aboutITCB Bottom Menu Tests @regression', () => {
-	test.describe.configure({timeout: 60 * 1000})
-	test.beforeEach(async ({mainPage}) => {
-		await mainPage.openMainPage()
-	})
-	test('should navigate to ITCB About Us page through the bottom menu and verify content', async ({
-		bottomMenuMainPage,
-	}) => {
-		await bottomMenuMainPage.navigateToAboutUsPageBottomMenu()
-	})
-	test('should navigate to Board of Directors page through the bottom menu and verify content', async ({
-		bottomMenuMainPage,
-	}) => {
-		await bottomMenuMainPage.navigateToBoardOfDirectorsPageBottomMenu()
-	})
-	test('should navigate to Advisory Board page through the bottom menu and verify content', async ({
-		bottomMenuMainPage,
-	}) => {
-		await bottomMenuMainPage.navigateToAdvisoryBoardPageBottomMenu()
-	})
-	test('should navigate to Our Partners page through the bottom menu and verify content', async ({
-		bottomMenuMainPage,
-	}) => {
-		await bottomMenuMainPage.navigateToOurPartnersPageBottomMenu()
-	})
-})

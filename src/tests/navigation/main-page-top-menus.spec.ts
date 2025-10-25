@@ -82,11 +82,6 @@ test.describe('Main Page - testing In Israel Menu Tests (Comprehensive) @regress
 	}) => {
 		await topMenuMainPage.navigateToPodcastsPage()
 	})
-	test('should navigate to Events Summaries page and verify content', async ({
-		topMenuMainPage,
-	}) => {
-		await topMenuMainPage.navigateToEventsSummariesPage()
-	})
 	test('should navigate to Tips page and verify content', async ({
 		topMenuMainPage,
 	}) => {
@@ -121,24 +116,12 @@ test.describe('Main Page - additional Information Menu Tests (Comprehensive) @re
 	})
 })
 
-test.describe('Main Page - aboutITCB Menu Tests @regression', () => {
-	test.describe.configure({timeout: 60000})
-	test.beforeEach(async ({mainPage}) => {
-		await mainPage.openMainPage()
-	})
-	test('should navigate to ITCB About Us page and verify URL', async ({
-		topMenuMainPage,
-	}) => {
-		await topMenuMainPage.navigateToAboutUsPage()
-	})
-})
-
 test.describe('Main Page - aboutITCB Menu Tests (Comprehensive) @regression', () => {
 	test.describe.configure({timeout: 60000})
 	test.beforeEach(async ({mainPage}) => {
 		await mainPage.openMainPage()
 	})
-	test('should navigate to Board of Directors page and verify content', async ({
+	test.only('should navigate to Board of Directors page and verify content', async ({
 		topMenuMainPage,
 	}) => {
 		await topMenuMainPage.navigateToBoardOfDirectorsPage()

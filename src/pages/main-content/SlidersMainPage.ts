@@ -1,5 +1,6 @@
 import {test} from '@netanelh2/playwright-framework'
 import {expect, type Page} from '@playwright/test'
+import {URLS} from '../../data/urls'
 import {SLIDERS_MAIN_PAGE_LOCATORS} from '../../locators/main-content/Sliders_Main_Page'
 import {MainPage} from './MainPage'
 
@@ -11,7 +12,7 @@ export class SlidersMainPage extends MainPage {
 		await test.step('Verify Slide 1', async () => {
 			const {slider1Btn, slider2Btn} = SLIDERS_MAIN_PAGE_LOCATORS.slidersBtns
 			const {slider1Title} = SLIDERS_MAIN_PAGE_LOCATORS.slidersTitles
-			await this.gotoURL('https://www.itcb.org.il/#slide-1')
+			await this.gotoURL(URLS.slide1)
 			await this.pressOkToCookies()
 			const slider = this.extractLocator(slider1Title)
 			await expect(slider).toBeVisible({timeout: 60000})
@@ -34,7 +35,7 @@ export class SlidersMainPage extends MainPage {
 	}
 	async slide2Verification(): Promise<void> {
 		await test.step('Verify Slide 2', async () => {
-			await this.gotoURL('https://www.itcb.org.il/#slide-2')
+			await this.gotoURL(URLS.slide2)
 			const {slider1Btn, slider3Btn} = SLIDERS_MAIN_PAGE_LOCATORS.slidersBtns
 			const {slider2Title} = SLIDERS_MAIN_PAGE_LOCATORS.slidersTitles
 			await this.pressOkToCookies()
@@ -60,7 +61,7 @@ export class SlidersMainPage extends MainPage {
 	}
 	async slide3Verification(): Promise<void> {
 		await test.step('Verify Slide 3', async () => {
-			await this.gotoURL('https://www.itcb.org.il/#slide-3')
+			await this.gotoURL(URLS.slide3)
 			const {slider2Btn, slider4Btn} = SLIDERS_MAIN_PAGE_LOCATORS.slidersBtns
 			const {slider3Title} = SLIDERS_MAIN_PAGE_LOCATORS.slidersTitles
 			await this.pressOkToCookies()
@@ -86,7 +87,7 @@ export class SlidersMainPage extends MainPage {
 	}
 	async slide4Verification(): Promise<void> {
 		await test.step('Verify Slide 4', async () => {
-			await this.gotoURL('https://www.itcb.org.il/#slide-4')
+			await this.gotoURL(URLS.slide4)
 			const {slider3Btn, slider5Btn} = SLIDERS_MAIN_PAGE_LOCATORS.slidersBtns
 			const {slider4Title} = SLIDERS_MAIN_PAGE_LOCATORS.slidersTitles
 			await this.pressOkToCookies()
@@ -109,7 +110,7 @@ export class SlidersMainPage extends MainPage {
 	}
 	async slide5Verification(): Promise<void> {
 		await test.step('Verify Slide 5', async () => {
-			await this.gotoURL('https://www.itcb.org.il/#slide-5')
+			await this.gotoURL(URLS.slide5)
 			const {slider5Btn, slider4Btn} = SLIDERS_MAIN_PAGE_LOCATORS.slidersBtns
 			const {slider5Title} = SLIDERS_MAIN_PAGE_LOCATORS.slidersTitles
 			await this.pressOkToCookies()

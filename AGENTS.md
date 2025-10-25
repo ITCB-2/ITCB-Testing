@@ -6,14 +6,13 @@ Purpose: Make agents instantly productive in this Playwright + TypeScript test f
 
 - Test stack: Playwright + TypeScript using a 3-layer model.
 - Layers: `core/` (foundations), `pages/` (Page Objects), `tests/` (specs) with fixtures in `fixtures/` and locators in `locators/`.
-- Path alias: use `@/` for internal imports (see `tsconfig.json`). Example: `import {MainPage} from '@/pages'`.
 - Test dir: Playwright runs specs from `src/tests` (see `playwright.config.ts`).
 
 ## How Things Work
 
 - Page Objects extend `BasePage` (which extends `LocatorUtils`) for shared actions and locator extraction.
 - Locators are centralized under `src/locators/**`; prefer role-based objects over raw selector strings.
-- Fixtures (`src/fixtures/testSetup.ts`, re-exported by `src/fixtures/index.ts`) inject ready-to-use page objects into tests (e.g., `{mainPage, topMenuMainPage, ...}`) via the custom `test` export. Import from `@/fixtures`.
+- Fixtures (`src/fixtures/testSetup.ts`, re-exported by `src/fixtures/index.ts`) inject ready-to-use page objects into tests (e.g., `{mainPage, topMenuMainPage, ...}`) via the custom `test` export.
 - Environment: load secrets/URLs via `.env` and `getEnvCredentials(...)` in `src/helpers/envUtils.ts`—do not read `process.env` directly in tests/pages.
 - Playwright config: retries only in CI and only when tag-filtering (via `TEST_TAGS`) for `@sanity`/`@regression`; traces/videos/screenshots kept on failures.
 
@@ -23,7 +22,7 @@ Purpose: Make agents instantly productive in this Playwright + TypeScript test f
 - Locator names: `UPPER_SNAKE_CASE` with `_LOCATORS` suffix (e.g., `LOGIN_PAGE_LOCATORS`).
 - Locators: use `StringOrRoleLocatorType` from `src/types/locatorTypes.ts`.
   - Preferred: `{ role: 'button', name: 'Submit' }` or with parent `{ parent: '.form', role: 'textbox', name: 'Username' }`.
-- Tests: place under `src/tests/**`, name with `.spec.ts`. Import the custom `test` from `@/fixtures` (not from `@playwright/test`).
+- Tests: place under `src/tests/**`, name with `.spec.ts`.
 - Steps: group meaningful actions with `test.step(...)` inside page methods where helpful.
 - Tags: classify suites with `@sanity` or `@regression` in describe titles to enable targeted runs (see commands below).
 - Lint/format: Biome.js is enforced; formatting violations fail CI. Follow rules in `biome.json` (tests have relaxed rules).
@@ -41,9 +40,9 @@ export const LOGIN_PAGE_LOCATORS = {
 } as const
 
 // src/pages/LoginPage.ts
-import {BasePage} from '@/core/BasePage'
-import {BASE_URL} from '@/data'
-import {LOGIN_PAGE_LOCATORS as L} from '@/locators/content-pages/Login_Page'
+import {BasePage} from '../../core/BasePage'
+import {BASE_URL} from '../../data'
+import {LOGIN_PAGE_LOCATORS as L} from '../locators/content-pages/Login_Page'
 export class LoginPage extends BasePage {
   async navigateTo(): Promise<void> {
     await this.gotoURL(BASE_URL + '/login')
@@ -54,7 +53,7 @@ export class LoginPage extends BasePage {
 }
 
 // src/tests/main.spec.ts (fixture-based injection)
-import {test} from '@/fixtures'
+import {test} from '../fixtures'
 test.describe('Main Page @sanity', () => {
   test('loads and shows content', async ({mainPage}) => {
     await mainPage.openMainPage()
@@ -84,11 +83,11 @@ Notes
 - Access env via `getEnvCredentials('KEY')`; define keys in `.env` locally (never commit secrets).
 - Keep page classes small; move cross-cutting helpers to `src/helpers/**`.
 
-## Environment & URLs
+## URLs
 
-- Define `BASE_URL` in `.env` (e.g., `BASE_URL=https://www.example.com`).
-- `src/data/urls.ts` exposes `BASE_URL` via `getEnvCredentials('BASE_URL')`.
-- In pages, import `BASE_URL` from `@/data` and compose full paths when navigating (e.g., `await this.gotoURL(BASE_URL + '/login')`).
+- Define `BASE_URL` directly in `src/data/urls.ts` (e.g., `export const BASE_URL = 'https://www.example.com'`).
+- `src/data/urls.ts` exposes `BASE_URL` as a constant export.
+- In pages, import `BASE_URL` from `../../data` and compose full paths when navigating (e.g., `await this.gotoURL(BASE_URL + '/login')`).
 
 Reference Files
 

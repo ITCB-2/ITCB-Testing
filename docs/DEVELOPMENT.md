@@ -259,7 +259,7 @@ async performCriticalAction(): Promise<void> {
   await test.step('Perform critical action', async () => {
     try {
       await this.clickOnElement(CRITICAL_BUTTON_LOCATOR)
-      await this.validateURL('/success-page')
+      await this.validateURL(URLS.successPage)
     } catch (error) {
       throw new Error(`Critical action failed: ${error.message}`)
     }
