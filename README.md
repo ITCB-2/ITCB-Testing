@@ -60,6 +60,32 @@ npm run test:debug  # Interactive debugging
 npm run report      # View test results
 ```
 
+## Docker Setup
+
+This project is configured to run tests in Docker containers using Playwright's official Docker image, which includes all necessary browsers pre-installed.
+
+### Prerequisites
+
+- Docker Desktop and Docker CLI installed on your system
+
+### Running Tests with Docker
+
+All test scripts in `package.json` use Docker Compose to run tests in isolated containers:
+
+```bash
+npm run build         # Build Docker images
+npm test              # Run all tests in Docker
+npm run test:headed   # Run tests with browser UI (requires display forwarding)
+npm run test:debug    # Debug mode (may require additional Docker configuration)
+```
+
+### Benefits of Docker Setup
+
+- **Isolated Environment:** Tests run in a clean, reproducible environment
+- **Pre-installed Browsers:** No need to install browsers locally
+- **CI/CD Ready:** Same environment for local development and CI pipelines
+- **Cross-Platform:** Works consistently across different operating systems
+
 ## 🔄 Smart Retry Configuration
 
 Our CI environment includes intelligent retry logic that automatically provides additional attempts for critical test failures:
