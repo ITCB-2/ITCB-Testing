@@ -1,7 +1,2 @@
-#!/bin/sh
-
-echo "🔧 Auto-fixing code issues..."
-# Auto-fix formatting and linting
+# Run linting and formatting checks before pushing code
 npm run check
-
-echo "✅ Pre-push checks completed successfully!"

@@ -7,7 +7,7 @@
 		"build": "docker compose build",
 		"pre-commit": "lint-staged",
 		"prepare": "husky",
-		"check": "npx @biomejs/biome check --write",
+		"check": "npx @biomejs/biome check --write --error-on-warnings",
 		"type-check": "tsc --noEmit",
 		"trigger-ci": "git commit --allow-empty -m \"trigger CI workflows for testing\" && git push",
 		"report": "playwright show-report",
@@ -36,7 +36,6 @@
 	"devDependencies": {
 		"@biomejs/biome": "2.3.0",
 		"@faker-js/faker": "^10.1.0",
-
 		"@netanelh2/playwright-framework": "^6.0.2",
 		"@playwright/test": "^1.56.1",
 		"@types/node": "^24.9.1",
@@ -46,8 +45,8 @@
 		"typescript": "^5.9.3"
 	},
 	"lint-staged": {
-		"*": [
-			"biome check --no-errors-on-unmatched --files-ignore-unknown=true --write"
+		"*.{ts,tsx,js,jsx,json}": [
+			"biome check --write --error-on-warnings"
 		]
 	}
 }
