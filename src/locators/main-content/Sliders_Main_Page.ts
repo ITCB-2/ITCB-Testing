@@ -2,23 +2,18 @@ export const SLIDERS_MAIN_PAGE_LOCATORS = {
 	slidersTitles: {
 		slider1Title: {
 			role: 'heading',
-			name: 'אנו גאים להציג את אפליקצית ®',
+			name: 'עמותת ITCB מצדיעה לכל הנשים והגברים הפועלים למען ביטחון והגנת המדינה.',
 		},
 		slider2Title: {
 			role: 'heading',
-			name: 'אבן דרך עולמית באיכות תוכנה: מעל מיליון הסמכות ISTQB',
+			name: 'אנו גאים להציג את אפליקצית ®ISTQB למונחים המקצועיים מעולם בדיקות התוכנה בשפה העברית.',
 		},
-		slider3Title: {
-			role: 'heading',
-			name: 'מקומות בהם איכות פוגשת מצוינות כנסים עולמיים לבדוקי תוכנה!!!',
-		},
-		slider4Title: {
-			role: 'heading',
-			name: 'אצלנו תצליח בהייטק, זה בדוק!',
-		},
+		slider3Title: 'אם אתם מחפשים חשיפה אמיתית, ממוקדת ועתירת ערך – זה המקום.',
+		slider4Title:
+			'רוצים לסיים את 2025 עם תעודת ISTQB רשמית ולקדם את הקריירה בעולם הבדיקות?',
 		slider5Title: {
 			role: 'heading',
-			name: 'עמותת ITCB',
+			name: 'אצלנו תצליח בהייטק, זה בדוק!',
 		},
 	},
 	slidersBtns: {

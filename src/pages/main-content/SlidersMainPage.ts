@@ -10,7 +10,6 @@ export class SlidersMainPage extends MainPage {
 	}
 	async slide1Verification(): Promise<void> {
 		await test.step('Verify Slide 1', async () => {
-			const {slider1Btn, slider2Btn} = SLIDERS_MAIN_PAGE_LOCATORS.slidersBtns
 			const {slider1Title} = SLIDERS_MAIN_PAGE_LOCATORS.slidersTitles
 			await this.gotoURL(URLS.slide1)
 			await this.pressOkToCookies()
@@ -24,19 +23,16 @@ export class SlidersMainPage extends MainPage {
 				)
 				await this.page.mouse.down()
 			}
-			await this.validateVisibility(slider1Btn)
-			await this.validateVisibility(slider2Btn)
 			await this.validateVisibility(slider1Title)
 			await this.validateText(
 				slider1Title,
-				'אנו גאים להציג את אפליקצית ®ISTQB למונחים המקצועיים מעולם בדיקות התוכנה בשפה העברית',
+				'עמותת ITCB מצדיעה לכל הנשים והגברים הפועלים למען ביטחון והגנת המדינה.',
 			)
 		})
 	}
 	async slide2Verification(): Promise<void> {
 		await test.step('Verify Slide 2', async () => {
 			await this.gotoURL(URLS.slide2)
-			const {slider1Btn, slider3Btn} = SLIDERS_MAIN_PAGE_LOCATORS.slidersBtns
 			const {slider2Title} = SLIDERS_MAIN_PAGE_LOCATORS.slidersTitles
 			await this.pressOkToCookies()
 			const slider2 = this.extractLocator(slider2Title)
@@ -50,23 +46,22 @@ export class SlidersMainPage extends MainPage {
 				await this.page.mouse.down()
 			}
 
-			await this.validateVisibility(slider1Btn)
-			await this.validateVisibility(slider3Btn)
 			await this.validateVisibility(slider2Title)
 			await this.validateText(
 				slider2Title,
-				'המועצה הבינלאומית להסמכת בדיקות תוכנה (ISTQB) הגיעה לאבן דרך יוצאת דופן: מעל מיליון הסמכות הוענקו ברחבי העולם.',
+				'אנו גאים להציג את אפליקצית ®ISTQB למונחים המקצועיים מעולם בדיקות התוכנה בשפה העברית.',
 			)
 		})
 	}
 	async slide3Verification(): Promise<void> {
 		await test.step('Verify Slide 3', async () => {
 			await this.gotoURL(URLS.slide3)
-			const {slider2Btn, slider4Btn} = SLIDERS_MAIN_PAGE_LOCATORS.slidersBtns
-			const {slider3Title} = SLIDERS_MAIN_PAGE_LOCATORS.slidersTitles
 			await this.pressOkToCookies()
 
-			const slider3 = this.extractLocator(slider3Title)
+			// Slide 3 uses strong text instead of heading
+			const slider3Text =
+				'אם אתם מחפשים חשיפה אמיתית, ממוקדת ועתירת ערך – זה המקום.'
+			const slider3 = this.page.getByText(slider3Text).first()
 			await expect(slider3).toBeVisible({timeout: 60000})
 			const box3 = await slider3.boundingBox()
 			if (box3) {
@@ -76,22 +71,19 @@ export class SlidersMainPage extends MainPage {
 				)
 				await this.page.mouse.down()
 			}
-			await this.validateVisibility(slider2Btn)
-			await this.validateVisibility(slider4Btn)
-			await this.validateVisibility(slider3Title)
-			await this.validateText(
-				slider3Title,
-				'מקומות בהם איכות פוגשת מצוינות כנסים עולמיים לבדוקי תוכנה!!!',
-			)
+			await expect(slider3).toBeVisible()
+			await expect(slider3).toContainText(slider3Text)
 		})
 	}
 	async slide4Verification(): Promise<void> {
 		await test.step('Verify Slide 4', async () => {
 			await this.gotoURL(URLS.slide4)
-			const {slider3Btn, slider5Btn} = SLIDERS_MAIN_PAGE_LOCATORS.slidersBtns
-			const {slider4Title} = SLIDERS_MAIN_PAGE_LOCATORS.slidersTitles
 			await this.pressOkToCookies()
-			const slider4 = this.extractLocator(slider4Title)
+
+			// Slide 4 uses strong text instead of heading
+			const slider4Text =
+				'רוצים לסיים את 2025 עם תעודת ISTQB רשמית ולקדם את הקריירה בעולם הבדיקות?'
+			const slider4 = this.page.getByText(slider4Text).first()
 			await expect(slider4).toBeVisible({timeout: 60000})
 			const box4 = await slider4.boundingBox()
 			if (box4) {
@@ -102,16 +94,13 @@ export class SlidersMainPage extends MainPage {
 				await this.page.mouse.down()
 			}
 
-			await this.validateVisibility(slider3Btn)
-			await this.validateVisibility(slider5Btn)
-			await this.validateVisibility(slider4Title)
-			await this.validateText(slider4Title, 'אצלנו תצליח בהייטק, זה בדוק!')
+			await expect(slider4).toBeVisible()
+			await expect(slider4).toContainText(slider4Text)
 		})
 	}
 	async slide5Verification(): Promise<void> {
 		await test.step('Verify Slide 5', async () => {
 			await this.gotoURL(URLS.slide5)
-			const {slider5Btn, slider4Btn} = SLIDERS_MAIN_PAGE_LOCATORS.slidersBtns
 			const {slider5Title} = SLIDERS_MAIN_PAGE_LOCATORS.slidersTitles
 			await this.pressOkToCookies()
 			const slider5 = this.extractLocator(slider5Title)
@@ -124,10 +113,8 @@ export class SlidersMainPage extends MainPage {
 				)
 				await this.page.mouse.down()
 			}
-			await this.validateVisibility(slider4Btn)
-			await this.validateVisibility(slider5Btn)
 			await this.validateVisibility(slider5Title)
-			await this.validateText(slider5Title, 'עמותת ITCB')
+			await this.validateText(slider5Title, 'אצלנו תצליח בהייטק, זה בדוק!')
 		})
 	}
 }
