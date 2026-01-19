@@ -4,7 +4,50 @@ import {
 	test,
 } from '@netanelh2/playwright-framework'
 import type {Page} from '@playwright/test'
-import {DECISION_MAKERS_SHARING_PAGE_LOCATORS} from '../../locators/content-pages/Decision_Makers_Sharing'
+
+export const DECISION_MAKERS_SHARING_PAGE_LOCATORS = {
+	title: {
+		role: 'heading',
+		name: 'מקבלי ההחלטות משתפים',
+	},
+	decisionMakersSharingBoxes: [
+		{
+			name: 'kobiYonasiBox',
+			img: {
+				role: 'img',
+				name: 'מנהל בדיקות בעיריית ירושלים',
+			},
+		},
+		{
+			name: 'ketyTrachtmanBox',
+			img: {
+				role: 'img',
+				name: 'Senior Software QA Lead',
+			},
+		},
+		{
+			name: 'michaelTivinBox',
+			img: {
+				role: 'img',
+				name: 'Director Engineering, Akamai',
+			},
+		},
+		{
+			name: 'MorAbazizBox',
+			img: {
+				role: 'img',
+				name: 'מנהלת בדיקות אוטומציה, קווליטסט',
+			},
+		},
+		{
+			name: 'omerPhilipovBox',
+			img: {
+				role: 'img',
+				name: 'Director, Quality &',
+			},
+		},
+	],
+} as const
 
 type DecisionMakerBoxName =
 	(typeof DECISION_MAKERS_SHARING_PAGE_LOCATORS.decisionMakersSharingBoxes)[number]['name']
