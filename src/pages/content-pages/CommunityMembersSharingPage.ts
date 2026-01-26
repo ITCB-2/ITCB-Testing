@@ -5,12 +5,14 @@ import {
 } from '@netanelh2/playwright-framework'
 import type {Page} from '@playwright/test'
 
-export const COMMUNITY_MEMBERS_SHARING_PAGE_LOCATORS = {
-	pageTitle: {
+export class CommunityMembersSharingPage extends BasePage {
+	// ✅ Class variables ישירים - לא בתוך אובייקט
+	public static readonly pageTitle = {
 		role: 'heading',
 		name: 'חברי הקהילה משתפים',
-	},
-	communityMembersSharingBoxes: [
+	} as const
+
+	public static readonly communityMembersSharingBoxes = [
 		{
 			name: 'הילה קדוש',
 			img: {
@@ -67,21 +69,15 @@ export const COMMUNITY_MEMBERS_SHARING_PAGE_LOCATORS = {
 			},
 			position: 'Director, Quality & Operational Excellence',
 		},
-	],
-} as const
+	] as const
 
-type CommunityMemberName =
-	(typeof COMMUNITY_MEMBERS_SHARING_PAGE_LOCATORS.communityMembersSharingBoxes)[number]['name']
-
-export class CommunityMembersSharingPage extends BasePage {
 	constructor(page: Page) {
 		super(page)
 	}
 
 	async validateLoaded(): Promise<void> {
 		await test.step('Validate Community Members Sharing Page Loaded', async () => {
-			const {pageTitle} = COMMUNITY_MEMBERS_SHARING_PAGE_LOCATORS
-			await this.validateVisibility(pageTitle)
+			await this.validateVisibility(CommunityMembersSharingPage.pageTitle)
 		})
 	}
 
@@ -90,7 +86,7 @@ export class CommunityMembersSharingPage extends BasePage {
 	): Promise<void> {
 		await test.step(`Validate ${boxName} Box Image`, async () => {
 			const box = findItemByProperty(
-				COMMUNITY_MEMBERS_SHARING_PAGE_LOCATORS.communityMembersSharingBoxes,
+				CommunityMembersSharingPage.communityMembersSharingBoxes,
 				'name',
 				boxName,
 			)
@@ -103,7 +99,7 @@ export class CommunityMembersSharingPage extends BasePage {
 	): Promise<void> {
 		await test.step(`Validate ${boxName} Box Position`, async () => {
 			const box = findItemByProperty(
-				COMMUNITY_MEMBERS_SHARING_PAGE_LOCATORS.communityMembersSharingBoxes,
+				CommunityMembersSharingPage.communityMembersSharingBoxes,
 				'name',
 				boxName,
 			)
@@ -116,7 +112,7 @@ export class CommunityMembersSharingPage extends BasePage {
 	): Promise<void> {
 		await test.step(`Validate ${boxName} Box Complete Content`, async () => {
 			const box = findItemByProperty(
-				COMMUNITY_MEMBERS_SHARING_PAGE_LOCATORS.communityMembersSharingBoxes,
+				CommunityMembersSharingPage.communityMembersSharingBoxes,
 				'name',
 				boxName,
 			)
@@ -125,3 +121,7 @@ export class CommunityMembersSharingPage extends BasePage {
 		})
 	}
 }
+
+// הטיפוס נגזר מהקלאס ✅
+type CommunityMemberName =
+	(typeof CommunityMembersSharingPage.communityMembersSharingBoxes)[number]['name']

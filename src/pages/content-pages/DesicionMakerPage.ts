@@ -5,12 +5,14 @@ import {
 } from '@netanelh2/playwright-framework'
 import type {Page} from '@playwright/test'
 
-export const DECISION_MAKERS_SHARING_PAGE_LOCATORS = {
-	title: {
+export class DecisionMakerPage extends BasePage {
+	// ✅ Class variables ישירים - לא בתוך אובייקט
+	public static readonly title = {
 		role: 'heading',
 		name: 'מקבלי ההחלטות משתפים',
-	},
-	decisionMakersSharingBoxes: [
+	} as const
+
+	public static readonly decisionMakersSharingBoxes = [
 		{
 			name: 'kobiYonasiBox',
 			img: {
@@ -46,23 +48,18 @@ export const DECISION_MAKERS_SHARING_PAGE_LOCATORS = {
 				name: 'Director, Quality &',
 			},
 		},
-	],
-} as const
+	] as const
 
-type DecisionMakerBoxName =
-	(typeof DECISION_MAKERS_SHARING_PAGE_LOCATORS.decisionMakersSharingBoxes)[number]['name']
-
-export class DecisionMakerPage extends BasePage {
 	constructor(page: Page) {
 		super(page)
 	}
+
 	async validateDecisionMakersSharingBoxContent(
 		decisionMakerBox: DecisionMakerBoxName,
 	): Promise<void> {
-		const {decisionMakersSharingBoxes} = DECISION_MAKERS_SHARING_PAGE_LOCATORS
 		await test.step(`Validate ${decisionMakerBox} Box Content`, async () => {
 			const decisionMakersSharingBox = findItemByProperty(
-				decisionMakersSharingBoxes,
+				DecisionMakerPage.decisionMakersSharingBoxes,
 				'name',
 				decisionMakerBox,
 			)
@@ -70,3 +67,7 @@ export class DecisionMakerPage extends BasePage {
 		})
 	}
 }
+
+// הטיפוס נגזר מהקלאס ✅
+type DecisionMakerBoxName =
+	(typeof DecisionMakerPage.decisionMakersSharingBoxes)[number]['name']

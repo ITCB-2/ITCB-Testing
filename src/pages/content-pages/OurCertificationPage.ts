@@ -5,30 +5,34 @@ import {
 } from '@netanelh2/playwright-framework'
 import type {Page} from '@playwright/test'
 
-export const OUR_CERTIFICATIONS_PAGE_LOCATOR = {
-	title: {
+export class OurCertificationPage extends BasePage {
+	// ✅ Class variables ישירים - לא בתוך אובייקט
+	public static readonly title = {
 		role: 'heading',
 		name: 'ההסמכות שלנו, הקריירה שלך',
-	},
-	tabsMenu: {
-		entryLevelTabBtns: {
-			role: 'button',
-			name: 'מקצוען בדיקות בתחילת קרירה',
-		},
-		testLeadTab: {
-			role: 'button',
-			name: 'מוביל בדיקות',
-		},
-		expertTesterTab: {
-			role: 'button',
-			name: 'בודק מומחה',
-		},
-		testingCertificationForDevelopersTab: {
-			role: 'button',
-			name: 'הסמכת בדיקות למפתחים',
-		},
-	},
-	boxes: [
+	} as const
+
+	public static readonly entryLevelTabBtn = {
+		role: 'button',
+		name: 'מקצוען בדיקות בתחילת קרירה',
+	} as const
+
+	public static readonly testLeadTab = {
+		role: 'button',
+		name: 'מוביל בדיקות',
+	} as const
+
+	public static readonly expertTesterTab = {
+		role: 'button',
+		name: 'בודק מומחה',
+	} as const
+
+	public static readonly testingCertificationForDevelopersTab = {
+		role: 'button',
+		name: 'הסמכת בדיקות למפתחים',
+	} as const
+
+	public static readonly boxes = [
 		{
 			name: 'entryLevelTestingProfessional',
 			boxTitleLocator: 'p:has-text("מקצוען בדיקות בתחילת קריירה")',
@@ -41,7 +45,6 @@ export const OUR_CERTIFICATIONS_PAGE_LOCATOR = {
 			subBoxTitle: 'h3:has-text("Agile Tester Foundation level") >> nth=0',
 			subBoxText: 'Agile Tester Foundation level',
 		},
-
 		{
 			name: 'testLead',
 			boxTitleLocator: 'p:has-text("מוביל בדיקות")',
@@ -57,7 +60,6 @@ export const OUR_CERTIFICATIONS_PAGE_LOCATOR = {
 			},
 			subBoxText: 'מנהלים (ATM)',
 		},
-
 		{
 			name: 'expertTester',
 			boxTitleLocator: 'p:has-text("בודק מומחה")',
@@ -85,36 +87,32 @@ export const OUR_CERTIFICATIONS_PAGE_LOCATOR = {
 			subBoxTitle: 'h3:has-text("Foundation Level") >> nth=0',
 			subBoxText: 'Foundation Level',
 		},
-	],
-} as const
+	] as const
 
-type OurCertificationBoxName =
-	(typeof OUR_CERTIFICATIONS_PAGE_LOCATOR.boxes)[number]['name']
-
-export class OurCertificationPage extends BasePage {
 	constructor(page: Page) {
 		super(page)
 	}
+
 	async validateBoxTitleAndBoxImage(
 		boxName: OurCertificationBoxName,
 	): Promise<void> {
 		await test.step(`Validate Box Title and Image of ${boxName}`, async () => {
 			const box = findItemByProperty(
-				OUR_CERTIFICATIONS_PAGE_LOCATOR.boxes,
+				OurCertificationPage.boxes,
 				'name',
 				boxName,
 			)
-
 			await this.validateText(box.boxTitleLocator, box.titleText)
 			await this.validateVisibility(box.boxImageLocator)
 		})
 	}
+
 	async validateReadMoreSection(
 		boxName: OurCertificationBoxName,
 	): Promise<void> {
 		await test.step(`Validate ${boxName} Read More Section`, async () => {
 			const box = findItemByProperty(
-				OUR_CERTIFICATIONS_PAGE_LOCATOR.boxes,
+				OurCertificationPage.boxes,
 				'name',
 				boxName,
 			)
@@ -122,3 +120,7 @@ export class OurCertificationPage extends BasePage {
 		})
 	}
 }
+
+// הטיפוס נגזר מהקלאס ✅
+type OurCertificationBoxName =
+	(typeof OurCertificationPage.boxes)[number]['name']
