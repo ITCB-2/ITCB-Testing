@@ -3,7 +3,7 @@ import {
 	findItemByProperty,
 	test,
 } from '@netanelh2/playwright-framework'
-import type {Page} from '@playwright/test'
+import {expect, type Page} from '@playwright/test'
 
 export class CommunityMembersSharingPage extends BasePage {
 	// ✅ Class variables ישירים - לא בתוך אובייקט
@@ -103,7 +103,9 @@ export class CommunityMembersSharingPage extends BasePage {
 				'name',
 				boxName,
 			)
-			await this.validateText(box.img, box.position)
+			const positionText = this.page.getByText(box.position)
+			await expect(positionText).toBeVisible()
+			await expect(positionText).toContainText(box.position)
 		})
 	}
 
@@ -117,7 +119,9 @@ export class CommunityMembersSharingPage extends BasePage {
 				boxName,
 			)
 			await this.validateVisibility(box.img)
-			await this.validateText(box.img, box.position)
+			const positionText = this.page.getByText(box.position)
+			await expect(positionText).toBeVisible()
+			await expect(positionText).toContainText(box.position)
 		})
 	}
 }

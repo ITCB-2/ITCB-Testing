@@ -1,4 +1,5 @@
 import {test as baseTest} from '@netanelh2/playwright-framework'
+// import {AboutUsPage} from '../pages/content-pages/AboutUsPage'
 import {CommunityMembersSharingPage} from '../pages/content-pages/CommunityMembersSharingPage'
 import {DecisionMakerPage} from '../pages/content-pages/DesicionMakerPage'
 import {ImportantFactsPage} from '../pages/content-pages/ImportantFactsPage'
@@ -34,4 +35,7 @@ export const test = baseTest.extend<PageFixtures>({
 	communityMembersSharingPage: async ({page}, use) => {
 		await use(new CommunityMembersSharingPage(page))
 	},
+	// aboutUsPage: async ({page}, use) => {
+	// 	await use(new AboutUsPage(page))
+	// },
 })

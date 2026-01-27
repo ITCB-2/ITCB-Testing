@@ -1,4 +1,5 @@
 import type {basePageFixtures} from '@netanelh2/playwright-framework'
+// import type {AboutUsPage} from '../pages/content-pages/AboutUsPage'
 import type {CommunityMembersSharingPage} from '../pages/content-pages/CommunityMembersSharingPage'
 import type {DecisionMakerPage} from '../pages/content-pages/DesicionMakerPage'
 import type {ImportantFactsPage} from '../pages/content-pages/ImportantFactsPage'
@@ -17,4 +18,5 @@ export interface PageFixtures extends basePageFixtures {
 	ourCertificationPage: OurCertificationPage
 	decisionMakerPage: DecisionMakerPage
 	communityMembersSharingPage: CommunityMembersSharingPage
+	// aboutUsPage: AboutUsPage
 }
