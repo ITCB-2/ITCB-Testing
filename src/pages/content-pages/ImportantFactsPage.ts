@@ -7,7 +7,6 @@ import type {Page} from '@playwright/test'
 import type {FactName} from '../../types/boxNameTypes'
 
 export class ImportantFactsPage extends BasePage {
-	// ✅ Class variables ישירים - לא בתוך אובייקט
 	public static readonly title = {
 		role: 'heading',
 		name: 'עובדות שחשוב שתדעו',

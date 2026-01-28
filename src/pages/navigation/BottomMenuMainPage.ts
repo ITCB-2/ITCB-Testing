@@ -60,6 +60,7 @@ export class BottomMenuMainPage extends MainPage {
 			const {title} = HOW_TO_PREPARE_TO_ISTQB_PAGE_LOCATOR
 			await this.validateVisibility(howToPrepareToISTQBTestLink)
 			await this.clickOnElement(howToPrepareToISTQBTestLink)
+			await this.page.waitForLoadState('domcontentloaded')
 			await this.validateText(title, 'איך להתכונן למבחן ISTQB')
 		})
 	}
@@ -82,7 +83,7 @@ export class BottomMenuMainPage extends MainPage {
 			const {title} = SYLLABUS_INFO_PAGE_LOCATORS
 			await this.validateVisibility(syllabusInfoLink)
 			await this.clickOnElement(syllabusInfoLink)
-			await this.validateText(title, 'כל מה שרציתם לדעת על סילבוס CTFL')
+			await this.validateText(title, 'כל מה שרציתם לדעת על סילבוס CTFL 4.0')
 		})
 	}
 

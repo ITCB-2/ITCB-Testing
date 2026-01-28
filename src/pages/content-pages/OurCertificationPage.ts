@@ -7,7 +7,6 @@ import type {Page} from '@playwright/test'
 import type {OurCertificationBoxName} from '../../types/boxNameTypes'
 
 export class OurCertificationPage extends BasePage {
-	// ✅ Class variables ישירים - לא בתוך אובייקט
 	public static readonly title = {
 		role: 'heading',
 		name: 'ההסמכות שלנו, הקריירה שלך',

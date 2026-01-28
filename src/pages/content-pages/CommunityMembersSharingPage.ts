@@ -7,7 +7,6 @@ import {expect, type Page} from '@playwright/test'
 import type {CommunityMemberName} from '../../types/boxNameTypes'
 
 export class CommunityMembersSharingPage extends BasePage {
-	// ✅ Class variables ישירים - לא בתוך אובייקט
 	public static readonly pageTitle = {
 		role: 'heading',
 		name: 'חברי הקהילה משתפים',

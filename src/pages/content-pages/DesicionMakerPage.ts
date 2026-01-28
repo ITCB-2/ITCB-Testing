@@ -7,7 +7,6 @@ import type {Page} from '@playwright/test'
 import type {DecisionMakerBoxName} from '../../types/boxNameTypes'
 
 export class DecisionMakerPage extends BasePage {
-	// ✅ Class variables ישירים - לא בתוך אובייקט
 	public static readonly title = {
 		role: 'heading',
 		name: 'מקבלי ההחלטות משתפים',
@@ -32,7 +31,7 @@ export class DecisionMakerPage extends BasePage {
 			name: 'michaelTivinBox',
 			img: {
 				role: 'img',
-				name: 'Director Engineering, Akamai',
+				name: 'Director Engineering, Akamai Technologies',
 			},
 		},
 		{

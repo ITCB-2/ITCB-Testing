@@ -78,6 +78,7 @@ export class TopMenuMainPage extends MainPage {
 				TOP_MENU_MAIN_PAGE_LOCATORS.ISTQBContent
 			const {ISTQBGlossaryAdvancedSearchTitle} = TERMS_GLOSSARY_PAGE_LOCATORS
 			await this.hoverOnElement(button)
+			await this.validateVisibility(termsGlossaryLink)
 			await this.clickOnElement(termsGlossaryLink)
 			await this.validateText(
 				ISTQBGlossaryAdvancedSearchTitle,
@@ -93,6 +94,7 @@ export class TopMenuMainPage extends MainPage {
 			await this.hoverOnElement(button)
 			await this.validateVisibility(syllabusInfoLink)
 			await this.clickOnElement(syllabusInfoLink)
+			await this.page.waitForLoadState('domcontentloaded')
 			await this.validateText(title, 'כל מה שרציתם לדעת על סילבוס CTFL 4.0')
 		})
 	}
