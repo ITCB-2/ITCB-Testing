@@ -8,6 +8,7 @@ export class SlidersMainPage extends MainPage {
 	constructor(page: Page) {
 		super(page)
 	}
+	// ✅ Slide 1 Verification
 	async slide1Verification(): Promise<void> {
 		await test.step('Verify Slide 1', async () => {
 			const {slider1Title} = SLIDERS_MAIN_PAGE_LOCATORS.slidersTitles
