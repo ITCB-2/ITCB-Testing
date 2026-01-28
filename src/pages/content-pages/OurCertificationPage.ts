@@ -14,7 +14,7 @@ export class OurCertificationPage extends BasePage {
 
 	public static readonly entryLevelTabBtn = {
 		role: 'button',
-		name: 'מקצוען בדיקות בתחילת קרירה',
+		name: 'מקצוען בדיקות בתחילת קריירה',
 	} as const
 
 	public static readonly testLeadTab = {
@@ -39,7 +39,7 @@ export class OurCertificationPage extends BasePage {
 			titleText: 'מקצוען בדיקות בתחילת קריירה',
 			boxImageLocator: {
 				role: 'img',
-				name: 'מקצוען בדיקות בתחילת קריירה',
+				name: 'מקצוען בדיקות בתחילת קרירה',
 			},
 			readMoreButton: 'a:has-text("קרא עוד") >> nth=0',
 			subBoxTitle: 'h3:has-text("Agile Tester Foundation level") >> nth=0',
@@ -120,3 +120,5 @@ export class OurCertificationPage extends BasePage {
 		})
 	}
 }
+
+

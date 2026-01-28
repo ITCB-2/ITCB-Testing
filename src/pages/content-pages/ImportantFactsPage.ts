@@ -52,3 +52,4 @@ export class ImportantFactsPage extends BasePage {
 		})
 	}
 }
+
