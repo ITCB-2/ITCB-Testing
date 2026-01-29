@@ -14,7 +14,7 @@ export class OurCertificationPage extends BasePage {
 
 	public static readonly entryLevelTabBtn = {
 		role: 'button',
-		name: 'מקצוען בדיקות בתחילת קרירה',
+		name: 'מקצוען בדיקות בתחילת קריירה',
 	} as const
 
 	public static readonly testLeadTab = {

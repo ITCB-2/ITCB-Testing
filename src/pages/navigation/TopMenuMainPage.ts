@@ -107,6 +107,7 @@ export class TopMenuMainPage extends MainPage {
 			await this.hoverOnElement(button)
 			await this.validateVisibility(usefulLinksLink)
 			await this.clickOnElement(usefulLinksLink)
+			await this.page.waitForLoadState('domcontentloaded')
 			await this.validateText(title, 'קישורים שימושיים')
 		})
 	}
@@ -128,6 +129,7 @@ export class TopMenuMainPage extends MainPage {
 			await this.hoverOnElement(button)
 			await this.validateVisibility(podcastsLink)
 			await this.clickOnElement(podcastsLink)
+			await this.page.waitForLoadState('domcontentloaded')
 			await this.validateVisibility(officialPodcastLink)
 			await this.validateText(officialPodcastLink, 'דף הפודקאסט הרישמי שלנו')
 		})
@@ -150,6 +152,7 @@ export class TopMenuMainPage extends MainPage {
 			await this.hoverOnElement(button)
 			await this.validateVisibility(tipsLink)
 			await this.clickOnElement(tipsLink)
+			await this.page.waitForLoadState('domcontentloaded')
 			await this.validateText(
 				title,
 				'טיפים לבודקי תכנה - כאן תמצאו טיפים שנכתבו ע"י חברי קהילת הבדיקות בישראל בכדי לח',

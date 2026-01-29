@@ -1,24 +1,24 @@
 import {test} from '../../fixtures/testSetup'
-import {COMMUNITY_MEMBERS_SHARING_PAGE_LOCATORS} from '../../locators/content-pages/Community_Members_Sharing'
+import {CommunityMembersSharingPage} from '../../pages/content-pages/CommunityMembersSharingPage'
 
 test.describe('Community Members Sharing Page Tests @regression', () => {
 	test.beforeEach(async ({mainPage}) => {
 		await mainPage.openMainPage()
 	})
 
-	const {communityMembersSharingBoxes} = COMMUNITY_MEMBERS_SHARING_PAGE_LOCATORS
-	const communityMemberNames = communityMembersSharingBoxes.map(
-		(box) => box.name,
-	)
+	const communityMemberNames =
+		CommunityMembersSharingPage.communityMembersSharingBoxes.map(
+			(member) => member.name,
+		)
 
-	communityMemberNames.forEach((boxName) => {
-		test(`Click on Community Members Sharing Button and validate ${boxName} content`, async ({
+	communityMemberNames.forEach((memberName) => {
+		test(`Validate community members sharing button and validate ${memberName} content`, async ({
 			mainPage,
 			communityMembersSharingPage,
 		}) => {
 			await mainPage.clickOnCommunityMembersSharingButton()
-			await communityMembersSharingPage.validateCommunityMembersSharingBoxImg(
-				boxName,
+			await communityMembersSharingPage.validateCommunityMembersSharingBoxContent(
+				memberName,
 			)
 		})
 	})
