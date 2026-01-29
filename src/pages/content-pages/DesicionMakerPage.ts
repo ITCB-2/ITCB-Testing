@@ -4,9 +4,9 @@ import {
 	test,
 } from '@netanelh2/playwright-framework'
 import type {Page} from '@playwright/test'
+import type {DecisionMakerBoxName} from '../../types/boxNameTypes'
 
 export class DecisionMakerPage extends BasePage {
-	// ✅ Class variables ישירים - לא בתוך אובייקט
 	public static readonly title = {
 		role: 'heading',
 		name: 'מקבלי ההחלטות משתפים',
@@ -31,7 +31,7 @@ export class DecisionMakerPage extends BasePage {
 			name: 'michaelTivinBox',
 			img: {
 				role: 'img',
-				name: 'Director Engineering, Akamai',
+				name: 'Director Engineering, Akamai Technologies',
 			},
 		},
 		{
@@ -67,7 +67,3 @@ export class DecisionMakerPage extends BasePage {
 		})
 	}
 }
-
-// הטיפוס נגזר מהקלאס ✅
-type DecisionMakerBoxName =
-	(typeof DecisionMakerPage.decisionMakersSharingBoxes)[number]['name']

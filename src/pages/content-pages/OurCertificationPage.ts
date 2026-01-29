@@ -4,9 +4,9 @@ import {
 	test,
 } from '@netanelh2/playwright-framework'
 import type {Page} from '@playwright/test'
+import type {OurCertificationBoxName} from '../../types/boxNameTypes'
 
 export class OurCertificationPage extends BasePage {
-	// ✅ Class variables ישירים - לא בתוך אובייקט
 	public static readonly title = {
 		role: 'heading',
 		name: 'ההסמכות שלנו, הקריירה שלך',
@@ -14,7 +14,7 @@ export class OurCertificationPage extends BasePage {
 
 	public static readonly entryLevelTabBtn = {
 		role: 'button',
-		name: 'מקצוען בדיקות בתחילת קרירה',
+		name: 'מקצוען בדיקות בתחילת קריירה',
 	} as const
 
 	public static readonly testLeadTab = {
@@ -120,7 +120,3 @@ export class OurCertificationPage extends BasePage {
 		})
 	}
 }
-
-// הטיפוס נגזר מהקלאס ✅
-type OurCertificationBoxName =
-	(typeof OurCertificationPage.boxes)[number]['name']

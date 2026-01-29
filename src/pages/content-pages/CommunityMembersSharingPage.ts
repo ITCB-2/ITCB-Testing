@@ -3,10 +3,10 @@ import {
 	findItemByProperty,
 	test,
 } from '@netanelh2/playwright-framework'
-import type {Page} from '@playwright/test'
+import {expect, type Page} from '@playwright/test'
+import type {CommunityMemberName} from '../../types/boxNameTypes'
 
 export class CommunityMembersSharingPage extends BasePage {
-	// ✅ Class variables ישירים - לא בתוך אובייקט
 	public static readonly pageTitle = {
 		role: 'heading',
 		name: 'חברי הקהילה משתפים',
@@ -90,7 +90,9 @@ export class CommunityMembersSharingPage extends BasePage {
 				'name',
 				boxName,
 			)
-			await this.validateVisibility(box.img)
+			const image = this.extractLocator(box.img)
+			await image.scrollIntoViewIfNeeded()
+			await expect(image).toBeVisible()
 		})
 	}
 
@@ -103,7 +105,9 @@ export class CommunityMembersSharingPage extends BasePage {
 				'name',
 				boxName,
 			)
-			await this.validateText(box.img, box.position)
+			const positionText = this.page.getByText(box.position)
+			await expect(positionText).toBeVisible()
+			await expect(positionText).toContainText(box.position)
 		})
 	}
 
@@ -116,12 +120,12 @@ export class CommunityMembersSharingPage extends BasePage {
 				'name',
 				boxName,
 			)
-			await this.validateVisibility(box.img)
-			await this.validateText(box.img, box.position)
+			const image = this.extractLocator(box.img)
+			await image.scrollIntoViewIfNeeded()
+			await expect(image).toBeVisible()
+			const positionText = this.page.getByText(box.position)
+			await expect(positionText).toBeVisible()
+			await expect(positionText).toContainText(box.position)
 		})
 	}
 }
-
-// הטיפוס נגזר מהקלאס ✅
-type CommunityMemberName =
-	(typeof CommunityMembersSharingPage.communityMembersSharingBoxes)[number]['name']

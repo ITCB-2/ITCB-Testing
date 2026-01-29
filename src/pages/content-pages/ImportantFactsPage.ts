@@ -4,9 +4,9 @@ import {
 	test,
 } from '@netanelh2/playwright-framework'
 import type {Page} from '@playwright/test'
+import type {FactName} from '../../types/boxNameTypes'
 
 export class ImportantFactsPage extends BasePage {
-	// ✅ Class variables ישירים - לא בתוך אובייקט
 	public static readonly title = {
 		role: 'heading',
 		name: 'עובדות שחשוב שתדעו',
@@ -52,6 +52,3 @@ export class ImportantFactsPage extends BasePage {
 		})
 	}
 }
-
-// הטיפוס נגזר מהקלאס ✅
-type FactName = (typeof ImportantFactsPage.facts)[number]['name']

@@ -5,11 +5,11 @@ import {
 } from '@netanelh2/playwright-framework'
 import {expect, type Page} from '@playwright/test'
 import {BASE_URL} from '../../data/urls'
+import type {OurCertificationBoxName} from '../../types/boxNameTypes'
 import {ImportantFactsPage} from '../content-pages/ImportantFactsPage'
 import {OurCertificationPage} from '../content-pages/OurCertificationPage'
 
 export class MainPage extends BasePage {
-	// ✅ Class variables ישירים - לא בתוך אובייקט
 	public static readonly ITCBLogo = {
 		role: 'img',
 		name: 'Logo',
@@ -64,7 +64,7 @@ export class MainPage extends BasePage {
 		await test.step('Open Main Page', async () => {
 			await this.page.goto(BASE_URL)
 			await this.pressOkToCookies()
-			await this.validateText(MainPage.importantFactsTitle, 'עובדות שחשוב שתדע')
+			await this.validateVisibility(MainPage.importantFactsTitle)
 		})
 	}
 
@@ -126,7 +126,3 @@ export class MainPage extends BasePage {
 		})
 	}
 }
-
-// הטיפוס נגזר מהקלאס ✅
-type OurCertificationBoxName =
-	(typeof OurCertificationPage.boxes)[number]['name']

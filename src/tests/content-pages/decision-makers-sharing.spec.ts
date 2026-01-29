@@ -1,13 +1,12 @@
 import {test} from '../../fixtures/testSetup'
-import {DECISION_MAKERS_SHARING_PAGE_LOCATORS} from '../../locators/content-pages/Decision_Makers_Sharing'
+import {DecisionMakerPage} from '../../pages/content-pages/DesicionMakerPage'
 
 test.describe('Decision Makers Sharing Page Tests @regression', () => {
 	test.beforeEach(async ({mainPage}) => {
 		await mainPage.openMainPage()
 	})
 
-	const {decisionMakersSharingBoxes} = DECISION_MAKERS_SHARING_PAGE_LOCATORS
-	const decisionMakerNames = decisionMakersSharingBoxes.map(
+	const decisionMakerNames = DecisionMakerPage.decisionMakersSharingBoxes.map(
 		(maker) => maker.name,
 	)
 
