@@ -1,22 +1,120 @@
-import {test} from '../../fixtures/testSetup'
+import {test} from '@netanelh2/playwright-framework'
+import {expect, type Page} from '@playwright/test'
+import {URLS} from '../../data/urls'
+import {SLIDERS_MAIN_PAGE_LOCATORS} from '../../locators/main-content/Sliders_Main_Page'
+import {MainPage} from './MainPage'
 
-test.describe
-	.serial('Sliders Main Page Tests @sanity', () => {
-		test.describe.configure({timeout: 60000})
+export class SlidersMainPage extends MainPage {
+	constructor(page: Page) {
+		super(page)
+	}
+	async slide1Verification(): Promise<void> {
+		await test.step('Verify Slide 1', async () => {
+			const {slider1Title} = SLIDERS_MAIN_PAGE_LOCATORS.slidersTitles
+			await this.gotoURL(URLS.slide1)
+			await this.pressOkToCookies()
+			const slider = this.extractLocator(slider1Title)
+			await expect(slider).toBeVisible({timeout: 60000})
+			const box = await slider.boundingBox()
+			if (box) {
+				await this.page.mouse.move(
+					box.x + box.width / 2,
+					box.y + box.height / 2,
+				)
+				await this.page.mouse.down()
+			}
+			await this.validateVisibility(slider1Title)
+			await this.validateText(
+				slider1Title,
+				'עמותת ITCB מצדיעה לכל הנשים והגברים הפועלים למען ביטחון והגנת המדינה.',
+			)
+		})
+	}
+	async slide2Verification(): Promise<void> {
+		await test.step('Verify Slide 2', async () => {
+			await this.gotoURL(URLS.slide2)
+			const {slider2Title} = SLIDERS_MAIN_PAGE_LOCATORS.slidersTitles
+			await this.pressOkToCookies()
+			const slider2 = this.extractLocator(slider2Title)
+			await expect(slider2).toBeVisible({timeout: 60000})
+			const box2 = await slider2.boundingBox()
+			if (box2) {
+				await this.page.mouse.move(
+					box2.x + box2.width / 2,
+					box2.y + box2.height / 2,
+				)
+				await this.page.mouse.down()
+			}
 
-		test('should validate the first slider', async ({slidersMainPage}) => {
-			await slidersMainPage.slide1Verification()
+			await this.validateVisibility(slider2Title)
+			await this.validateText(
+				slider2Title,
+				'אנו גאים להציג את אפליקצית ®ISTQB למונחים המקצועיים מעולם בדיקות התוכנה בשפה העברית.',
+			)
 		})
-		test('should validate the second slider', async ({slidersMainPage}) => {
-			await slidersMainPage.slide2Verification()
+	}
+	async slide3Verification(): Promise<void> {
+		await test.step('Verify Slide 3', async () => {
+			await this.gotoURL(URLS.slide3)
+			await this.pressOkToCookies()
+
+			// Slide 3 uses strong text instead of heading
+			const slider3Text =
+				'אם אתם מחפשים חשיפה אמיתית, ממוקדת ועתירת ערך – זה המקום.'
+			const slider3 = this.page.getByText(slider3Text).first()
+			await expect(slider3).toBeVisible({timeout: 60000})
+			const box3 = await slider3.boundingBox()
+			if (box3) {
+				await this.page.mouse.move(
+					box3.x + box3.width / 2,
+					box3.y + box3.height / 2,
+				)
+				await this.page.mouse.down()
+			}
+			await expect(slider3).toBeVisible()
+			await expect(slider3).toContainText(slider3Text)
 		})
-		test('should validate the third slider', async ({slidersMainPage}) => {
-			await slidersMainPage.slide3Verification()
+	}
+	async slide4Verification(): Promise<void> {
+		await test.step('Verify Slide 4', async () => {
+			await this.gotoURL(URLS.slide4)
+			await this.pressOkToCookies()
+
+			// Slide 4 uses strong text instead of heading
+			const slider4Text =
+				'רוצים לסיים את 2025 עם תעודת ISTQB רשמית ולקדם את הקריירה בעולם הבדיקות?'
+			const slider4 = this.page.getByText(slider4Text).first()
+			await expect(slider4).toBeVisible({timeout: 60000})
+			const box4 = await slider4.boundingBox()
+			if (box4) {
+				await this.page.mouse.move(
+					box4.x + box4.width / 2,
+					box4.y + box4.height / 2,
+				)
+				await this.page.mouse.down()
+			}
+
+			await expect(slider4).toBeVisible()
+			await expect(slider4).toContainText(slider4Text)
 		})
-		test('should validate the fourth slider', async ({slidersMainPage}) => {
-			await slidersMainPage.slide4Verification()
+	}
+	async slide5Verification(): Promise<void> {
+		await test.step('Verify Slide 5', async () => {
+			await this.gotoURL(URLS.slide5)
+			const {slider5Title} = SLIDERS_MAIN_PAGE_LOCATORS.slidersTitles
+			await this.pressOkToCookies()
+			const slider5 = this.extractLocator(slider5Title)
+			await expect(slider5).toBeVisible({timeout: 60000})
+			const box5 = await slider5.boundingBox()
+			if (box5) {
+				await this.page.mouse.move(
+					box5.x + box5.width / 2,
+					box5.y + box5.height / 2,
+				)
+				await this.page.mouse.down()
+			}
+			await this.validateVisibility(slider5Title)
+			await this.validateText(slider5Title, 'אצלנו תצליח בהייטק, זה בדוק!')
 		})
-		test('should validate the fifth slider', async ({slidersMainPage}) => {
-			await slidersMainPage.slide5Verification()
-		})
-	})
+	}
+}

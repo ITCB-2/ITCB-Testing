@@ -90,7 +90,9 @@ export class CommunityMembersSharingPage extends BasePage {
 				'name',
 				boxName,
 			)
-			await this.validateVisibility(box.img)
+			const image = this.extractLocator(box.img)
+			await image.scrollIntoViewIfNeeded()
+			await expect(image).toBeVisible()
 		})
 	}
 
@@ -118,7 +120,9 @@ export class CommunityMembersSharingPage extends BasePage {
 				'name',
 				boxName,
 			)
-			await this.validateVisibility(box.img)
+			const image = this.extractLocator(box.img)
+			await image.scrollIntoViewIfNeeded()
+			await expect(image).toBeVisible()
 			const positionText = this.page.getByText(box.position)
 			await expect(positionText).toBeVisible()
 			await expect(positionText).toContainText(box.position)
