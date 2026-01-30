@@ -2,19 +2,13 @@
 
 ## Three-Layer Architecture
 
-### 1. Core Layer
+### 1. Page Layer
 
-- `BasePage` - Base class for all page objects
-- `LocatorUtils` - Automatic fallback locator strategies
-- Foundation classes providing reusable methods
-
-### 2. Page Layer
-
-- Specific page objects implementing business actions
+- Page objects with `protected page: Page` using Playwright APIs directly
+- No shared base class; actions and assertions use `page.goto()`, `page.getByRole()`, `expect(...).toBeVisible()`, etc.
 - Organized by functionality: main-content, navigation, content-pages
-- Each page extends `BasePage`
 
-### 3. Test Layer
+### 2. Test Layer
 
 - Test specs using injected page objects via custom fixtures
 - Organized to match page structure
@@ -36,16 +30,8 @@ const test = base.extend<PageFixtures>({
 
 - All locators in separate files under `src/locators/`
 - Prevents coupling between page objects and selectors
-- Supports both string and role-based locators
-
-### Automatic Fallback Strategy
-
-Locator resolution order:
-
-1. CSS/XPath selectors
-2. getByLabel
-3. getByText
-4. getByRole
+- Supports both string selectors and role-based objects (`{ role, name }` or with `parent`)
+- In code: use `page.locator(selector)` for strings; `page.getByRole(role, { name })` or `page.locator(parent).getByRole(role, { name })` for role objects
 
 ## Import Strategy
 

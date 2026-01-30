@@ -1,12 +1,9 @@
-import {
-	BasePage,
-	findItemByProperty,
-	test,
-} from '@netanelh2/playwright-framework'
-import type {Page} from '@playwright/test'
+import {expect, type Page, test} from '@playwright/test'
 import type {DecisionMakerBoxName} from '../../types/boxNameTypes'
 
-export class DecisionMakerPage extends BasePage {
+export class DecisionMakerPage {
+	protected page: Page
+
 	public static readonly title = {
 		role: 'heading',
 		name: 'מקבלי ההחלטות משתפים',
@@ -51,19 +48,24 @@ export class DecisionMakerPage extends BasePage {
 	] as const
 
 	constructor(page: Page) {
-		super(page)
+		this.page = page
 	}
 
 	async validateDecisionMakersSharingBoxContent(
 		decisionMakerBox: DecisionMakerBoxName,
 	): Promise<void> {
 		await test.step(`Validate ${decisionMakerBox} Box Content`, async () => {
-			const decisionMakersSharingBox = findItemByProperty(
-				DecisionMakerPage.decisionMakersSharingBoxes,
-				'name',
-				decisionMakerBox,
-			)
-			await this.validateVisibility(decisionMakersSharingBox.img)
+			const decisionMakersSharingBox =
+				DecisionMakerPage.decisionMakersSharingBoxes.find(
+					(b) => b.name === decisionMakerBox,
+				)
+			if (!decisionMakersSharingBox)
+				throw new Error(`Box not found: ${decisionMakerBox}`)
+			await expect(
+				this.page.getByRole(decisionMakersSharingBox.img.role, {
+					name: decisionMakersSharingBox.img.name,
+				}),
+			).toBeVisible()
 		})
 	}
 }

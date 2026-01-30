@@ -14,7 +14,7 @@ Developer Push/PR → Code Quality Check → Pass/Fail → Merge Allowed/Blocked
 
 TESTING WORKFLOWS (Modular Design):
 Sanity Tests → Test Runner (Generic) → Deploy Reports → Slack Notifications
-Regression Tests → Test Runner (Generic) → Deploy Reports → Slack Notifications
+nightly Tests → Test Runner (Generic) → Deploy Reports → Slack Notifications
 Future Tests → Test Runner (Generic) → Deploy Reports → Slack Notifications
 
 SUPPORTING WORKFLOWS:
@@ -60,33 +60,39 @@ artifact: test-results (failure cases only)
 
 **🎯 Purpose**: Reusable workflow that executes any type of Playwright tests with consistent behavior
 
-**⚙️ Trigger**: Called by specific test workflows (Sanity, Regression, Future tests)
+**⚙️ Trigger**: Called by specific test workflows (Sanity, nightly, Future tests)
+
+**🐳 Docker (CI only)**: In CI, tests run **only inside Docker**:
+1. **Build**: `docker compose build`
+2. **Run**: `docker compose run --rm test-runner <test_command>` (e.g. `npm run test:sanity` or `npm run test:nightly`)
+
+Locally, run `npm test` or `npm run test:sanity` / `npm run test:nightly` with **no Docker**—Playwright runs directly on the host.
 
 **🔧 Configurable Parameters**:
 
 ```yaml
 inputs:
-  test_type: 'sanity' | 'regression' | 'e2e' | 'smoke' | custom
-  test_command: 'npm run test:sanity' | 'npm run test:regression' | custom
+  test_type: 'sanity' | 'nightly' | 'e2e' | 'smoke' | custom
+  test_command: 'npm run test:sanity' | 'npm run test:nightly' | custom
   retention_days: 3 | 7 | custom (artifact retention)
-  test_description: 'Sanity Tests' | 'Regression Tests' | custom
+  test_description: 'Sanity Tests' | 'nightly Tests' | custom
   cleanup_before_run: true | false (run cleanup first)
   timeout_minutes: 60 | 120 | custom
-  test_tags: '@sanity' | '@regression' | custom Playwright tags
+  test_tags: '@sanity' | '@nightly' | custom Playwright tags
 ```
 
 **🎭 Test Execution Flow**:
 
 1. **Optional Cleanup**: Runs artifact cleanup if enabled
-2. **Environment Setup**: Node.js, dependencies, Playwright browsers
-3. **Test Execution**: Runs specified command with proper environment
-4. **Artifact Upload**: Always uploads reports (even on failure)
-5. **Error Handling**: Fails workflow with helpful error messages
+2. **Checkout**: Repository checkout
+3. **Build Docker image**: `docker compose build` (CI only)
+4. **Run tests in Docker**: `docker compose run --rm test-runner <test_command>` (e.g. `npm run test:sanity`)
+5. **Artifact Upload**: Always uploads reports (even on failure)
 6. **Summary**: Provides clean test completion status
 
 **🛠️ Reusable Design**:
 
-- **Any Test Type**: Supports sanity, regression, e2e, smoke, or custom tests
+- **Any Test Type**: Supports sanity, nightly, e2e, smoke, or custom tests
 - **Flexible Configuration**: All parameters are customizable
 - **Consistent Behavior**: Same setup, caching, and error handling for all tests
 - **Future-Ready**: Adding new test types requires minimal configuration
@@ -133,13 +139,13 @@ artifact: playwright-report-sanity-{run_number}
 
 ---
 
-### 4. Regression Tests (`tests-regression.yml`)
+### 4. nightly Tests (`tests-nightly.yml`)
 
 **🎯 Purpose**: Comprehensive daily validation using the generic Test Runner
 
 **⏰ Schedule**:
 
-```yaml
+````yaml
 cron: '0 2 * * *'
 - **Automatic**: Daily at 2:00 AM UTC (`0 2 * * *`)
 - **Manual**: On-demand via GitHub Actions UI
@@ -148,15 +154,15 @@ cron: '0 2 * * *'
 
 ```yaml
 jobs:
-  run-regression-tests:
+  run-nightly-tests:
     uses: ./.github/workflows/core-test-runner.yml
     with:
-      test_type: 'regression'
-      test_command: 'npm run test:regression'
-      test_description: 'Regression Tests'
+      test_type: 'nightly'
+      test_command: 'npm run test:nightly'
+      test_description: 'nightly Tests'
       retention_days: '7'
       cleanup_before_run: 'true'
-```
+````
 
 **🎭 Test Scope**:
 
@@ -170,7 +176,7 @@ jobs:
 timeout: 120 minutes (inherited from Test Runner)
 browser: All (chromium, firefox, webkit)
 retention: 7 days
-artifact: playwright-report-regression-{run_number}
+artifact: playwright-report-nightly-{run_number}
 ```
 
 ---
@@ -228,7 +234,7 @@ workflow_run:
 **🧠 Smart Context Detection**:
 
 - **Dynamic Test Names**: Extracts actual test type from artifact names
-- **Workflow Context**: Shows "Sanity Tests", "Regression Tests", etc.
+- **Workflow Context**: Shows "Sanity Tests", "nightly Tests", etc.
 - **Flexible URLs**: Uses deployment URLs with repository-based fallbacks
 
 **💬 Enhanced Notification Content**:
@@ -253,7 +259,7 @@ Failure Message:
 
 **🎯 Purpose**: Automated storage management and quota prevention
 
-**⏰ Schedule**: Daily at 1:00 AM UTC (`0 1 * * *`) - one hour before regression tests
+**⏰ Schedule**: Daily at 1:00 AM UTC (`0 1 * * *`) - one hour before nightly tests
 
 **🧹 Enhanced Cleanup Strategy**:
 
@@ -268,7 +274,7 @@ api_integration: GitHub REST API with pagination
 **📊 Cleanup Process**:
 
 1. **Scan** all repository artifacts with pagination support
-2. **Group** artifacts by workflow type (sanity, regression, quality)
+2. **Group** artifacts by workflow type (sanity, nightly, quality)
 3. **Apply Age Policy**: Delete artifacts older than retention period (default: 2 days)
 4. **Apply Count Policy**: Keep only latest N artifacts per workflow type (default: 5)
 5. **Delete** artifacts that violate either policy via GitHub API
@@ -321,7 +327,7 @@ api_integration: GitHub REST API with pagination
 
 ```
 01:00 - Enhanced Artifact Cleanup (dual-policy: 30-day + latest-5)
-02:00 - Regression Tests + Report Deployment
+02:00 - nightly Tests + Report Deployment
 04:00 - Sanity Tests
 06:00 - Sanity Tests
 08:00 - Sanity Tests
@@ -355,7 +361,7 @@ Continuous Storage Management
 
    - **Purpose**: Target application URL
    - **Example**: `https://www.itcb.org.il`
-   - **Used by**: Sanity & Regression tests
+   - **Used by**: Sanity & nightly tests
 
 2. **`SLACK_WEBHOOK_URL`** _(Optional)_
    - **Purpose**: Team notifications
@@ -393,7 +399,7 @@ permissions:
 - ⏱️ Code quality check: ~2-5 minutes
 - ⏱️ Test Runner setup: ~2-3 minutes
 - ⏱️ Sanity tests: ~5-10 minutes
-- ⏱️ Regression tests: ~30-45 minutes
+- ⏱️ nightly tests: ~30-45 minutes
 - ⏱️ Report deployment: ~2-3 minutes
 - ⏱️ Cleanup: ~1-2 minutes
 
@@ -405,7 +411,7 @@ permissions:
 | Code Quality Check  | On push/PR            | ❌         | None            |
 | Test Runner         | ❌ (Called by others) | ❌         | Test workflows  |
 | Sanity Tests        | Every 2 hours         | ✅         | Test Runner     |
-| Regression Tests    | Daily 2 AM            | ✅         | Test Runner     |
+| nightly Tests       | Daily 2 AM            | ✅         | Test Runner     |
 | Deploy Reports      | On test completion    | ✅         | Test workflows  |
 | Slack Notifications | On deploy completion  | ✅         | Deploy workflow |
 

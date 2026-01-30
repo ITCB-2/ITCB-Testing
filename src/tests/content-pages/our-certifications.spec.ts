@@ -1,7 +1,7 @@
 import {test} from '../../fixtures/testSetup'
 import {OUR_CERTIFICATIONS_PAGE_LOCATOR} from '../../locators/content-pages/Our_Certification'
 
-test.describe('Our Certifications Page Tests @regression', () => {
+test.describe('Our Certifications Page Tests @nightly', () => {
 	test.beforeEach(async ({mainPage}) => {
 		await mainPage.openMainPage()
 	})

@@ -1,12 +1,9 @@
-import {
-	BasePage,
-	findItemByProperty,
-	test,
-} from '@netanelh2/playwright-framework'
-import {expect, type Page} from '@playwright/test'
+import {expect, type Page, test} from '@playwright/test'
 import type {CommunityMemberName} from '../../types/boxNameTypes'
 
-export class CommunityMembersSharingPage extends BasePage {
+export class CommunityMembersSharingPage {
+	protected page: Page
+
 	public static readonly pageTitle = {
 		role: 'heading',
 		name: 'חברי הקהילה משתפים',
@@ -72,12 +69,16 @@ export class CommunityMembersSharingPage extends BasePage {
 	] as const
 
 	constructor(page: Page) {
-		super(page)
+		this.page = page
 	}
 
 	async validateLoaded(): Promise<void> {
 		await test.step('Validate Community Members Sharing Page Loaded', async () => {
-			await this.validateVisibility(CommunityMembersSharingPage.pageTitle)
+			await expect(
+				this.page.getByRole(CommunityMembersSharingPage.pageTitle.role, {
+					name: CommunityMembersSharingPage.pageTitle.name,
+				}),
+			).toBeVisible()
 		})
 	}
 
@@ -85,12 +86,11 @@ export class CommunityMembersSharingPage extends BasePage {
 		boxName: CommunityMemberName,
 	): Promise<void> {
 		await test.step(`Validate ${boxName} Box Image`, async () => {
-			const box = findItemByProperty(
-				CommunityMembersSharingPage.communityMembersSharingBoxes,
-				'name',
-				boxName,
+			const box = CommunityMembersSharingPage.communityMembersSharingBoxes.find(
+				(m) => m.name === boxName,
 			)
-			const image = this.extractLocator(box.img)
+			if (!box) throw new Error(`Box not found: ${boxName}`)
+			const image = this.page.getByRole(box.img.role, {name: box.img.name})
 			await image.scrollIntoViewIfNeeded()
 			await expect(image).toBeVisible()
 		})
@@ -100,11 +100,10 @@ export class CommunityMembersSharingPage extends BasePage {
 		boxName: CommunityMemberName,
 	): Promise<void> {
 		await test.step(`Validate ${boxName} Box Position`, async () => {
-			const box = findItemByProperty(
-				CommunityMembersSharingPage.communityMembersSharingBoxes,
-				'name',
-				boxName,
+			const box = CommunityMembersSharingPage.communityMembersSharingBoxes.find(
+				(m) => m.name === boxName,
 			)
+			if (!box) throw new Error(`Box not found: ${boxName}`)
 			const positionText = this.page.getByText(box.position)
 			await expect(positionText).toBeVisible()
 			await expect(positionText).toContainText(box.position)
@@ -115,12 +114,11 @@ export class CommunityMembersSharingPage extends BasePage {
 		boxName: CommunityMemberName,
 	): Promise<void> {
 		await test.step(`Validate ${boxName} Box Complete Content`, async () => {
-			const box = findItemByProperty(
-				CommunityMembersSharingPage.communityMembersSharingBoxes,
-				'name',
-				boxName,
+			const box = CommunityMembersSharingPage.communityMembersSharingBoxes.find(
+				(m) => m.name === boxName,
 			)
-			const image = this.extractLocator(box.img)
+			if (!box) throw new Error(`Box not found: ${boxName}`)
+			const image = this.page.getByRole(box.img.role, {name: box.img.name})
 			await image.scrollIntoViewIfNeeded()
 			await expect(image).toBeVisible()
 			const positionText = this.page.getByText(box.position)

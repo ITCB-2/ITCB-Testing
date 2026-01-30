@@ -2,7 +2,7 @@ name: Deploy Reports to GitHub Pages
 
 on:
   workflow_run:
-    workflows: ['Sanity Tests', 'Regression Tests']
+    workflows: ['Sanity Tests', 'nightly Tests']
     types:
       - completed
   workflow_dispatch:
@@ -48,7 +48,7 @@ jobs:
           elif [[ "$WORKFLOW_NAME" =~ [Ss]anity ]]; then
             ARTIFACT_NAME="playwright-report-sanity-$RUN_NUMBER"
           elif [[ "$WORKFLOW_NAME" =~ [Rr]egression ]]; then
-            ARTIFACT_NAME="playwright-report-regression-$RUN_NUMBER"
+            ARTIFACT_NAME="playwright-report-nightly-$RUN_NUMBER"
           else
             # For any other workflow, use workflow type: playwright-report-{workflow-type}-{run_number}
             ARTIFACT_NAME="playwright-report-${WORKFLOW_TYPE}-$RUN_NUMBER"
@@ -66,7 +66,7 @@ jobs:
             # Convert to human readable
             case "$TEST_TYPE" in
               sanity) DISPLAY_NAME="Sanity Tests" ;;
-              regression) DISPLAY_NAME="Regression Tests" ;;
+              nightly) DISPLAY_NAME="nightly Tests" ;;
               *) DISPLAY_NAME="$TEST_TYPE Tests" ;;
             esac
           else

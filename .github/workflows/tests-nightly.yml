@@ -1,7 +1,7 @@
-name: Regression Tests
+name: nightly Tests
 
 on:
-  # Nightly regression tests at 2 AM UTC
+  # Nightly nightly tests at 2 AM UTC
   schedule:
     - cron: '0 2 * * *'
 
@@ -11,20 +11,20 @@ on:
       reason:
         description: 'Reason for running tests manually'
         required: false
-        default: 'Manual regression test run'
+        default: 'Manual nightly test run'
 
 permissions:
   actions: write
   contents: write
 
 jobs:
-  run-regression-tests:
+  run-nightly-tests:
     uses: ./.github/workflows/core-test-runner.yml
     with:
-      test_type: 'regression'
-      test_command: 'npm run test:regression'
+      test_type: 'nightly'
+      test_command: 'npm run test:nightly'
       retention_days: '3'
-      test_description: 'Regression Tests'
+      test_description: 'nightly Tests'
       cleanup_before_run: 'true'
       timeout_minutes: 120
-      test_tags: '@regression'
+      test_tags: '@nightly'

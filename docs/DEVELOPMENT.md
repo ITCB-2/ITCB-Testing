@@ -88,8 +88,8 @@ Every commit automatically runs:
 ### **📄 Page Objects**
 
 - **File**: `SomePage.ts` (PascalCase)
-- **Class**: `export class SomePage extends BasePage`
-- **Rule**: Always extend `BasePage`
+- **Class**: `export class SomePage` with `protected page: Page`; use Playwright APIs directly
+- **Rule**: No shared base class; use `page.goto()`, `page.getByRole()`, `expect(...).toBeVisible()`, etc.
 - **Location**: `src/pages/category/`
 
 ### **🎯 Locators**
@@ -108,7 +108,7 @@ Every commit automatically runs:
 ### **🏷️ Test Tags**
 
 - **@sanity**: Critical tests, ~5-10 min execution
-- **@regression**: Comprehensive tests, ~30-45 min execution
+- **@nightly**: Comprehensive tests, ~30-45 min execution
 
 ## 🏗️ Creating New Components
 
@@ -118,15 +118,15 @@ Every commit automatically runs:
 
 ```typescript
 export const NEW_PAGE_LOCATORS = {
-  submitButton: {role: 'button', name: 'Submit'},
-  formSection: {
-    usernameField: {role: 'textbox', name: 'Username'},
-    passwordField: {role: 'textbox', name: 'Password'},
-  },
-  navigationMenu: {
-    homeLink: {role: 'link', name: 'Home'},
-    aboutLink: {role: 'link', name: 'About'},
-  },
+	submitButton: {role: 'button', name: 'Submit'},
+	formSection: {
+		usernameField: {role: 'textbox', name: 'Username'},
+		passwordField: {role: 'textbox', name: 'Password'},
+	},
+	navigationMenu: {
+		homeLink: {role: 'link', name: 'Home'},
+		aboutLink: {role: 'link', name: 'About'},
+	},
 } as const
 ```
 
@@ -135,26 +135,38 @@ export const NEW_PAGE_LOCATORS = {
 `src/pages/category/NewPage.ts`:
 
 ```typescript
-import {BasePage} from '@/core'
-import {test} from '@/fixtures'
-import {NEW_PAGE_LOCATORS} from '@/locators'
+import {test} from '@playwright/test'
+import {expect, type Page} from '@playwright/test'
+import {BASE_URL} from '../../data/urls'
+import {NEW_PAGE_LOCATORS} from '../../locators/category/New_Page'
 
-export class NewPage extends BasePage {
-  async navigateToPage(): Promise<void> {
-    await test.step('Navigate to New Page', async () => {
-      await this.gotoURL('/new-page')
-      const {submitButton} = NEW_PAGE_LOCATORS
-      await this.validateVisibility(submitButton)
-    })
-  }
+export class NewPage {
+	protected page: Page
+	constructor(page: Page) {
+		this.page = page
+	}
 
-  async performAction(username: string): Promise<void> {
-    await test.step('Perform main action', async () => {
-      const {usernameField, submitButton} = NEW_PAGE_LOCATORS.formSection
-      await this.fillInput(usernameField, username)
-      await this.clickOnElement(submitButton)
-    })
-  }
+	async navigateToPage(): Promise<void> {
+		await test.step('Navigate to New Page', async () => {
+			await this.page.goto(`${BASE_URL}/new-page`)
+			const {submitButton} = NEW_PAGE_LOCATORS
+			await expect(
+				this.page.getByRole(submitButton.role, {name: submitButton.name}),
+			).toBeVisible()
+		})
+	}
+
+	async performAction(username: string): Promise<void> {
+		await test.step('Perform main action', async () => {
+			const {usernameField, submitButton} = NEW_PAGE_LOCATORS.formSection
+			await this.page
+				.getByRole(usernameField.role, {name: usernameField.name})
+				.fill(username)
+			await this.page
+				.getByRole(submitButton.role, {name: submitButton.name})
+				.click()
+		})
+	}
 }
 ```
 
@@ -165,14 +177,14 @@ export class NewPage extends BasePage {
 ```typescript
 // Add to PageFixtures interface
 interface PageFixtures {
-  // ... existing fixtures
-  newPage: NewPage
+	// ... existing fixtures
+	newPage: NewPage
 }
 
 // Add to test extension
 const test = base.extend<PageFixtures>({
-  // ... existing fixtures
-  newPage: async ({page}, use) => await use(new NewPage(page)),
+	// ... existing fixtures
+	newPage: async ({page}, use) => await use(new NewPage(page)),
 })
 ```
 
@@ -184,15 +196,15 @@ const test = base.extend<PageFixtures>({
 import {test} from '@/fixtures'
 
 test.describe('New Feature Tests', () => {
-  test('should perform action @sanity', async ({newPage}) => {
-    await newPage.navigateToPage()
-    await newPage.performAction('testuser')
-  })
+	test('should perform action @sanity', async ({newPage}) => {
+		await newPage.navigateToPage()
+		await newPage.performAction('testuser')
+	})
 
-  test('should validate error handling @regression', async ({newPage}) => {
-    await newPage.navigateToPage()
-    // Test error scenarios
-  })
+	test('should validate error handling @nightly', async ({newPage}) => {
+		await newPage.navigateToPage()
+		// Test error scenarios
+	})
 })
 ```
 
@@ -203,19 +215,19 @@ test.describe('New Feature Tests', () => {
 #### **Test Classification**
 
 - 🏷️ **@sanity**: Critical functionality, fast execution (<10 min total)
-- 🏷️ **@regression**: Comprehensive validation, longer execution acceptable
+- 🏷️ **@nightly**: Comprehensive validation, longer execution acceptable
 
 #### **Test Structure**
 
 ```typescript
 test.describe('Feature Area Tests', () => {
-  test('should validate core functionality @sanity', async ({page}) => {
-    // Fast, essential test
-  })
+	test('should validate core functionality @sanity', async ({page}) => {
+		// Fast, essential test
+	})
 
-  test('should handle edge cases @regression', async ({page}) => {
-    // Comprehensive validation
-  })
+	test('should handle edge cases @nightly', async ({page}) => {
+		// Comprehensive validation
+	})
 })
 ```
 
@@ -231,24 +243,38 @@ test.describe('Feature Area Tests', () => {
 #### **Method Design**
 
 ```typescript
-export class SomePage extends BasePage {
-  // ✅ Good: Descriptive, includes validation
-  async navigateToUserProfile(userId: string): Promise<void> {
-    await test.step('Navigate to user profile', async () => {
-      await this.gotoURL(`/users/${userId}`)
-      await this.validateVisibility(USER_PROFILE_LOCATORS.profileHeader)
-    })
-  }
+export class SomePage {
+	protected page: Page
+	constructor(page: Page) {
+		this.page = page
+	}
 
-  // ✅ Good: Clear business action
-  async performLogin(credentials: LoginCredentials): Promise<void> {
-    await test.step('Perform user login', async () => {
-      const {usernameField, passwordField, submitButton} = LOGIN_LOCATORS
-      await this.fillInput(usernameField, credentials.username)
-      await this.fillInput(passwordField, credentials.password)
-      await this.clickOnElement(submitButton)
-    })
-  }
+	// ✅ Good: Descriptive, includes validation
+	async navigateToUserProfile(userId: string): Promise<void> {
+		await test.step('Navigate to user profile', async () => {
+			await this.page.goto(`${BASE_URL}/users/${userId}`)
+			const {profileHeader} = USER_PROFILE_LOCATORS
+			await expect(
+				this.page.getByRole(profileHeader.role, {name: profileHeader.name}),
+			).toBeVisible()
+		})
+	}
+
+	// ✅ Good: Clear business action
+	async performLogin(credentials: LoginCredentials): Promise<void> {
+		await test.step('Perform user login', async () => {
+			const {usernameField, passwordField, submitButton} = LOGIN_LOCATORS
+			await this.page
+				.getByRole(usernameField.role, {name: usernameField.name})
+				.fill(credentials.username)
+			await this.page
+				.getByRole(passwordField.role, {name: passwordField.name})
+				.fill(credentials.password)
+			await this.page
+				.getByRole(submitButton.role, {name: submitButton.name})
+				.click()
+		})
+	}
 }
 ```
 
@@ -258,8 +284,12 @@ export class SomePage extends BasePage {
 async performCriticalAction(): Promise<void> {
   await test.step('Perform critical action', async () => {
     try {
-      await this.clickOnElement(CRITICAL_BUTTON_LOCATOR)
-      await this.validateURL(URLS.successPage)
+      await this.page
+        .getByRole(CRITICAL_BUTTON_LOCATOR.role, {
+          name: CRITICAL_BUTTON_LOCATOR.name,
+        })
+        .click()
+      await expect(this.page).toHaveURL(URLS.successPage)
     } catch (error) {
       throw new Error(`Critical action failed: ${error.message}`)
     }
@@ -278,33 +308,22 @@ async performCriticalAction(): Promise<void> {
 
 ### **🌍 Environment Management**
 
-#### **Accessing Environment Variables**
+#### **URLs and Configuration**
 
 ```typescript
-// ✅ Always use envUtils
-import {getEnvCredentials} from '@/helpers'
-const baseUrl = getEnvCredentials('BASE_URL')
+// ✅ Use centralized URLs from src/data/urls.ts
+import {BASE_URL, URLS} from '../../data/urls'
+await this.page.goto(BASE_URL)
+await this.page.goto(URLS.aboutUs)
 
-// ❌ Never access directly
-const baseUrl = process.env.BASE_URL // Don't do this
+// ❌ Don't read process.env directly in tests/pages
+const baseUrl = process.env.BASE_URL // Avoid; use src/data/urls.ts
 ```
 
 #### **Environment Configuration**
 
-```typescript
-// src/data/config.ts
-export interface TestConfig {
-  baseUrl: string
-  timeout: number
-  retries: number
-}
-
-export const getTestConfig = (): TestConfig => ({
-  baseUrl: getEnvCredentials('BASE_URL'),
-  timeout: parseInt(getEnvCredentials('TIMEOUT') || '30000'),
-  retries: parseInt(getEnvCredentials('RETRIES') || '2'),
-})
-```
+- Define `BASE_URL` and `URLS` in `src/data/urls.ts`.
+- For local overrides, use `.env` and load in config if needed; keep URLs in `src/data/urls.ts` as the source of truth for tests.
 
 ## 🔄 Contribution Workflow
 
@@ -373,7 +392,7 @@ For GitHub Actions workflows to function properly, configure these repository-le
 
    - Go to: Repository Settings → Secrets and variables → Actions
    - Add new repository secret: `BASE_URL=https://www.itcb.org.il`
-   - Used by: Sanity tests, Nightly regression tests
+   - Used by: Sanity tests, Nightly nightly tests
 
 2. **`SLACK_WEBHOOK_URL`** (Optional) - For Slack notifications
    - Add repository secret with your Slack webhook URL

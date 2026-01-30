@@ -1,6 +1,6 @@
 import {test} from '../../fixtures/testSetup'
 
-test.describe('Main Page - Why ISTQB Menu Tests @regression', () => {
+test.describe('Main Page - Why ISTQB Menu Tests @nightly', () => {
 	test.beforeEach(async ({mainPage}) => {
 		await mainPage.openMainPage()
 	})
@@ -17,7 +17,7 @@ test.describe('Main Page - Why ISTQB Menu Tests @regression', () => {
 	})
 })
 
-test.describe('Main Page - Why ISTQB Menu Tests (Comprehensive) @regression', () => {
+test.describe('Main Page - Why ISTQB Menu Tests (Comprehensive) @nightly', () => {
 	test.beforeEach(async ({mainPage}) => {
 		await mainPage.openMainPage()
 	})
@@ -35,7 +35,7 @@ test.describe('Main Page - Why ISTQB Menu Tests (Comprehensive) @regression', ()
 	})
 })
 
-test.describe('Main Page - ISTQBContent Menu Tests @regression', () => {
+test.describe('Main Page - ISTQBContent Menu Tests @nightly', () => {
 	test.beforeEach(async ({mainPage}) => {
 		await mainPage.openMainPage()
 	})
@@ -46,7 +46,7 @@ test.describe('Main Page - ISTQBContent Menu Tests @regression', () => {
 	})
 })
 
-test.describe('Main Page - ISTQBContent Menu Tests (Comprehensive) @regression', () => {
+test.describe('Main Page - ISTQBContent Menu Tests (Comprehensive) @nightly', () => {
 	test.beforeEach(async ({mainPage}) => {
 		await mainPage.openMainPage()
 	})
@@ -57,7 +57,7 @@ test.describe('Main Page - ISTQBContent Menu Tests (Comprehensive) @regression',
 	})
 })
 
-test.describe('Main Page - testing In Israel Menu Tests @regression', () => {
+test.describe('Main Page - testing In Israel Menu Tests @nightly', () => {
 	test.beforeEach(async ({mainPage}) => {
 		await mainPage.openMainPage()
 	})
@@ -68,7 +68,7 @@ test.describe('Main Page - testing In Israel Menu Tests @regression', () => {
 	})
 })
 
-test.describe('Main Page - testing In Israel Menu Tests (Comprehensive) @regression', () => {
+test.describe('Main Page - testing In Israel Menu Tests (Comprehensive) @nightly', () => {
 	test.beforeEach(async ({mainPage}) => {
 		await mainPage.openMainPage()
 	})
@@ -89,7 +89,7 @@ test.describe('Main Page - testing In Israel Menu Tests (Comprehensive) @regress
 	})
 })
 
-test.describe('Main Page - additional Information Menu Tests @regression', () => {
+test.describe('Main Page - additional Information Menu Tests @nightly', () => {
 	test.beforeEach(async ({mainPage}) => {
 		await mainPage.openMainPage()
 	})
@@ -100,7 +100,7 @@ test.describe('Main Page - additional Information Menu Tests @regression', () =>
 	})
 })
 
-test.describe('Main Page - additional Information Menu Tests (Comprehensive) @regression', () => {
+test.describe('Main Page - additional Information Menu Tests (Comprehensive) @nightly', () => {
 	test.beforeEach(async ({mainPage}) => {
 		await mainPage.openMainPage()
 	})

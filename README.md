@@ -17,7 +17,7 @@
 - **Page Object Model (POM)** with TypeScript and dependency injection
 - **Automatic Fallback Locators** with intelligent element resolution
 - **Quality-First Development** with pre-commit hooks and zero-warning policy
-- **Smart Test Classification** using `@sanity` and `@regression` tags
+- **Smart Test Classification** using `@sanity` and `@nightly` tags
 - **Intelligent Retry Logic** - Critical tests get automatic retries in CI
 - **Automated CI/CD Pipeline** with scheduled testing and rich reporting
 
@@ -60,31 +60,31 @@ npm run test:debug  # Interactive debugging
 npm run report      # View test results
 ```
 
-## Docker Setup
+## Running Tests: Local vs CI
 
-This project is configured to run tests in Docker containers using Playwright's official Docker image, which includes all necessary browsers pre-installed.
+### Local (no Docker)
 
-### Prerequisites
-
-- Docker Desktop and Docker CLI installed on your system
-
-### Running Tests with Docker
-
-All test scripts in `package.json` use Docker Compose to run tests in isolated containers:
+Tests run directly on your machine with Playwright. No Docker required.
 
 ```bash
-npm run build         # Build Docker images
-npm test              # Run all tests in Docker
-npm run test:headed   # Run tests with browser UI (requires display forwarding)
-npm run test:debug    # Debug mode (may require additional Docker configuration)
+npm test              # Run all tests
+npm run test:sanity   # Fast critical tests (~5 min)
+npm run test:nightly  # Full suite
+npm run test:headed   # With browser UI
+npm run test:debug    # Debug mode
+npm run report        # View HTML report
 ```
 
-### Benefits of Docker Setup
+Install browsers once: `npx playwright install`
 
-- **Isolated Environment:** Tests run in a clean, reproducible environment
-- **Pre-installed Browsers:** No need to install browsers locally
-- **CI/CD Ready:** Same environment for local development and CI pipelines
-- **Cross-Platform:** Works consistently across different operating systems
+### CI only (Docker)
+
+In GitHub Actions, tests run **only inside Docker**:
+
+1. **Build**: `docker compose build`
+2. **Run**: `docker compose run --rm test-runner npm run test:sanity` (or `npm run test:nightly`)
+
+Same npm scripts as local; execution is in a container. No Docker is used when you run `npm test` locally.
 
 ## 🔄 Smart Retry Configuration
 
@@ -92,20 +92,20 @@ Our CI environment includes intelligent retry logic that automatically provides 
 
 ### **Retry Behavior**
 
-| **Environment**       | **Test Type**       | **Retries** | **Use Case**                      |
-| --------------------- | ------------------- | ----------- | --------------------------------- |
-| **Local Development** | All tests           | 0           | Immediate feedback                |
-| **CI Environment**    | General tests       | 0           | Fast failure detection            |
-| **CI Environment**    | `@sanity` tests     | 2           | Critical functionality protection |
-| **CI Environment**    | `@regression` tests | 2           | Stability assurance               |
+| **Environment**       | **Test Type**    | **Retries** | **Use Case**                      |
+| --------------------- | ---------------- | ----------- | --------------------------------- |
+| **Local Development** | All tests        | 0           | Immediate feedback                |
+| **CI Environment**    | General tests    | 0           | Fast failure detection            |
+| **CI Environment**    | `@sanity` tests  | 2           | Critical functionality protection |
+| **CI Environment**    | `@nightly` tests | 2           | Stability assurance               |
 
 ### **Automatic Detection**
 
 The retry system automatically detects:
 
 - ✅ CI environment (`process.env.CI`)
-- ✅ Test categories via tags (`@sanity`, `@regression`)
-- ✅ Targeted test commands (`npm run test:sanity`, `npm run test:regression`)
+- ✅ Test categories via tags (`@sanity`, `@nightly`)
+- ✅ Targeted test commands (`npm run test:sanity`, `npm run test:nightly`)
 
 > 📋 **Details**: See [Retry Configuration Guide](docs/RETRY_CONFIGURATION.md) for complete implementation details.
 
