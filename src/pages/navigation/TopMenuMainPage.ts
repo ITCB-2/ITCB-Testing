@@ -1,25 +1,215 @@
 import {test} from '@netanelh2/playwright-framework'
 import type {Page} from '@playwright/test'
-import {ABOUT_US_PAGE_LOCATORS} from '../../locators/content-pages/About_Us'
-import {DECISION_MAKERS_SHARING_PAGE_LOCATORS} from '../../locators/content-pages/Decision_Makers_Sharing'
-import {EVENTS_SUMMARIES_PAGE_LOCATORS} from '../../locators/content-pages/Events_Summaries'
-import {HOW_TO_PREPARE_TO_ISTQB_PAGE_LOCATOR} from '../../locators/content-pages/How_To_Prepare_To_ISTQB'
-import {IMPORTANT_FACTS_PAGE_LOCATORS} from '../../locators/content-pages/Important_Facts'
-import {INTERNATIONAL_CONFERENCES_PAGE_LOCATORS} from '../../locators/content-pages/International_Conferences'
-import {ITCB_MAGAZINE_PAGE_LOCATORS} from '../../locators/content-pages/ITCB_Magazine'
-import {MEMBERS_OF_COMMUNITY_SHARING_PAGE_LOCATORS} from '../../locators/content-pages/Members_Of_Community_Sharing'
-import {OUR_CERTIFICATIONS_PAGE_LOCATOR} from '../../locators/content-pages/Our_Certification'
-import {OUR_PARTNERS_PAGE_LOCATORS} from '../../locators/content-pages/Our_Partners'
-import {PODCASTS_PAGE_LOCATORS} from '../../locators/content-pages/Podcasts'
-import {QUESTIONS_AND_ANSWERS_PAGE_LOCATORS} from '../../locators/content-pages/Questions_And_Answers'
-import {SYLLABUS_INFO_PAGE_LOCATORS} from '../../locators/content-pages/Syllabus_Info'
-import {TERMS_GLOSSARY_PAGE_LOCATORS} from '../../locators/content-pages/Terms_Glossary'
-import {TIPS_PAGE_LOCATORS} from '../../locators/content-pages/Tips'
-import {USEFUL_LINKS_LOCATORS} from '../../locators/content-pages/Useful_Links'
-import {TOP_MENU_MAIN_PAGE_LOCATORS} from '../../locators/navigation/Top_Main_Menu'
-import {MainPage} from '../../pages/main-content/MainPage'
+import {MainPage} from '../main-content/MainPage'
 
 export class TopMenuMainPage extends MainPage {
+	public static readonly menuLocators = {
+		whyISTQB: {
+			button: {
+				parent: '#navbarScroll',
+				role: 'button' as const,
+				name: 'למה ®ISTQB?',
+			},
+			decisionMakersSharingLink: {
+				parent: '#navbarScroll',
+				role: 'link' as const,
+				name: 'מקבלי החלטות משתפים',
+			},
+			membersOfCommunitySharingLink: {
+				parent: '#navbarScroll',
+				role: 'link' as const,
+				name: 'חברי הקהילה משתפים',
+			},
+			ourCertificationsLink: {
+				parent: '#navbarScroll',
+				role: 'link' as const,
+				name: 'ההסמכות שלנו',
+			},
+			howToPrepareToISTQBTestLink: {
+				parent: '#navbarScroll',
+				role: 'link' as const,
+				name: 'איך להתכונן למבחן ISTQB®',
+			},
+		},
+		ISTQBContent: {
+			button: {
+				parent: '#navbarScroll',
+				role: 'button' as const,
+				name: 'תכני ®ISTQB',
+			},
+			termsGlossaryLink: {
+				parent: '#navbarScroll',
+				role: 'link' as const,
+				name: 'מילון מונחים',
+			},
+			syllabusInfoLink: {
+				parent: '#navbarScroll',
+				role: 'link' as const,
+				name: 'כל מה שרציתם לדעת על סילבוס CTFL',
+			},
+		},
+		testingInIsrael: {
+			button: {
+				parent: '#navbarScroll',
+				role: 'button' as const,
+				name: 'בדיקות בישראל',
+			},
+			usefulLinksLink: {
+				parent: '#navbarScroll',
+				role: 'link' as const,
+				name: 'קישורים שימושיים',
+			},
+			ITCBMagazineLink: {
+				parent: '#navbarScroll',
+				role: 'link' as const,
+				name: 'מגזין "עולם הבדיקות"',
+			},
+			podcastsLink: {
+				parent: '#navbarScroll',
+				role: 'link' as const,
+				name: 'פודקאסטים',
+			},
+			eventsSummariesLink: {
+				parent: '#navbarScroll',
+				role: 'link' as const,
+				name: 'סיכומי אירועים',
+			},
+			tipsLink: {
+				parent: '#navbarScroll',
+				role: 'link' as const,
+				name: 'טיפים',
+			},
+		},
+		additionalInformation: {
+			button: {
+				parent: '#navbarScroll',
+				role: 'button' as const,
+				name: 'מידע נוסף',
+			},
+			importantFactsLink: {
+				parent: '#navbarScroll',
+				role: 'link' as const,
+				name: 'עובדות שחשוב שתדעו',
+			},
+			questionsAndAnswersLink: {
+				parent: '#navbarScroll',
+				role: 'link' as const,
+				name: 'שאלות ותשובות',
+			},
+			internationalConferencesLink: {
+				parent: '#navbarScroll',
+				role: 'link' as const,
+				name: 'כנסים בינלאומיים',
+			},
+		},
+		aboutITCB: {
+			button: {
+				parent: '#navbarScroll',
+				role: 'button' as const,
+				name: 'אודות ®ITCB',
+			},
+			boardOfDirectorsLink: {
+				parent: '#navbarScroll',
+				role: 'link' as const,
+				name: 'הוועד המנהל',
+			},
+			advisoryBoardLink: {
+				parent: '#navbarScroll',
+				role: 'link' as const,
+				name: 'הוועד המייעץ',
+			},
+			ourPartnersLink: {
+				parent: '#navbarScroll',
+				role: 'link' as const,
+				name: 'השותפים שלנו',
+			},
+		},
+	} as const
+
+	public static readonly aboutUsPageLocators = {
+		mainTitle: {role: 'heading' as const, name: 'אודות ®ITCB'},
+		boardOfDirectorsTitle: {role: 'heading' as const, name: 'הוועד המנהל'},
+		advisoryBoardSection: {
+			advisoryBoardTitle: {role: 'heading' as const, name: 'הוועד המייעץ'},
+			michalTalTitle: {role: 'heading' as const, name: 'מיכל טל'},
+		},
+	} as const
+
+	public static readonly decisionMakersSharingPageLocators = {
+		title: {role: 'heading' as const, name: 'מקבלי ההחלטות משתפים'},
+	} as const
+
+	public static readonly eventsSummariesPageLocators = {
+		title: {role: 'heading' as const, name: 'סיכומי אירועים'},
+	} as const
+
+	public static readonly howToPrepareToIstqbPageLocator = {
+		title: {role: 'heading' as const, name: 'איך להתכונן למבחן ISTQB'},
+	} as const
+
+	public static readonly importantFactsPageLocators = {
+		title: {role: 'heading' as const, name: 'עובדות שחשוב שתדעו'},
+	} as const
+
+	public static readonly internationalConferencesPageLocators = {
+		title: {role: 'heading' as const, name: 'כנסים בינלאומיים'},
+	} as const
+
+	public static readonly itcbMagazinePageLocators = {
+		viewAllMagazineIssuesLink: {
+			role: 'link' as const,
+			name: 'הצג את כל גליונות המגזין',
+		},
+	} as const
+
+	public static readonly membersOfCommunitySharingPageLocators = {
+		title: {role: 'heading' as const, name: 'חברי הקהילה משתפים'},
+	} as const
+
+	public static readonly ourCertificationsPageLocator = {
+		title: {role: 'heading' as const, name: 'ההסמכות שלנו, הקריירה שלך'},
+	} as const
+
+	public static readonly ourPartnersPageLocators = {
+		title: {role: 'heading' as const, name: 'מרכזי הדרכה מוסמכים'},
+	} as const
+
+	public static readonly podcastsPageLocators = {
+		officialPodcastLink: {
+			role: 'link' as const,
+			name: 'דף הפודקאסט הרישמי שלנו',
+		},
+	} as const
+
+	public static readonly questionsAndAnswersPageLocators = {
+		title: {role: 'heading' as const, name: 'שאלות ותשובות'},
+	} as const
+
+	public static readonly syllabusInfoPageLocators = {
+		title: {
+			role: 'heading' as const,
+			name: 'כל מה שרציתם לדעת על סילבוס CTFL 4.0',
+		},
+	} as const
+
+	public static readonly termsGlossaryPageLocators = {
+		ISTQBGlossaryAdvancedSearchTitle: {
+			role: 'heading' as const,
+			name: 'מילון המונחים של ISTQB - תכונות חיפוש מתקדמות',
+		},
+	} as const
+
+	public static readonly tipsPageLocators = {
+		title: {
+			role: 'heading' as const,
+			name: 'טיפים לבודקי תכנה - כאן תמצאו טיפים שנכתבו ע"י חברי קהילת הבדיקות בישראל בכדי לח',
+		},
+	} as const
+
+	public static readonly usefulLinksLocators = {
+		title: {role: 'heading' as const, name: 'קישורים שימושיים'},
+	} as const
+
 	constructor(page: Page) {
 		super(page)
 	}
@@ -27,8 +217,8 @@ export class TopMenuMainPage extends MainPage {
 	async navigateToDecisionMakersSharingPage(): Promise<void> {
 		await test.step('Navigate to Decision Makers Sharing Page', async () => {
 			const {button, decisionMakersSharingLink} =
-				TOP_MENU_MAIN_PAGE_LOCATORS.whyISTQB
-			const {title} = DECISION_MAKERS_SHARING_PAGE_LOCATORS
+				TopMenuMainPage.menuLocators.whyISTQB
+			const {title} = TopMenuMainPage.decisionMakersSharingPageLocators
 			await this.hoverOnElement(button)
 			await this.validateVisibility(decisionMakersSharingLink)
 			await this.clickOnElement(decisionMakersSharingLink)
@@ -39,8 +229,8 @@ export class TopMenuMainPage extends MainPage {
 	async navigateTOMembersOfCommunitySharingPage(): Promise<void> {
 		await test.step('Navigate to Members of Community Sharing Page', async () => {
 			const {button, membersOfCommunitySharingLink} =
-				TOP_MENU_MAIN_PAGE_LOCATORS.whyISTQB
-			const {title} = MEMBERS_OF_COMMUNITY_SHARING_PAGE_LOCATORS
+				TopMenuMainPage.menuLocators.whyISTQB
+			const {title} = TopMenuMainPage.membersOfCommunitySharingPageLocators
 			await this.hoverOnElement(button)
 			await this.clickOnElement(membersOfCommunitySharingLink)
 
@@ -51,8 +241,8 @@ export class TopMenuMainPage extends MainPage {
 	async navigateToOurCertificationsPage(): Promise<void> {
 		await test.step('Navigate to Our Certifications Page', async () => {
 			const {button, ourCertificationsLink} =
-				TOP_MENU_MAIN_PAGE_LOCATORS.whyISTQB
-			const {title} = OUR_CERTIFICATIONS_PAGE_LOCATOR
+				TopMenuMainPage.menuLocators.whyISTQB
+			const {title} = TopMenuMainPage.ourCertificationsPageLocator
 			await this.hoverOnElement(button)
 			await this.validateVisibility(ourCertificationsLink)
 			await this.clickOnElement(ourCertificationsLink)
@@ -63,8 +253,8 @@ export class TopMenuMainPage extends MainPage {
 	async navigateToHowToPrepareToISTQBTestPage(): Promise<void> {
 		await test.step('Navigate to How To Prepare To ISTQB Test Page', async () => {
 			const {button, howToPrepareToISTQBTestLink} =
-				TOP_MENU_MAIN_PAGE_LOCATORS.whyISTQB
-			const {title} = HOW_TO_PREPARE_TO_ISTQB_PAGE_LOCATOR
+				TopMenuMainPage.menuLocators.whyISTQB
+			const {title} = TopMenuMainPage.howToPrepareToIstqbPageLocator
 			await this.hoverOnElement(button)
 			await this.validateVisibility(howToPrepareToISTQBTestLink)
 			await this.clickOnElement(howToPrepareToISTQBTestLink)
@@ -75,8 +265,9 @@ export class TopMenuMainPage extends MainPage {
 	async navigateToTermsGlossaryPage(): Promise<void> {
 		await test.step('Navigate to Terms Glossary page', async () => {
 			const {button, termsGlossaryLink} =
-				TOP_MENU_MAIN_PAGE_LOCATORS.ISTQBContent
-			const {ISTQBGlossaryAdvancedSearchTitle} = TERMS_GLOSSARY_PAGE_LOCATORS
+				TopMenuMainPage.menuLocators.ISTQBContent
+			const {ISTQBGlossaryAdvancedSearchTitle} =
+				TopMenuMainPage.termsGlossaryPageLocators
 			await this.hoverOnElement(button)
 			await this.validateVisibility(termsGlossaryLink)
 			await this.clickOnElement(termsGlossaryLink)
@@ -89,8 +280,8 @@ export class TopMenuMainPage extends MainPage {
 	async navigateToSyllabusInfoPage(): Promise<void> {
 		await test.step('Navigate to Syllabus Info page', async () => {
 			const {button, syllabusInfoLink} =
-				TOP_MENU_MAIN_PAGE_LOCATORS.ISTQBContent
-			const {title} = SYLLABUS_INFO_PAGE_LOCATORS
+				TopMenuMainPage.menuLocators.ISTQBContent
+			const {title} = TopMenuMainPage.syllabusInfoPageLocators
 			await this.hoverOnElement(button)
 			await this.validateVisibility(syllabusInfoLink)
 			await this.clickOnElement(syllabusInfoLink)
@@ -102,8 +293,8 @@ export class TopMenuMainPage extends MainPage {
 	async navigateToUsefulLinksPage(): Promise<void> {
 		await test.step('Navigate to Useful Links page', async () => {
 			const {button, usefulLinksLink} =
-				TOP_MENU_MAIN_PAGE_LOCATORS.testingInIsrael
-			const {title} = USEFUL_LINKS_LOCATORS
+				TopMenuMainPage.menuLocators.testingInIsrael
+			const {title} = TopMenuMainPage.usefulLinksLocators
 			await this.hoverOnElement(button)
 			await this.validateVisibility(usefulLinksLink)
 			await this.clickOnElement(usefulLinksLink)
@@ -114,8 +305,9 @@ export class TopMenuMainPage extends MainPage {
 	async navigateToITCBMagazinePage(): Promise<void> {
 		await test.step('Navigate to ITCB Magazine page', async () => {
 			const {button, ITCBMagazineLink} =
-				TOP_MENU_MAIN_PAGE_LOCATORS.testingInIsrael
-			const {viewAllMagazineIssuesLink} = ITCB_MAGAZINE_PAGE_LOCATORS
+				TopMenuMainPage.menuLocators.testingInIsrael
+			const {viewAllMagazineIssuesLink} =
+				TopMenuMainPage.itcbMagazinePageLocators
 			await this.hoverOnElement(button)
 			await this.validateVisibility(ITCBMagazineLink)
 			await this.clickOnElement(ITCBMagazineLink)
@@ -124,8 +316,9 @@ export class TopMenuMainPage extends MainPage {
 	}
 	async navigateToPodcastsPage(): Promise<void> {
 		await test.step('Navigate to Podcasts page', async () => {
-			const {button, podcastsLink} = TOP_MENU_MAIN_PAGE_LOCATORS.testingInIsrael
-			const {officialPodcastLink} = PODCASTS_PAGE_LOCATORS
+			const {button, podcastsLink} =
+				TopMenuMainPage.menuLocators.testingInIsrael
+			const {officialPodcastLink} = TopMenuMainPage.podcastsPageLocators
 			await this.hoverOnElement(button)
 			await this.validateVisibility(podcastsLink)
 			await this.clickOnElement(podcastsLink)
@@ -137,8 +330,8 @@ export class TopMenuMainPage extends MainPage {
 	async navigateToEventsSummariesPage(): Promise<void> {
 		await test.step('navigate to Events Summaries page', async () => {
 			const {button, eventsSummariesLink} =
-				TOP_MENU_MAIN_PAGE_LOCATORS.testingInIsrael
-			const {title} = EVENTS_SUMMARIES_PAGE_LOCATORS
+				TopMenuMainPage.menuLocators.testingInIsrael
+			const {title} = TopMenuMainPage.eventsSummariesPageLocators
 			await this.hoverOnElement(button)
 			await this.validateVisibility(eventsSummariesLink)
 			await this.clickOnElement(eventsSummariesLink)
@@ -147,8 +340,8 @@ export class TopMenuMainPage extends MainPage {
 	}
 	async navigateToTipsPage(): Promise<void> {
 		await test.step('Navigate to Tips page', async () => {
-			const {button, tipsLink} = TOP_MENU_MAIN_PAGE_LOCATORS.testingInIsrael
-			const {title} = TIPS_PAGE_LOCATORS
+			const {button, tipsLink} = TopMenuMainPage.menuLocators.testingInIsrael
+			const {title} = TopMenuMainPage.tipsPageLocators
 			await this.hoverOnElement(button)
 			await this.validateVisibility(tipsLink)
 			await this.clickOnElement(tipsLink)
@@ -163,8 +356,8 @@ export class TopMenuMainPage extends MainPage {
 	async navigateToImportantFactsPage(): Promise<void> {
 		await test.step('navigate to Important Facts page', async () => {
 			const {button, importantFactsLink} =
-				TOP_MENU_MAIN_PAGE_LOCATORS.additionalInformation
-			const {title} = IMPORTANT_FACTS_PAGE_LOCATORS
+				TopMenuMainPage.menuLocators.additionalInformation
+			const {title} = TopMenuMainPage.importantFactsPageLocators
 			await this.hoverOnElement(button)
 			await this.validateVisibility(importantFactsLink)
 			await this.clickOnElement(importantFactsLink)
@@ -174,8 +367,8 @@ export class TopMenuMainPage extends MainPage {
 	async navigateToQuestionsAndAnswersPage(): Promise<void> {
 		await test.step('Navigate to Questions and Answers page', async () => {
 			const {button, questionsAndAnswersLink} =
-				TOP_MENU_MAIN_PAGE_LOCATORS.additionalInformation
-			const {title} = QUESTIONS_AND_ANSWERS_PAGE_LOCATORS
+				TopMenuMainPage.menuLocators.additionalInformation
+			const {title} = TopMenuMainPage.questionsAndAnswersPageLocators
 			await this.hoverOnElement(button)
 			await this.validateVisibility(questionsAndAnswersLink)
 			await this.clickOnElement(questionsAndAnswersLink)
@@ -185,8 +378,8 @@ export class TopMenuMainPage extends MainPage {
 	async navigateToInternationalConferencesPage(): Promise<void> {
 		await test.step('Navigate to International Conferences page', async () => {
 			const {button, internationalConferencesLink} =
-				TOP_MENU_MAIN_PAGE_LOCATORS.additionalInformation
-			const {title} = INTERNATIONAL_CONFERENCES_PAGE_LOCATORS
+				TopMenuMainPage.menuLocators.additionalInformation
+			const {title} = TopMenuMainPage.internationalConferencesPageLocators
 			await this.hoverOnElement(button)
 			await this.validateVisibility(internationalConferencesLink)
 			await this.clickOnElement(internationalConferencesLink)
@@ -197,8 +390,8 @@ export class TopMenuMainPage extends MainPage {
 	async navigateToBoardOfDirectorsPage(): Promise<void> {
 		await test.step('Navigate to Board of Directors page', async () => {
 			const {button, boardOfDirectorsLink} =
-				TOP_MENU_MAIN_PAGE_LOCATORS.aboutITCB
-			const {boardOfDirectorsTitle} = ABOUT_US_PAGE_LOCATORS
+				TopMenuMainPage.menuLocators.aboutITCB
+			const {boardOfDirectorsTitle} = TopMenuMainPage.aboutUsPageLocators
 			await this.hoverOnElement(button)
 			await this.clickOnElement(boardOfDirectorsLink)
 			await this.validateText(boardOfDirectorsTitle, 'הוועד המנהל')
@@ -206,8 +399,9 @@ export class TopMenuMainPage extends MainPage {
 	}
 	async navigateToAdvisoryBoardPage(): Promise<void> {
 		await test.step('Navigate to Advisory Board page', async () => {
-			const {button, advisoryBoardLink} = TOP_MENU_MAIN_PAGE_LOCATORS.aboutITCB
-			const {advisoryBoardTitle} = ABOUT_US_PAGE_LOCATORS.advisoryBoardSection
+			const {button, advisoryBoardLink} = TopMenuMainPage.menuLocators.aboutITCB
+			const {advisoryBoardTitle} =
+				TopMenuMainPage.aboutUsPageLocators.advisoryBoardSection
 			await this.hoverOnElement(button)
 			await this.validateVisibility(advisoryBoardLink)
 
@@ -223,8 +417,8 @@ export class TopMenuMainPage extends MainPage {
 	}
 	async navigateToOurPartnersPage(): Promise<void> {
 		await test.step('Navigate to Our Partners page', async () => {
-			const {button, ourPartnersLink} = TOP_MENU_MAIN_PAGE_LOCATORS.aboutITCB
-			const {title} = OUR_PARTNERS_PAGE_LOCATORS
+			const {button, ourPartnersLink} = TopMenuMainPage.menuLocators.aboutITCB
+			const {title} = TopMenuMainPage.ourPartnersPageLocators
 			await this.hoverOnElement(button)
 			await this.validateVisibility(ourPartnersLink)
 			await this.clickOnElement(ourPartnersLink)
