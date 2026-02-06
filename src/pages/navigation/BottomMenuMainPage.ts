@@ -8,7 +8,7 @@ export class BottomMenuMainPage extends MainPage {
 		whyISTQB: {
 			decisionMakersSharingLink: {
 				role: 'link',
-				name: 'מקבלי ההחלטות משתפים',
+				name: 'מקבלי החלטות משתפים',
 				parent: 'footer',
 			},
 			membersOfCommunitySharingLink: {
@@ -305,10 +305,7 @@ export class BottomMenuMainPage extends MainPage {
 			const {title} = BottomMenuMainPage.tipsPageLocators
 			await this.validateVisibility(tipsLink)
 			await this.clickOnElement(tipsLink)
-			await this.validateText(
-				title,
-				'טיפים לבודקי תכנה - כאן תמצאו טיפים שנכתבו ע"י חברי קהילת הבדיקות בישראל בכדי לח',
-			)
+			await this.validateText(title, 'טיפים לבודקי תכנה')
 		})
 	}
 

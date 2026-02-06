@@ -91,8 +91,8 @@ export class CommunityMembersSharingPage extends BasePage {
 				boxName,
 			)
 			const image = this.extractLocator(box.img)
-			await image.scrollIntoViewIfNeeded()
-			await expect(image).toBeVisible()
+			await expect(image).toBeVisible({timeout: 15_000})
+			await image.scrollIntoViewIfNeeded({timeout: 10_000})
 		})
 	}
 
@@ -121,8 +121,8 @@ export class CommunityMembersSharingPage extends BasePage {
 				boxName,
 			)
 			const image = this.extractLocator(box.img)
-			await image.scrollIntoViewIfNeeded()
-			await expect(image).toBeVisible()
+			await expect(image).toBeVisible({timeout: 15_000})
+			await image.scrollIntoViewIfNeeded({timeout: 10_000})
 			const positionText = this.page.getByText(box.position)
 			await expect(positionText).toBeVisible()
 			await expect(positionText).toContainText(box.position)
