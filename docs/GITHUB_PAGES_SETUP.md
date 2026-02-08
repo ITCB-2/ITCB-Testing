@@ -9,7 +9,7 @@ This repository is configured to automatically deploy the latest Playwright HTML
 1. **Direct Report Access**: The GitHub Pages URL opens directly to the Playwright HTML report
 2. **Automated Deployment**: Reports are automatically deployed after:
    - Sanity Tests (every 2 hours)
-   - Nightly Regression Tests (daily at 2 AM UTC)
+   - Nightly nightly Tests (daily at 2 AM UTC)
 3. **Latest Report**: Always shows the most recent test execution results
 4. **Clean Failure**: If no reports are available, the deployment simply logs errors without creating fallback HTML pages
 
@@ -26,7 +26,7 @@ This repository is configured to automatically deploy the latest Playwright HTML
 1. **Direct Report Access**: The GitHub Pages URL opens directly to the Playwright HTML report
 2. **Automated Deployment**: Reports are automatically deployed after:
    - Sanity Tests (every 2 hours)
-   - Nightly Regression Tests (daily at 2 AM UTC)
+   - Nightly nightly Tests (daily at 2 AM UTC)
 3. **Latest Report**: Always shows the most recent test execution results
 
 4. **Report Access**:
@@ -40,11 +40,13 @@ This repository is configured to automatically deploy the latest Playwright HTML
 To enable this functionality, the repository administrator needs to:
 
 1. **Enable GitHub Pages**:
+
    - Go to repository Settings → Pages
    - Set Source to "GitHub Actions"
    - Ensure the repository has GitHub Pages enabled
 
 2. **Required Permissions**:
+
    - The workflows have the necessary permissions configured
    - `GITHUB_TOKEN` automatically has the required access
 
@@ -56,6 +58,7 @@ To enable this functionality, the repository administrator needs to:
 ### 🔧 Workflow Files Created/Modified
 
 1. **Modified File**: `.github/workflows/deploy-reports.yml`
+
    - Handles automatic deployment of Playwright HTML report directly to GitHub Pages root
    - Triggers after test workflows complete
    - Deploys the latest report without any custom landing page or fallback HTML pages
@@ -63,7 +66,7 @@ To enable this functionality, the repository administrator needs to:
 
 2. **Modified Files**:
    - `sanity.yml` - Enhanced with report deployment links
-   - `nightly-regression.yml` - Enhanced with report deployment links
+   - `nightly-nightly.yml` - Enhanced with report deployment links
    - `code-quality.yml` - Maintained as development-focused quality gate
 
 ### 📊 Report Features
@@ -82,7 +85,7 @@ You can also manually trigger report deployment:
 
 1. Go to Actions → "Deploy Playwright HTML Report to GitHub Pages"
 2. Click "Run workflow"
-3. Select which test workflow's reports to deploy (sanity or regression)
+3. Select which test workflow's reports to deploy (sanity or nightly)
 4. Click "Run workflow"
 
 ### 📱 Accessing Reports
@@ -118,7 +121,7 @@ When reports cannot be deployed:
 ├── .github/workflows/
 │   ├── core-deploy-reports.yml      # Modified: Direct Playwright report deployment
 │   ├── tests-sanity.yml             # Modified: Added report deployment
-│   ├── tests-regression.yml # Modified: Added report deployment
+│   ├── tests-nightly.yml # Modified: Added report deployment
 │   └── core-quality.yml       # Modified: Added test execution
 └── docs/
     └── GITHUB_PAGES_SETUP.md  # This file

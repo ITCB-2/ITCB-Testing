@@ -2,12 +2,14 @@
 
 ## Overview
 
-The Playwright configuration has been updated to provide retry attempts specifically for regression and sanity tests when they fail in CI environments. This feature is designed to improve CI reliability by automatically retrying critical test suites that may fail due to transient issues.
+The Playwright configuration has been updated to provide retry attempts specifically for nightly and sanity tests when they fail in CI environments. This feature is designed to improve CI reliability by automatically retrying critical test suites that may fail due to transient issues.
 
 **Primary CI Commands with Retries:**
 
 - `npm run test:sanity` - 2 retries
-- `npm run test:regression` - 2 retries
+- `npm run test:nightly` - 2 retries
+
+In CI, these commands run **inside Docker** (`docker compose run --rm test-runner npm run test:sanity` or `npm run test:nightly`). Locally, they run without Docker.
 
 ## Retry Behavior
 
@@ -20,7 +22,7 @@ The Playwright configuration has been updated to provide retry attempts specific
 
 - **General tests**: 0 retries
 - **Sanity tests** (`@sanity`): 2 retries
-- **Regression tests** (`@regression`): 2 retries
+- **nightly tests** (`@nightly`): 2 retries
 
 ## How It Works
 
@@ -37,11 +39,11 @@ The following npm scripts will have retries in CI:
 # Sanity tests with 2 retries in CI
 npm run test:sanity
 
-# Regression tests with 2 retries in CI
-npm run test:regression
+# nightly tests with 2 retries in CI
+npm run test:nightly
 ```
 
-**Note**: Chrome-specific variants (`test:sanity:chrome`, `test:regression:chrome`) will also get retries since they use the same `TEST_TAGS`, but these are typically used for local debugging rather than CI.
+**Note**: Chrome-specific variants (`test:sanity:chrome`, `test:nightly:chrome`) will also get retries since they use the same `TEST_TAGS`, but these are typically used for local debugging rather than CI.
 
 ### Example Scenarios
 
@@ -53,10 +55,10 @@ npm run test:regression
 
    → Tests will retry up to 2 times on failure
 
-2. **Running regression tests in CI**:
+2. **Running nightly tests in CI**:
 
    ```bash
-   CI=true TEST_TAGS='@regression' playwright test
+   CI=true TEST_TAGS='@nightly' playwright test
    ```
 
    → Tests will retry up to 2 times on failure
@@ -69,7 +71,7 @@ npm run test:regression
 
 ## Benefits
 
-- **Targeted reliability**: Only critical test suites (sanity/regression) get retries
+- **Targeted reliability**: Only critical test suites (sanity/nightly) get retries
 - **Improved stability**: Reduces false failures due to flaky tests or network issues
 - **CI optimization**: Balances reliability with execution time
 - **Zero impact on local development**: No retries when developing locally

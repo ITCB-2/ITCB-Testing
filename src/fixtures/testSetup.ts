@@ -1,4 +1,4 @@
-import {test as baseTest} from '@netanelh2/playwright-framework'
+import {test as baseTest} from '@playwright/test'
 import {CommunityMembersSharingPage} from '../pages/content-pages/CommunityMembersSharingPage'
 import {DecisionMakerPage} from '../pages/content-pages/DesicionMakerPage'
 import {ImportantFactsPage} from '../pages/content-pages/ImportantFactsPage'

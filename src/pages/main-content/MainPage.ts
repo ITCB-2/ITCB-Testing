@@ -1,15 +1,12 @@
-import {
-	BasePage,
-	findItemByProperty,
-	test,
-} from '@netanelh2/playwright-framework'
-import {expect, type Page} from '@playwright/test'
+import {expect, type Page, test} from '@playwright/test'
 import {BASE_URL} from '../../data/urls'
 import type {OurCertificationBoxName} from '../../types/boxNameTypes'
 import {ImportantFactsPage} from '../content-pages/ImportantFactsPage'
 import {OurCertificationPage} from '../content-pages/OurCertificationPage'
 
-export class MainPage extends BasePage {
+export class MainPage {
+	protected page: Page
+
 	public static readonly ITCBLogo = {
 		role: 'img',
 		name: 'Logo',
@@ -57,72 +54,108 @@ export class MainPage extends BasePage {
 		'a[href*="recommendations"][href*="type=0"]:not(footer a):not(nav a)' as const
 
 	constructor(page: Page) {
-		super(page)
+		this.page = page
 	}
 
 	async openMainPage(): Promise<void> {
 		await test.step('Open Main Page', async () => {
 			await this.page.goto(BASE_URL)
 			await this.pressOkToCookies()
-			await this.validateVisibility(MainPage.importantFactsTitle)
+			await expect(
+				this.page.getByRole(MainPage.importantFactsTitle.role, {
+					name: MainPage.importantFactsTitle.name,
+				}),
+			).toBeVisible()
 		})
 	}
 
 	async pressOkToCookies(): Promise<void> {
 		await test.step('Accept Cookies', async () => {
-			await this.clickOnElement(MainPage.acceptCookiesButton)
+			await this.page
+				.getByRole(MainPage.acceptCookiesButton.role, {
+					name: MainPage.acceptCookiesButton.name,
+				})
+				.click()
 			await expect(
-				this.extractLocator(MainPage.acceptCookiesButton),
+				this.page.getByRole(MainPage.acceptCookiesButton.role, {
+					name: MainPage.acceptCookiesButton.name,
+				}),
 			).not.toBeVisible()
 		})
 	}
 
 	async validateContactOnMainPage(): Promise<void> {
 		await test.step('Validate Contact on Main Page', async () => {
-			await this.validateVisibility(MainPage.allFactsLink)
-			await this.validateVisibility(MainPage.ITCBLogo)
-			await this.validateText(MainPage.ourCertificationsTitle, 'ההסמכות שלנו')
-			await this.validateVisibility(MainPage.allCertificationsLink)
-			await this.validateText(
-				MainPage.decisionMakersSharingTitle,
-				'מקבלי ההחלטות משתפים',
-			)
+			await expect(
+				this.page.getByRole(MainPage.allFactsLink.role, {
+					name: MainPage.allFactsLink.name,
+				}),
+			).toBeVisible()
+			await expect(
+				this.page.getByRole(MainPage.ITCBLogo.role, {
+					name: MainPage.ITCBLogo.name,
+				}),
+			).toBeVisible()
+			await expect(
+				this.page.getByRole(MainPage.ourCertificationsTitle.role, {
+					name: MainPage.ourCertificationsTitle.name,
+				}),
+			).toContainText('ההסמכות שלנו')
+			await expect(
+				this.page.getByRole(MainPage.allCertificationsLink.role, {
+					name: MainPage.allCertificationsLink.name,
+				}),
+			).toBeVisible()
+			await expect(
+				this.page.getByRole(MainPage.decisionMakersSharingTitle.role, {
+					name: MainPage.decisionMakersSharingTitle.name,
+				}),
+			).toContainText('מקבלי ההחלטות משתפים')
 		})
 	}
 
 	async clickOnAllFactsButton(): Promise<void> {
 		await test.step('Click on All Facts Button and Validate Facts Page Content', async () => {
-			await this.clickOnElement(MainPage.allFactsLink)
-			await this.validateText(ImportantFactsPage.title, 'עובדות שחשוב שתדעו')
+			await this.page
+				.getByRole(MainPage.allFactsLink.role, {
+					name: MainPage.allFactsLink.name,
+				})
+				.click()
+			await expect(
+				this.page.getByRole(ImportantFactsPage.title.role, {
+					name: ImportantFactsPage.title.name,
+				}),
+			).toContainText('עובדות שחשוב שתדעו')
 		})
 	}
 
 	async clickOnViewAllCertificationsButton(): Promise<void> {
 		await test.step('Click on View All Certifications Button', async () => {
-			await this.clickOnElement(MainPage.allCertificationsLink)
+			await this.page
+				.getByRole(MainPage.allCertificationsLink.role, {
+					name: MainPage.allCertificationsLink.name,
+				})
+				.click()
 		})
 	}
 
 	async clickOnReadMoreButton(boxName: OurCertificationBoxName): Promise<void> {
 		await test.step(`Click on ${boxName} Read More Button `, async () => {
-			const box = findItemByProperty(
-				OurCertificationPage.boxes,
-				'name',
-				boxName,
-			)
-			await this.clickOnElement(box.readMoreButton)
+			const box = OurCertificationPage.boxes.find((b) => b.name === boxName)
+			if (!box) throw new Error(`Box not found: ${boxName}`)
+			await this.page.locator(box.readMoreButton).click()
 		})
 	}
 
 	async clickOnDecisionMakersSharingButton(): Promise<void> {
 		await test.step('Click on Decision Makers Sharing Button', async () => {
-			await this.clickOnElement(MainPage.decisionMakersSharingLink)
+			await this.page.locator(MainPage.decisionMakersSharingLink).click()
 		})
 	}
 
 	async clickOnCommunityMembersSharingButton(): Promise<void> {
 		await test.step('Click on Community Members Sharing Button', async () => {
-			await this.clickOnElement(MainPage.communityMembersSharingLink)
+			await this.page.locator(MainPage.communityMembersSharingLink).click()
 		})
 	}
 }

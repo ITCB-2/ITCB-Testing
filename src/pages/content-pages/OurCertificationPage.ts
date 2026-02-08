@@ -1,12 +1,9 @@
-import {
-	BasePage,
-	findItemByProperty,
-	test,
-} from '@netanelh2/playwright-framework'
-import type {Page} from '@playwright/test'
+import {expect, type Page, test} from '@playwright/test'
 import type {OurCertificationBoxName} from '../../types/boxNameTypes'
 
-export class OurCertificationPage extends BasePage {
+export class OurCertificationPage {
+	protected page: Page
+
 	public static readonly title = {
 		role: 'heading',
 		name: 'ההסמכות שלנו, הקריירה שלך',
@@ -90,20 +87,23 @@ export class OurCertificationPage extends BasePage {
 	] as const
 
 	constructor(page: Page) {
-		super(page)
+		this.page = page
 	}
 
 	async validateBoxTitleAndBoxImage(
 		boxName: OurCertificationBoxName,
 	): Promise<void> {
 		await test.step(`Validate Box Title and Image of ${boxName}`, async () => {
-			const box = findItemByProperty(
-				OurCertificationPage.boxes,
-				'name',
-				boxName,
+			const box = OurCertificationPage.boxes.find((b) => b.name === boxName)
+			if (!box) throw new Error(`Box not found: ${boxName}`)
+			await expect(this.page.locator(box.boxTitleLocator)).toContainText(
+				box.titleText,
 			)
-			await this.validateText(box.boxTitleLocator, box.titleText)
-			await this.validateVisibility(box.boxImageLocator)
+			await expect(
+				this.page.getByRole(box.boxImageLocator.role, {
+					name: box.boxImageLocator.name,
+				}),
+			).toBeVisible()
 		})
 	}
 
@@ -111,12 +111,15 @@ export class OurCertificationPage extends BasePage {
 		boxName: OurCertificationBoxName,
 	): Promise<void> {
 		await test.step(`Validate ${boxName} Read More Section`, async () => {
-			const box = findItemByProperty(
-				OurCertificationPage.boxes,
-				'name',
-				boxName,
-			)
-			await this.validateText(box.subBoxTitle, box.subBoxText)
+			const box = OurCertificationPage.boxes.find((b) => b.name === boxName)
+			if (!box) throw new Error(`Box not found: ${boxName}`)
+			const subBoxTitle =
+				typeof box.subBoxTitle === 'string'
+					? this.page.locator(box.subBoxTitle)
+					: this.page.getByRole(box.subBoxTitle.role, {
+							name: box.subBoxTitle.name,
+						})
+			await expect(subBoxTitle).toContainText(box.subBoxText)
 		})
 	}
 }

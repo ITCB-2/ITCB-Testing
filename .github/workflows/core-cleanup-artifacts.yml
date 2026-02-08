@@ -97,7 +97,7 @@ jobs:
                 // Extract workflow type from artifact name
                 let workflowType = 'other';
                 if (artifact.name.includes('sanity')) workflowType = 'sanity';
-                else if (artifact.name.includes('regression')) workflowType = 'regression';
+                else if (artifact.name.includes('nightly')) workflowType = 'nightly';
                 else if (artifact.name.includes('quality') || artifact.name.includes('test-results')) workflowType = 'quality';
                 
                 if (!workflowGroups[workflowType]) {
@@ -276,7 +276,7 @@ jobs:
               allArtifacts.forEach(artifact => {
                 let workflowType = 'other';
                 if (artifact.name.includes('sanity')) workflowType = 'sanity';
-                else if (artifact.name.includes('regression')) workflowType = 'regression';
+                else if (artifact.name.includes('nightly')) workflowType = 'nightly';
                 else if (artifact.name.includes('quality') || artifact.name.includes('test-results')) workflowType = 'quality';
                 
                 if (!workflowGroups[workflowType]) {
@@ -316,14 +316,14 @@ jobs:
 
               // Check for concerning patterns
               const sanityCount = workflowGroups.sanity?.count || 0;
-              const regressionCount = workflowGroups.regression?.count || 0;
+              const nightlyCount = workflowGroups.nightly?.count || 0;
               
               if (sanityCount > 20) {
                 console.log(`   High sanity artifact count (${sanityCount}). Consider reducing retention.`);
               }
               
-              if (regressionCount > 10) {
-                console.log(`   High regression artifact count (${regressionCount}). Consider reducing retention.`);
+              if (nightlyCount > 10) {
+                console.log(`   High nightly artifact count (${nightlyCount}). Consider reducing retention.`);
               }
 
               console.log(`\nNext scheduled cleanup: Tomorrow at 01:00 UTC`);

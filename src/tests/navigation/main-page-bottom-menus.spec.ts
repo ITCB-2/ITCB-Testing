@@ -1,6 +1,6 @@
 import {test} from '../../fixtures/testSetup'
 
-test.describe('Main Page - Why ISTQB Bottom Menu Tests @regression', () => {
+test.describe('Main Page - Why ISTQB Bottom Menu Tests @nightly', () => {
 	test.beforeEach(async ({mainPage}) => {
 		await mainPage.openMainPage()
 	})
@@ -25,7 +25,7 @@ test.describe('Main Page - Why ISTQB Bottom Menu Tests @regression', () => {
 		await bottomMenuMainPage.navigateToHowToPrepareToISTQBTestPageBottomMenu()
 	})
 })
-test.describe('Main page - ISTQB Content Bottom Menu Tests @regression', () => {
+test.describe('Main page - ISTQB Content Bottom Menu Tests @nightly', () => {
 	test.beforeEach(async ({mainPage}) => {
 		await mainPage.openMainPage()
 	})
@@ -40,7 +40,7 @@ test.describe('Main page - ISTQB Content Bottom Menu Tests @regression', () => {
 		await bottomMenuMainPage.navigateToSyllabusInfoPageBottomMenu()
 	})
 })
-test.describe('Main Page - Testing In Israel Bottom Menu Tests @regression', () => {
+test.describe('Main Page - Testing In Israel Bottom Menu Tests @nightly', () => {
 	test.beforeEach(async ({mainPage}) => {
 		await mainPage.openMainPage()
 	})
@@ -70,7 +70,7 @@ test.describe('Main Page - Testing In Israel Bottom Menu Tests @regression', () 
 		await bottomMenuMainPage.navigateToTipsPageBottomMenu()
 	})
 })
-test.describe('Main Page - additional Information Bottom Menu Tests @regression', () => {
+test.describe('Main Page - additional Information Bottom Menu Tests @nightly', () => {
 	test.beforeEach(async ({mainPage}) => {
 		await mainPage.openMainPage()
 	})

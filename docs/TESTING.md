@@ -8,10 +8,10 @@ All tests use Playwright's tagging system to enable efficient execution based on
 
 ### **Test Tags Overview**
 
-| **Tag**         | **Purpose**                          | **Execution Time** | **CI Schedule**   | **Coverage**       |
-| --------------- | ------------------------------------ | ------------------ | ----------------- | ------------------ |
-| **@sanity**     | Critical functionality validation    | ~5-10 minutes      | Every 2 hours     | Core features only |
-| **@regression** | Comprehensive application validation | ~30-45 minutes     | Daily at 2 AM UTC | Full feature set   |
+| **Tag**      | **Purpose**                          | **Execution Time** | **CI Schedule**   | **Coverage**       |
+| ------------ | ------------------------------------ | ------------------ | ----------------- | ------------------ |
+| **@sanity**  | Critical functionality validation    | ~5-10 minutes      | Every 2 hours     | Core features only |
+| **@nightly** | Comprehensive application validation | ~30-45 minutes     | Daily at 2 AM UTC | Full feature set   |
 
 ### **@sanity Tests** - Critical Path Validation
 
@@ -33,13 +33,13 @@ All tests use Playwright's tagging system to enable efficient execution based on
 
 ```typescript
 test('should validate main page content @sanity', async ({mainPage}) => {
-  await mainPage.navigateToPage()
-  await mainPage.validateMainContent()
-  await mainPage.validateSlidersDisplay()
+	await mainPage.navigateToPage()
+	await mainPage.validateMainContent()
+	await mainPage.validateSlidersDisplay()
 })
 ```
 
-### **@regression Tests** - Comprehensive Validation
+### **@nightly Tests** - Comprehensive Validation
 
 **Purpose**: Thorough application validation
 
@@ -48,7 +48,7 @@ test('should validate main page content @sanity', async ({mainPage}) => {
 - 📅 **CI Schedule**: Nightly at 2 AM UTC
 - 🔍 **Failure Impact**: Investigation during business hours
 
-**Current @regression Coverage**:
+**Current @nightly Coverage**:
 
 - **Navigation Tests**: Top menu & bottom menu navigation and content verification
 - **Content Pages**: Important Facts, Community Members Sharing, Our Certifications, Decision Makers Sharing
@@ -57,13 +57,18 @@ test('should validate main page content @sanity', async ({mainPage}) => {
 
 ## 🚀 Test Execution Commands
 
+### **Local vs CI**
+
+- **Local**: All commands below run **without Docker**—Playwright runs directly on your machine. Use `npm test`, `npm run test:sanity`, etc.
+- **CI**: Tests run **only inside Docker**. The pipeline runs `docker compose build` then `docker compose run --rm test-runner npm run test:sanity` (or `npm run test:nightly`). Same npm scripts; execution is in a container.
+
 ### **Core Testing Commands**
 
 ```bash
 # 🎯 Primary Test Execution
 npm test                       # Run all tests (full suite)
 npm run test:sanity           # Critical functionality only (⚡ fast)
-npm run test:regression       # Comprehensive validation
+npm run test:nightly       # Comprehensive validation
 npm run test:chrome           # Single browser (Chromium only)
 
 # 🔍 Development & Debugging
@@ -74,18 +79,18 @@ npm run report               # Open interactive HTML report
 
 # 📊 Targeted Test Execution
 npm run test:sanity:chrome    # Fast sanity tests in Chrome only
-npm run test:regression:chrome # Regression tests in Chrome only
+npm run test:nightly:chrome # nightly tests in Chrome only
 ```
 
 ### **Test Execution Strategy**
 
-| **Command**               | **Use Case**                      | **Duration** | **Best For**         |
-| ------------------------- | --------------------------------- | ------------ | -------------------- |
-| `npm test`                | Full validation before deployment | 30-45 min    | Release preparation  |
-| `npm run test:sanity`     | Quick feedback during development | 5-10 min     | Active development   |
-| `npm run test:regression` | Comprehensive feature validation  | 30-45 min    | Feature completion   |
-| `npm run test:debug`      | Investigation and troubleshooting | Variable     | Debugging failures   |
-| `npm run test:headed`     | Understanding test flow           | Variable     | Learning/development |
+| **Command**            | **Use Case**                      | **Duration** | **Best For**         |
+| ---------------------- | --------------------------------- | ------------ | -------------------- |
+| `npm test`             | Full validation before deployment | 30-45 min    | Release preparation  |
+| `npm run test:sanity`  | Quick feedback during development | 5-10 min     | Active development   |
+| `npm run test:nightly` | Comprehensive feature validation  | 30-45 min    | Feature completion   |
+| `npm run test:debug`   | Investigation and troubleshooting | Variable     | Debugging failures   |
+| `npm run test:headed`  | Understanding test flow           | Variable     | Learning/development |
 
 ### **Advanced Execution Options**
 
@@ -131,10 +136,10 @@ src/tests/
 │   ├── main-page-validate-content.spec.ts
 │   ├── main-page-buttons.spec.ts
 │   └── sliders-main-page.spec.ts
-├── 📂 navigation/            # @regression tests
+├── 📂 navigation/            # @nightly tests
 │   ├── main-page-top-menus.spec.ts
 │   └── main-page-bottom-menus.spec.ts
-└── 📂 content-pages/         # @regression tests
+└── 📂 content-pages/         # @nightly tests
     ├── important-facts.spec.ts
     ├── community-members-sharing.spec.ts
     ├── our-certifications.spec.ts
@@ -143,11 +148,11 @@ src/tests/
 
 ### **Test Coverage Matrix**
 
-| **Category**      | **Files**                 | **Tag**       | **Coverage**                     | **Execution Time** |
-| ----------------- | ------------------------- | ------------- | -------------------------------- | ------------------ |
-| **Main Content**  | `main-content/*.spec.ts`  | `@sanity`     | Homepage, sliders, core content  | ~3-5 min           |
-| **Navigation**    | `navigation/*.spec.ts`    | `@regression` | Top/bottom menus, routing        | ~10-15 min         |
-| **Content Pages** | `content-pages/*.spec.ts` | `@regression` | Certifications, community, facts | ~15-25 min         |
+| **Category**      | **Files**                 | **Tag**    | **Coverage**                     | **Execution Time** |
+| ----------------- | ------------------------- | ---------- | -------------------------------- | ------------------ |
+| **Main Content**  | `main-content/*.spec.ts`  | `@sanity`  | Homepage, sliders, core content  | ~3-5 min           |
+| **Navigation**    | `navigation/*.spec.ts`    | `@nightly` | Top/bottom menus, routing        | ~10-15 min         |
+| **Content Pages** | `content-pages/*.spec.ts` | `@nightly` | Certifications, community, facts | ~15-25 min         |
 
 ### **Detailed Test Breakdown**
 
@@ -157,7 +162,7 @@ src/tests/
 - **main-page-buttons.spec.ts**: Essential button functionality
 - **sliders-main-page.spec.ts**: All 5 slider components validation
 
-#### **@regression Tests (Navigation)**
+#### **@nightly Tests (Navigation)**
 
 - **Top Menu Categories**:
   - Why ISTQB (Decision makers sharing, Community sharing, Certifications)
@@ -167,7 +172,7 @@ src/tests/
   - About ITCB (About us, Our partners, Contact us, Q&A)
 - **Bottom Menu**: Mirror navigation with footer-specific elements
 
-#### **@regression Tests (Content Pages)**
+#### **@nightly Tests (Content Pages)**
 
 - **Important Facts**: Content validation and navigation
 - **Community Members Sharing**: User testimonials and content
@@ -178,11 +183,11 @@ src/tests/
 
 ### **Automated Testing Schedule**
 
-| **Workflow**              | **Trigger**       | **Frequency**     | **Tests Executed**   | **Purpose**                       |
-| ------------------------- | ----------------- | ----------------- | -------------------- | --------------------------------- |
-| **🚨 Sanity Tests**       | Schedule + Manual | Every 2 hours     | `@sanity` only       | Critical functionality monitoring |
-| **🌙 Nightly Regression** | Schedule + Manual | Daily at 2 AM UTC | Full test suite      | Comprehensive validation          |
-| **⚡ Code Quality**       | Push/PR           | On every commit   | Code validation only | Quality gate enforcement          |
+| **Workflow**           | **Trigger**       | **Frequency**     | **Tests Executed**   | **Purpose**                       |
+| ---------------------- | ----------------- | ----------------- | -------------------- | --------------------------------- |
+| **🚨 Sanity Tests**    | Schedule + Manual | Every 2 hours     | `@sanity` only       | Critical functionality monitoring |
+| **🌙 Nightly nightly** | Schedule + Manual | Daily at 2 AM UTC | Full test suite      | Comprehensive validation          |
+| **⚡ Code Quality**    | Push/PR           | On every commit   | Code validation only | Quality gate enforcement          |
 
 ### **CI/CD Pipeline Features**
 
@@ -196,7 +201,7 @@ src/tests/
 
 - 🔄 **Cross-browser Testing**: Chrome, Firefox, Safari (parallel execution)
 - 📱 **Multiple Environments**: Support for staging, production, development
-- 🎯 **Selective Testing**: Tag-based filtering (`@sanity` vs `@regression`)
+- 🎯 **Selective Testing**: Tag-based filtering (`@sanity` vs `@nightly`)
 - 📸 **Rich Artifacts**: Screenshots, videos, HTML reports, trace files
 
 #### **⚡ Performance Features**
@@ -219,7 +224,7 @@ workflow_dispatch:
       required: true
       default: 'sanity'
       type: choice
-      options: ['sanity', 'regression', 'all']
+      options: ['sanity', 'nightly', 'all']
     reason:
       description: 'Reason for manual execution'
       required: false
@@ -260,7 +265,7 @@ workflow_dispatch:
    - Core user journeys only
    - High-value, high-frequency functionality
 
-2. **@regression**: Comprehensive validation for feature completeness
+2. **@nightly**: Comprehensive validation for feature completeness
    - Can take longer execution time
    - Edge cases and error scenarios
    - Complete feature coverage
@@ -270,20 +275,20 @@ workflow_dispatch:
 ```typescript
 // 1. Classify appropriately
 test.describe('Feature Tests', () => {
-  test('should validate core functionality @sanity', async ({page}) => {
-    // Critical path only
-  })
+	test('should validate core functionality @sanity', async ({page}) => {
+		// Critical path only
+	})
 
-  test('should handle edge cases @regression', async ({page}) => {
-    // Comprehensive validation
-  })
+	test('should handle edge cases @nightly', async ({page}) => {
+		// Comprehensive validation
+	})
 })
 
 // 2. Use consistent patterns
 test('should perform user action @sanity', async ({somePage}) => {
-  await somePage.navigateToPage()
-  await somePage.performCriticalAction()
-  await somePage.validateExpectedOutcome()
+	await somePage.navigateToPage()
+	await somePage.performCriticalAction()
+	await somePage.validateExpectedOutcome()
 })
 ```
 
@@ -299,7 +304,7 @@ test('should perform user action @sanity', async ({somePage}) => {
 #### **Performance Guidelines**
 
 - ⚡ **Sanity tests**: Keep individual tests under 2-3 minutes
-- 🔍 **Regression tests**: Focus on thoroughness over speed
+- 🔍 **nightly tests**: Focus on thoroughness over speed
 - 🎯 **Targeted execution**: Use specific test files for focused testing
 - 📈 **Monitor trends**: Track execution times and optimize slow tests
 

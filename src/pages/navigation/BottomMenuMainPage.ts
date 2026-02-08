@@ -1,5 +1,4 @@
-import {test} from '@netanelh2/playwright-framework'
-import {expect, type Page} from '@playwright/test'
+import {expect, type Page, test} from '@playwright/test'
 import {URLS} from '../../data/urls'
 import {MainPage} from '../main-content/MainPage'
 
@@ -229,7 +228,9 @@ export class BottomMenuMainPage extends MainPage {
 			await this.validateVisibility(howToPrepareToISTQBTestLink)
 			await this.clickOnElement(howToPrepareToISTQBTestLink)
 			await this.page.waitForLoadState('domcontentloaded')
-			await this.validateText(title, 'איך להתכונן למבחן ISTQB')
+			await expect(
+				this.page.getByRole(title.role, {name: title.name}),
+			).toContainText('איך להתכונן למבחן ISTQB')
 		})
 	}
 
@@ -348,7 +349,10 @@ export class BottomMenuMainPage extends MainPage {
 			await this.validateVisibility(aboutUsLink)
 			await this.clickOnElement(aboutUsLink)
 			const pageContent = this.page.getByText('ITCB® - Israel Testing')
-			await this.validateURL(URLS.aboutUs)
+			const escaped = URLS.aboutUs
+				.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+				.replace(/\\\/\\\?/, '\\/?\\?')
+			await expect(this.page).toHaveURL(new RegExp(`^${escaped}$`))
 			await expect(pageContent).toContainText('ITCB® - Israel Testing')
 		})
 	}

@@ -1,12 +1,9 @@
-import {
-	BasePage,
-	findItemByProperty,
-	test,
-} from '@netanelh2/playwright-framework'
-import type {Page} from '@playwright/test'
+import {expect, type Page, test} from '@playwright/test'
 import type {FactName} from '../../types/boxNameTypes'
 
-export class ImportantFactsPage extends BasePage {
+export class ImportantFactsPage {
+	protected page: Page
+
 	public static readonly title = {
 		role: 'heading',
 		name: 'עובדות שחשוב שתדעו',
@@ -38,17 +35,14 @@ export class ImportantFactsPage extends BasePage {
 	] as const
 
 	constructor(page: Page) {
-		super(page)
+		this.page = page
 	}
 
 	async validateImportantFact(factName: FactName): Promise<void> {
 		await test.step(`Validate Important Fact ${factName}`, async () => {
-			const fact = findItemByProperty(
-				ImportantFactsPage.facts,
-				'name',
-				factName,
-			)
-			await this.validateText(fact.locator, fact.text)
+			const fact = ImportantFactsPage.facts.find((f) => f.name === factName)
+			if (!fact) throw new Error(`Fact not found: ${factName}`)
+			await expect(this.page.locator(fact.locator)).toContainText(fact.text)
 		})
 	}
 }

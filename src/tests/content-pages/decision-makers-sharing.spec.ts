@@ -1,7 +1,7 @@
 import {test} from '../../fixtures/testSetup'
 import {DecisionMakerPage} from '../../pages/content-pages/DesicionMakerPage'
 
-test.describe('Decision Makers Sharing Page Tests @regression', () => {
+test.describe('Decision Makers Sharing Page Tests @nightly', () => {
 	test.beforeEach(async ({mainPage}) => {
 		await mainPage.openMainPage()
 	})

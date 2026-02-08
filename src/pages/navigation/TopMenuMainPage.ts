@@ -226,6 +226,7 @@ export class TopMenuMainPage extends MainPage {
 			await this.validateText(title, 'מקבלי ההחלטות משתפים')
 		})
 	}
+
 	async navigateTOMembersOfCommunitySharingPage(): Promise<void> {
 		await test.step('Navigate to Members of Community Sharing Page', async () => {
 			const {button, membersOfCommunitySharingLink} =
@@ -277,6 +278,7 @@ export class TopMenuMainPage extends MainPage {
 			)
 		})
 	}
+
 	async navigateToSyllabusInfoPage(): Promise<void> {
 		await test.step('Navigate to Syllabus Info page', async () => {
 			const {button, syllabusInfoLink} =
@@ -286,7 +288,9 @@ export class TopMenuMainPage extends MainPage {
 			await this.validateVisibility(syllabusInfoLink)
 			await this.clickOnElement(syllabusInfoLink)
 			await this.page.waitForLoadState('domcontentloaded')
-			await this.validateText(title, 'כל מה שרציתם לדעת על סילבוס CTFL 4.0')
+			await expect(
+				this.page.getByRole(title.role, {name: title.name}),
+			).toContainText('כל מה שרציתם לדעת על סילבוס CTFL 4.0')
 		})
 	}
 
@@ -299,9 +303,12 @@ export class TopMenuMainPage extends MainPage {
 			await this.validateVisibility(usefulLinksLink)
 			await this.clickOnElement(usefulLinksLink)
 			await this.page.waitForLoadState('domcontentloaded')
-			await this.validateText(title, 'קישורים שימושיים')
+			await expect(
+				this.page.getByRole(title.role, {name: title.name}),
+			).toContainText('קישורים שימושיים')
 		})
 	}
+
 	async navigateToITCBMagazinePage(): Promise<void> {
 		await test.step('Navigate to ITCB Magazine page', async () => {
 			const {button, ITCBMagazineLink} =
@@ -314,6 +321,7 @@ export class TopMenuMainPage extends MainPage {
 			await this.validateVisibility(viewAllMagazineIssuesLink)
 		})
 	}
+
 	async navigateToPodcastsPage(): Promise<void> {
 		await test.step('Navigate to Podcasts page', async () => {
 			const {button, podcastsLink} =
@@ -323,10 +331,19 @@ export class TopMenuMainPage extends MainPage {
 			await this.validateVisibility(podcastsLink)
 			await this.clickOnElement(podcastsLink)
 			await this.page.waitForLoadState('domcontentloaded')
-			await this.validateVisibility(officialPodcastLink)
-			await this.validateText(officialPodcastLink, 'דף הפודקאסט הרישמי שלנו')
+			await expect(
+				this.page.getByRole(officialPodcastLink.role, {
+					name: officialPodcastLink.name,
+				}),
+			).toBeVisible()
+			await expect(
+				this.page.getByRole(officialPodcastLink.role, {
+					name: officialPodcastLink.name,
+				}),
+			).toContainText('דף הפודקאסט הרישמי שלנו')
 		})
 	}
+
 	async navigateToEventsSummariesPage(): Promise<void> {
 		await test.step('navigate to Events Summaries page', async () => {
 			const {button, eventsSummariesLink} =
@@ -338,6 +355,7 @@ export class TopMenuMainPage extends MainPage {
 			await this.validateText(title, 'סיכומי אירועים')
 		})
 	}
+
 	async navigateToTipsPage(): Promise<void> {
 		await test.step('Navigate to Tips page', async () => {
 			const {button, tipsLink} = TopMenuMainPage.menuLocators.testingInIsrael
@@ -346,8 +364,9 @@ export class TopMenuMainPage extends MainPage {
 			await this.validateVisibility(tipsLink)
 			await this.clickOnElement(tipsLink)
 			await this.page.waitForLoadState('domcontentloaded')
-			await this.validateText(
-				title,
+			await expect(
+				this.page.getByRole(title.role, {name: title.name}),
+			).toContainText(
 				'טיפים לבודקי תכנה - כאן תמצאו טיפים שנכתבו ע"י חברי קהילת הבדיקות בישראל בכדי לח',
 			)
 		})
@@ -364,6 +383,7 @@ export class TopMenuMainPage extends MainPage {
 			await this.validateText(title, 'עובדות שחשוב שתדעו')
 		})
 	}
+
 	async navigateToQuestionsAndAnswersPage(): Promise<void> {
 		await test.step('Navigate to Questions and Answers page', async () => {
 			const {button, questionsAndAnswersLink} =
@@ -375,6 +395,7 @@ export class TopMenuMainPage extends MainPage {
 			await this.validateText(title, 'שאלות ותשובות')
 		})
 	}
+
 	async navigateToInternationalConferencesPage(): Promise<void> {
 		await test.step('Navigate to International Conferences page', async () => {
 			const {button, internationalConferencesLink} =
@@ -397,6 +418,7 @@ export class TopMenuMainPage extends MainPage {
 			await this.validateText(boardOfDirectorsTitle, 'הוועד המנהל')
 		})
 	}
+
 	async navigateToAdvisoryBoardPage(): Promise<void> {
 		await test.step('Navigate to Advisory Board page', async () => {
 			const {button, advisoryBoardLink} = TopMenuMainPage.menuLocators.aboutITCB
@@ -406,15 +428,29 @@ export class TopMenuMainPage extends MainPage {
 			await this.validateVisibility(advisoryBoardLink)
 
 			const pagePromise = this.page.context().waitForEvent('page')
-			await this.clickOnElement(advisoryBoardLink)
+			await this.page
+				.locator(advisoryBoardLink.parent)
+				.getByRole(advisoryBoardLink.role, {
+					name: advisoryBoardLink.name,
+				})
+				.click()
 
 			const newPage = await pagePromise
 			await newPage.waitForLoadState()
 
-			await this.validateVisibility(advisoryBoardTitle)
-			await this.validateText(advisoryBoardTitle, 'הוועד המייעץ')
+			await expect(
+				newPage.getByRole(advisoryBoardTitle.role, {
+					name: advisoryBoardTitle.name,
+				}),
+			).toBeVisible()
+			await expect(
+				newPage.getByRole(advisoryBoardTitle.role, {
+					name: advisoryBoardTitle.name,
+				}),
+			).toContainText('הוועד המייעץ')
 		})
 	}
+
 	async navigateToOurPartnersPage(): Promise<void> {
 		await test.step('Navigate to Our Partners page', async () => {
 			const {button, ourPartnersLink} = TopMenuMainPage.menuLocators.aboutITCB

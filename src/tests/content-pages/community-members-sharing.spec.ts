@@ -1,7 +1,7 @@
 import {test} from '../../fixtures/testSetup'
 import {CommunityMembersSharingPage} from '../../pages/content-pages/CommunityMembersSharingPage'
 
-test.describe('Community Members Sharing Page Tests @regression', () => {
+test.describe('Community Members Sharing Page Tests @nightly', () => {
 	test.beforeEach(async ({mainPage}) => {
 		await mainPage.openMainPage()
 	})
