@@ -1,6 +1,4 @@
-import {test} from '@netanelh2/playwright-framework'
-import type {Page} from '@playwright/test'
-import {expect} from '@playwright/test'
+import {expect, type Page, test} from '@playwright/test'
 import {MainPage} from '../main-content/MainPage'
 
 export class TopMenuMainPage extends MainPage {
@@ -215,54 +213,32 @@ export class TopMenuMainPage extends MainPage {
 		super(page)
 	}
 
-	private getLocator(loc: {role: string; name: string; parent?: string}) {
-		const base = loc.parent ? this.page.locator(loc.parent) : this.page
-		return base.getByRole(loc.role as 'button' | 'heading' | 'link', {
-			name: loc.name,
-		})
-	}
-
-	private async validateVisibility(loc: {
-		role: string
-		name: string
-		parent?: string
-	}): Promise<void> {
-		await expect(this.getLocator(loc)).toBeVisible()
-	}
-
-	private async clickOnElement(loc: {
-		role: string
-		name: string
-		parent?: string
-	}): Promise<void> {
-		await this.getLocator(loc).click()
-	}
-
-	private async hoverOnElement(loc: {
-		role: string
-		name: string
-		parent?: string
-	}): Promise<void> {
-		await this.getLocator(loc).hover()
-	}
-
-	private async validateText(
-		loc: {role: string; name: string; parent?: string},
-		expectedText: string,
-	): Promise<void> {
-		await expect(this.getLocator(loc)).toContainText(expectedText)
-	}
-
 	async navigateToDecisionMakersSharingPage(): Promise<void> {
 		await test.step('Navigate to Decision Makers Sharing Page', async () => {
 			const {button, decisionMakersSharingLink} =
 				TopMenuMainPage.menuLocators.whyISTQB
 			const {title} = TopMenuMainPage.decisionMakersSharingPageLocators
-			await this.hoverOnElement(button)
-			await this.validateVisibility(decisionMakersSharingLink)
-			await this.clickOnElement(decisionMakersSharingLink)
+			await this.page
+				.locator(button.parent)
+				.getByRole(button.role, {name: button.name})
+				.hover()
+			await expect(
+				this.page
+					.locator(decisionMakersSharingLink.parent)
+					.getByRole(decisionMakersSharingLink.role, {
+						name: decisionMakersSharingLink.name,
+					}),
+			).toBeVisible()
+			await this.page
+				.locator(decisionMakersSharingLink.parent)
+				.getByRole(decisionMakersSharingLink.role, {
+					name: decisionMakersSharingLink.name,
+				})
+				.click()
 
-			await this.validateText(title, 'מקבלי ההחלטות משתפים')
+			await expect(
+				this.page.getByRole(title.role, {name: title.name}),
+			).toContainText('מקבלי ההחלטות משתפים')
 		})
 	}
 
@@ -271,10 +247,20 @@ export class TopMenuMainPage extends MainPage {
 			const {button, membersOfCommunitySharingLink} =
 				TopMenuMainPage.menuLocators.whyISTQB
 			const {title} = TopMenuMainPage.membersOfCommunitySharingPageLocators
-			await this.hoverOnElement(button)
-			await this.clickOnElement(membersOfCommunitySharingLink)
+			await this.page
+				.locator(button.parent)
+				.getByRole(button.role, {name: button.name})
+				.hover()
+			await this.page
+				.locator(membersOfCommunitySharingLink.parent)
+				.getByRole(membersOfCommunitySharingLink.role, {
+					name: membersOfCommunitySharingLink.name,
+				})
+				.click()
 
-			await this.validateText(title, 'חברי הקהילה משתפים')
+			await expect(
+				this.page.getByRole(title.role, {name: title.name}),
+			).toContainText('חברי הקהילה משתפים')
 		})
 	}
 
@@ -283,10 +269,26 @@ export class TopMenuMainPage extends MainPage {
 			const {button, ourCertificationsLink} =
 				TopMenuMainPage.menuLocators.whyISTQB
 			const {title} = TopMenuMainPage.ourCertificationsPageLocator
-			await this.hoverOnElement(button)
-			await this.validateVisibility(ourCertificationsLink)
-			await this.clickOnElement(ourCertificationsLink)
-			await this.validateText(title, 'ההסמכות שלנו, הקריירה שלך')
+			await this.page
+				.locator(button.parent)
+				.getByRole(button.role, {name: button.name})
+				.hover()
+			await expect(
+				this.page
+					.locator(ourCertificationsLink.parent)
+					.getByRole(ourCertificationsLink.role, {
+						name: ourCertificationsLink.name,
+					}),
+			).toBeVisible()
+			await this.page
+				.locator(ourCertificationsLink.parent)
+				.getByRole(ourCertificationsLink.role, {
+					name: ourCertificationsLink.name,
+				})
+				.click()
+			await expect(
+				this.page.getByRole(title.role, {name: title.name}),
+			).toContainText('ההסמכות שלנו, הקריירה שלך')
 		})
 	}
 
@@ -295,10 +297,26 @@ export class TopMenuMainPage extends MainPage {
 			const {button, howToPrepareToISTQBTestLink} =
 				TopMenuMainPage.menuLocators.whyISTQB
 			const {title} = TopMenuMainPage.howToPrepareToIstqbPageLocator
-			await this.hoverOnElement(button)
-			await this.validateVisibility(howToPrepareToISTQBTestLink)
-			await this.clickOnElement(howToPrepareToISTQBTestLink)
-			await this.validateText(title, 'איך להתכונן למבחן ISTQB')
+			await this.page
+				.locator(button.parent)
+				.getByRole(button.role, {name: button.name})
+				.hover()
+			await expect(
+				this.page
+					.locator(howToPrepareToISTQBTestLink.parent)
+					.getByRole(howToPrepareToISTQBTestLink.role, {
+						name: howToPrepareToISTQBTestLink.name,
+					}),
+			).toBeVisible()
+			await this.page
+				.locator(howToPrepareToISTQBTestLink.parent)
+				.getByRole(howToPrepareToISTQBTestLink.role, {
+					name: howToPrepareToISTQBTestLink.name,
+				})
+				.click()
+			await expect(
+				this.page.getByRole(title.role, {name: title.name}),
+			).toContainText('איך להתכונן למבחן ISTQB')
 		})
 	}
 
@@ -308,13 +326,28 @@ export class TopMenuMainPage extends MainPage {
 				TopMenuMainPage.menuLocators.ISTQBContent
 			const {ISTQBGlossaryAdvancedSearchTitle} =
 				TopMenuMainPage.termsGlossaryPageLocators
-			await this.hoverOnElement(button)
-			await this.validateVisibility(termsGlossaryLink)
-			await this.clickOnElement(termsGlossaryLink)
-			await this.validateText(
-				ISTQBGlossaryAdvancedSearchTitle,
-				'מילון המונחים של ISTQB - תכונות חיפוש מתקדמות',
-			)
+			await this.page
+				.locator(button.parent)
+				.getByRole(button.role, {name: button.name})
+				.hover()
+			await expect(
+				this.page
+					.locator(termsGlossaryLink.parent)
+					.getByRole(termsGlossaryLink.role, {
+						name: termsGlossaryLink.name,
+					}),
+			).toBeVisible()
+			await this.page
+				.locator(termsGlossaryLink.parent)
+				.getByRole(termsGlossaryLink.role, {
+					name: termsGlossaryLink.name,
+				})
+				.click()
+			await expect(
+				this.page.getByRole(ISTQBGlossaryAdvancedSearchTitle.role, {
+					name: ISTQBGlossaryAdvancedSearchTitle.name,
+				}),
+			).toContainText('מילון המונחים של ISTQB - תכונות חיפוש מתקדמות')
 		})
 	}
 
@@ -323,9 +356,23 @@ export class TopMenuMainPage extends MainPage {
 			const {button, syllabusInfoLink} =
 				TopMenuMainPage.menuLocators.ISTQBContent
 			const {title} = TopMenuMainPage.syllabusInfoPageLocators
-			await this.hoverOnElement(button)
-			await this.validateVisibility(syllabusInfoLink)
-			await this.clickOnElement(syllabusInfoLink)
+			await this.page
+				.locator(button.parent)
+				.getByRole(button.role, {name: button.name})
+				.hover()
+			await expect(
+				this.page
+					.locator(syllabusInfoLink.parent)
+					.getByRole(syllabusInfoLink.role, {
+						name: syllabusInfoLink.name,
+					}),
+			).toBeVisible()
+			await this.page
+				.locator(syllabusInfoLink.parent)
+				.getByRole(syllabusInfoLink.role, {
+					name: syllabusInfoLink.name,
+				})
+				.click()
 			await this.page.waitForLoadState('domcontentloaded')
 			await expect(
 				this.page.getByRole(title.role, {name: title.name}),
@@ -338,9 +385,23 @@ export class TopMenuMainPage extends MainPage {
 			const {button, usefulLinksLink} =
 				TopMenuMainPage.menuLocators.testingInIsrael
 			const {title} = TopMenuMainPage.usefulLinksLocators
-			await this.hoverOnElement(button)
-			await this.validateVisibility(usefulLinksLink)
-			await this.clickOnElement(usefulLinksLink)
+			await this.page
+				.locator(button.parent)
+				.getByRole(button.role, {name: button.name})
+				.hover()
+			await expect(
+				this.page
+					.locator(usefulLinksLink.parent)
+					.getByRole(usefulLinksLink.role, {
+						name: usefulLinksLink.name,
+					}),
+			).toBeVisible()
+			await this.page
+				.locator(usefulLinksLink.parent)
+				.getByRole(usefulLinksLink.role, {
+					name: usefulLinksLink.name,
+				})
+				.click()
 			await this.page.waitForLoadState('domcontentloaded')
 			await expect(
 				this.page.getByRole(title.role, {name: title.name}),
@@ -354,10 +415,28 @@ export class TopMenuMainPage extends MainPage {
 				TopMenuMainPage.menuLocators.testingInIsrael
 			const {viewAllMagazineIssuesLink} =
 				TopMenuMainPage.itcbMagazinePageLocators
-			await this.hoverOnElement(button)
-			await this.validateVisibility(ITCBMagazineLink)
-			await this.clickOnElement(ITCBMagazineLink)
-			await this.validateVisibility(viewAllMagazineIssuesLink)
+			await this.page
+				.locator(button.parent)
+				.getByRole(button.role, {name: button.name})
+				.hover()
+			await expect(
+				this.page
+					.locator(ITCBMagazineLink.parent)
+					.getByRole(ITCBMagazineLink.role, {
+						name: ITCBMagazineLink.name,
+					}),
+			).toBeVisible()
+			await this.page
+				.locator(ITCBMagazineLink.parent)
+				.getByRole(ITCBMagazineLink.role, {
+					name: ITCBMagazineLink.name,
+				})
+				.click()
+			await expect(
+				this.page.getByRole(viewAllMagazineIssuesLink.role, {
+					name: viewAllMagazineIssuesLink.name,
+				}),
+			).toBeVisible()
 		})
 	}
 
@@ -366,9 +445,21 @@ export class TopMenuMainPage extends MainPage {
 			const {button, podcastsLink} =
 				TopMenuMainPage.menuLocators.testingInIsrael
 			const {officialPodcastLink} = TopMenuMainPage.podcastsPageLocators
-			await this.hoverOnElement(button)
-			await this.validateVisibility(podcastsLink)
-			await this.clickOnElement(podcastsLink)
+			await this.page
+				.locator(button.parent)
+				.getByRole(button.role, {name: button.name})
+				.hover()
+			await expect(
+				this.page.locator(podcastsLink.parent).getByRole(podcastsLink.role, {
+					name: podcastsLink.name,
+				}),
+			).toBeVisible()
+			await this.page
+				.locator(podcastsLink.parent)
+				.getByRole(podcastsLink.role, {
+					name: podcastsLink.name,
+				})
+				.click()
 			await this.page.waitForLoadState('domcontentloaded')
 			await expect(
 				this.page.getByRole(officialPodcastLink.role, {
@@ -388,10 +479,26 @@ export class TopMenuMainPage extends MainPage {
 			const {button, eventsSummariesLink} =
 				TopMenuMainPage.menuLocators.testingInIsrael
 			const {title} = TopMenuMainPage.eventsSummariesPageLocators
-			await this.hoverOnElement(button)
-			await this.validateVisibility(eventsSummariesLink)
-			await this.clickOnElement(eventsSummariesLink)
-			await this.validateText(title, 'סיכומי אירועים')
+			await this.page
+				.locator(button.parent)
+				.getByRole(button.role, {name: button.name})
+				.hover()
+			await expect(
+				this.page
+					.locator(eventsSummariesLink.parent)
+					.getByRole(eventsSummariesLink.role, {
+						name: eventsSummariesLink.name,
+					}),
+			).toBeVisible()
+			await this.page
+				.locator(eventsSummariesLink.parent)
+				.getByRole(eventsSummariesLink.role, {
+					name: eventsSummariesLink.name,
+				})
+				.click()
+			await expect(
+				this.page.getByRole(title.role, {name: title.name}),
+			).toContainText('סיכומי אירועים')
 		})
 	}
 
@@ -399,9 +506,21 @@ export class TopMenuMainPage extends MainPage {
 		await test.step('Navigate to Tips page', async () => {
 			const {button, tipsLink} = TopMenuMainPage.menuLocators.testingInIsrael
 			const {title} = TopMenuMainPage.tipsPageLocators
-			await this.hoverOnElement(button)
-			await this.validateVisibility(tipsLink)
-			await this.clickOnElement(tipsLink)
+			await this.page
+				.locator(button.parent)
+				.getByRole(button.role, {name: button.name})
+				.hover()
+			await expect(
+				this.page.locator(tipsLink.parent).getByRole(tipsLink.role, {
+					name: tipsLink.name,
+				}),
+			).toBeVisible()
+			await this.page
+				.locator(tipsLink.parent)
+				.getByRole(tipsLink.role, {
+					name: tipsLink.name,
+				})
+				.click()
 			await this.page.waitForLoadState('domcontentloaded')
 			await expect(
 				this.page.getByRole(title.role, {name: title.name}),
@@ -416,12 +535,21 @@ export class TopMenuMainPage extends MainPage {
 			const {button, importantFactsLink} =
 				TopMenuMainPage.menuLocators.additionalInformation
 			const {title} = TopMenuMainPage.importantFactsPageLocators
-			await this.hoverOnElement(button)
+			await this.page
+				.locator(button.parent)
+				.getByRole(button.role, {name: button.name})
+				.hover()
 			await new Promise((r) => setTimeout(r, 300))
-			const linkLocator = this.getLocator(importantFactsLink)
+			const linkLocator = this.page
+				.locator(importantFactsLink.parent)
+				.getByRole(importantFactsLink.role, {
+					name: importantFactsLink.name,
+				})
 			await linkLocator.waitFor({state: 'visible', timeout: 10_000})
 			await linkLocator.click({timeout: 15_000})
-			await this.validateText(title, 'עובדות שחשוב שתדעו')
+			await expect(
+				this.page.getByRole(title.role, {name: title.name}),
+			).toContainText('עובדות שחשוב שתדעו')
 		})
 	}
 
@@ -430,12 +558,21 @@ export class TopMenuMainPage extends MainPage {
 			const {button, questionsAndAnswersLink} =
 				TopMenuMainPage.menuLocators.additionalInformation
 			const {title} = TopMenuMainPage.questionsAndAnswersPageLocators
-			await this.hoverOnElement(button)
+			await this.page
+				.locator(button.parent)
+				.getByRole(button.role, {name: button.name})
+				.hover()
 			await new Promise((r) => setTimeout(r, 300))
-			const linkLocator = this.getLocator(questionsAndAnswersLink)
+			const linkLocator = this.page
+				.locator(questionsAndAnswersLink.parent)
+				.getByRole(questionsAndAnswersLink.role, {
+					name: questionsAndAnswersLink.name,
+				})
 			await linkLocator.waitFor({state: 'visible', timeout: 10_000})
 			await linkLocator.click({timeout: 15_000})
-			await this.validateText(title, 'שאלות ותשובות')
+			await expect(
+				this.page.getByRole(title.role, {name: title.name}),
+			).toContainText('שאלות ותשובות')
 		})
 	}
 
@@ -444,12 +581,21 @@ export class TopMenuMainPage extends MainPage {
 			const {button, internationalConferencesLink} =
 				TopMenuMainPage.menuLocators.additionalInformation
 			const {title} = TopMenuMainPage.internationalConferencesPageLocators
-			await this.hoverOnElement(button)
+			await this.page
+				.locator(button.parent)
+				.getByRole(button.role, {name: button.name})
+				.hover()
 			await new Promise((r) => setTimeout(r, 300))
-			const linkLocator = this.getLocator(internationalConferencesLink)
+			const linkLocator = this.page
+				.locator(internationalConferencesLink.parent)
+				.getByRole(internationalConferencesLink.role, {
+					name: internationalConferencesLink.name,
+				})
 			await linkLocator.waitFor({state: 'visible', timeout: 10_000})
 			await linkLocator.click({timeout: 15_000})
-			await this.validateText(title, 'כנסים בינלאומיים')
+			await expect(
+				this.page.getByRole(title.role, {name: title.name}),
+			).toContainText('כנסים בינלאומיים')
 		})
 	}
 
@@ -458,14 +604,26 @@ export class TopMenuMainPage extends MainPage {
 			const {button, boardOfDirectorsLink} =
 				TopMenuMainPage.menuLocators.aboutITCB
 			const {boardOfDirectorsTitle} = TopMenuMainPage.aboutUsPageLocators
-			await this.hoverOnElement(button)
-			await this.validateVisibility(boardOfDirectorsLink)
-
+			await this.page
+				.locator(button.parent)
+				.getByRole(button.role, {name: button.name})
+				.hover()
+			await expect(
+				this.page
+					.locator(boardOfDirectorsLink.parent)
+					.getByRole(boardOfDirectorsLink.role, {
+						name: boardOfDirectorsLink.name,
+					}),
+			).toBeVisible()
 			const pagePromise = this.page.context().waitForEvent('page')
-			await this.clickOnElement(boardOfDirectorsLink)
+			await this.page
+				.locator(boardOfDirectorsLink.parent)
+				.getByRole(boardOfDirectorsLink.role, {
+					name: boardOfDirectorsLink.name,
+				})
+				.click()
 			const newPage = await pagePromise
 			await newPage.waitForLoadState()
-
 			const locator = newPage.getByRole(boardOfDirectorsTitle.role, {
 				name: boardOfDirectorsTitle.name,
 			})
@@ -479,9 +637,17 @@ export class TopMenuMainPage extends MainPage {
 			const {button, advisoryBoardLink} = TopMenuMainPage.menuLocators.aboutITCB
 			const {advisoryBoardTitle} =
 				TopMenuMainPage.aboutUsPageLocators.advisoryBoardSection
-			await this.hoverOnElement(button)
-			await this.validateVisibility(advisoryBoardLink)
-
+			await this.page
+				.locator(button.parent)
+				.getByRole(button.role, {name: button.name})
+				.hover()
+			await expect(
+				this.page
+					.locator(advisoryBoardLink.parent)
+					.getByRole(advisoryBoardLink.role, {
+						name: advisoryBoardLink.name,
+					}),
+			).toBeVisible()
 			const pagePromise = this.page.context().waitForEvent('page')
 			await this.page
 				.locator(advisoryBoardLink.parent)
@@ -489,10 +655,8 @@ export class TopMenuMainPage extends MainPage {
 					name: advisoryBoardLink.name,
 				})
 				.click()
-
 			const newPage = await pagePromise
 			await newPage.waitForLoadState()
-
 			await expect(
 				newPage.getByRole(advisoryBoardTitle.role, {
 					name: advisoryBoardTitle.name,
@@ -510,10 +674,26 @@ export class TopMenuMainPage extends MainPage {
 		await test.step('Navigate to Our Partners page', async () => {
 			const {button, ourPartnersLink} = TopMenuMainPage.menuLocators.aboutITCB
 			const {title} = TopMenuMainPage.ourPartnersPageLocators
-			await this.hoverOnElement(button)
-			await this.validateVisibility(ourPartnersLink)
-			await this.clickOnElement(ourPartnersLink)
-			await this.validateText(title, 'מרכזי הדרכה מוסמכים')
+			await this.page
+				.locator(button.parent)
+				.getByRole(button.role, {name: button.name})
+				.hover()
+			await expect(
+				this.page
+					.locator(ourPartnersLink.parent)
+					.getByRole(ourPartnersLink.role, {
+						name: ourPartnersLink.name,
+					}),
+			).toBeVisible()
+			await this.page
+				.locator(ourPartnersLink.parent)
+				.getByRole(ourPartnersLink.role, {
+					name: ourPartnersLink.name,
+				})
+				.click()
+			await expect(
+				this.page.getByRole(title.role, {name: title.name}),
+			).toContainText('מרכזי הדרכה מוסמכים')
 		})
 	}
 }

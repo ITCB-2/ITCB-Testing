@@ -20,8 +20,8 @@ export default defineConfig({
 		['list'],
 	],
 	use: {
-		// trace off to avoid ENOENT when saving trace artifacts with parallel workers (see Playwright issue re .playwright-artifacts-N/traces)
-		trace: 'off',
+		// Only save traces on failure to reduce overhead and avoid ENOENT issues with parallel workers
+		trace: 'retain-on-failure',
 		screenshot: {
 			mode: 'only-on-failure',
 			fullPage: true,
