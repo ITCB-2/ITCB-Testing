@@ -190,8 +190,7 @@ export class BottomMenuMainPage extends MainPage {
 
 	async navigateToDecisionMakersSharingPageBottomMenu(): Promise<void> {
 		await test.step('Navigate to Decision Makers Sharing Page through bottom menu', async () => {
-			const {decisionMakersSharingLink} =
-				BottomMenuMainPage.menuLocators.whyISTQB
+			const {decisionMakersSharingLink} = this.menuLocators.whyISTQB
 			const {title} = BottomMenuMainPage.decisionMakersSharingPageLocators
 			await expect(
 				this.page
@@ -214,8 +213,7 @@ export class BottomMenuMainPage extends MainPage {
 
 	async navigateToMembersOfCommunitySharingPageBottomMenu(): Promise<void> {
 		await test.step('Navigate to Members of Community Sharing Page through bottom menu', async () => {
-			const {membersOfCommunitySharingLink} =
-				BottomMenuMainPage.menuLocators.whyISTQB
+			const {membersOfCommunitySharingLink} = this.menuLocators.whyISTQB
 			const {title} = BottomMenuMainPage.membersOfCommunitySharingPageLocators
 			await expect(
 				this.page
@@ -238,7 +236,7 @@ export class BottomMenuMainPage extends MainPage {
 
 	async navigateToOurCertificationsPageBottomMenu(): Promise<void> {
 		await test.step('Navigate to Our Certifications Page through bottom menu', async () => {
-			const {ourCertificationsLink} = BottomMenuMainPage.menuLocators.whyISTQB
+			const {ourCertificationsLink} = this.menuLocators.whyISTQB
 			const {title} = BottomMenuMainPage.ourCertificationsPageLocator
 			await expect(
 				this.page
@@ -261,8 +259,7 @@ export class BottomMenuMainPage extends MainPage {
 
 	async navigateToHowToPrepareToISTQBTestPageBottomMenu(): Promise<void> {
 		await test.step('Navigate to How To Prepare To ISTQB Test Page through bottom menu', async () => {
-			const {howToPrepareToISTQBTestLink} =
-				BottomMenuMainPage.menuLocators.whyISTQB
+			const {howToPrepareToISTQBTestLink} = this.menuLocators.whyISTQB
 			const {title} = BottomMenuMainPage.howToPrepareToIstqbPageLocator
 			await expect(
 				this.page
@@ -286,7 +283,7 @@ export class BottomMenuMainPage extends MainPage {
 
 	async navigateToTermsGlossaryPageBottomMenu(): Promise<void> {
 		await test.step('Navigate to Terms Glossary page through bottom menu', async () => {
-			const {termsGlossaryLink} = BottomMenuMainPage.menuLocators.ISTQBContent
+			const {termsGlossaryLink} = this.menuLocators.ISTQBContent
 			const {ISTQBGlossaryAdvancedSearchTitle} =
 				BottomMenuMainPage.termsGlossaryPageLocators
 			await expect(
@@ -312,7 +309,7 @@ export class BottomMenuMainPage extends MainPage {
 
 	async navigateToSyllabusInfoPageBottomMenu(): Promise<void> {
 		await test.step('Navigate to Syllabus Info page through bottom menu', async () => {
-			const {syllabusInfoLink} = BottomMenuMainPage.menuLocators.ISTQBContent
+			const {syllabusInfoLink} = this.menuLocators.ISTQBContent
 			const {title} = BottomMenuMainPage.syllabusInfoPageLocators
 			await expect(
 				this.page
@@ -335,7 +332,7 @@ export class BottomMenuMainPage extends MainPage {
 
 	async navigateToUsefulLinksPageBottomMenu(): Promise<void> {
 		await test.step('Navigate to Useful Links page through bottom menu', async () => {
-			const {usefulLinksLink} = BottomMenuMainPage.menuLocators.testingInIsrael
+			const {usefulLinksLink} = this.menuLocators.testingInIsrael
 			const {title} = BottomMenuMainPage.usefulLinksLocators
 			await expect(
 				this.page
@@ -358,7 +355,7 @@ export class BottomMenuMainPage extends MainPage {
 
 	async navigateToITCBMagazinePageBottomMenu(): Promise<void> {
 		await test.step('Navigate to ITCB Magazine page through bottom menu', async () => {
-			const {ITCBMagazineLink} = BottomMenuMainPage.menuLocators.testingInIsrael
+			const {ITCBMagazineLink} = this.menuLocators.testingInIsrael
 			const {viewAllMagazineIssuesLink} =
 				BottomMenuMainPage.itcbMagazinePageLocators
 			await expect(
@@ -384,7 +381,7 @@ export class BottomMenuMainPage extends MainPage {
 
 	async navigateToPodcastsPageBottomMenu(): Promise<void> {
 		await test.step('Navigate to Podcasts page through bottom menu', async () => {
-			const {podcastsLink} = BottomMenuMainPage.menuLocators.testingInIsrael
+			const {podcastsLink} = this.menuLocators.testingInIsrael
 			const {officialPodcastLink} = BottomMenuMainPage.podcastsPageLocators
 			await expect(
 				this.page.locator(podcastsLink.parent).getByRole(podcastsLink.role, {
@@ -407,8 +404,7 @@ export class BottomMenuMainPage extends MainPage {
 
 	async navigateToEventsSummariesPageBottomMenu(): Promise<void> {
 		await test.step('Navigate to Events Summaries page through bottom menu', async () => {
-			const {eventsSummariesLink} =
-				BottomMenuMainPage.menuLocators.testingInIsrael
+			const {eventsSummariesLink} = this.menuLocators.testingInIsrael
 			const {title} = BottomMenuMainPage.eventsSummariesPageLocators
 			await expect(
 				this.page
@@ -431,7 +427,7 @@ export class BottomMenuMainPage extends MainPage {
 
 	async navigateToTipsPageBottomMenu(): Promise<void> {
 		await test.step('Navigate to Tips page through bottom menu', async () => {
-			const {tipsLink} = BottomMenuMainPage.menuLocators.testingInIsrael
+			const {tipsLink} = this.menuLocators.testingInIsrael
 			const {title} = BottomMenuMainPage.tipsPageLocators
 			await expect(
 				this.page.locator(tipsLink.parent).getByRole(tipsLink.role, {
@@ -452,8 +448,7 @@ export class BottomMenuMainPage extends MainPage {
 
 	async navigateToImportantFactsPageBottomMenu(): Promise<void> {
 		await test.step('Navigate to Important Facts page through bottom menu', async () => {
-			const {importantFactsLink} =
-				BottomMenuMainPage.menuLocators.additionalInformation
+			const {importantFactsLink} = this.menuLocators.additionalInformation
 			const {title} = BottomMenuMainPage.importantFactsPageLocators
 			await expect(
 				this.page
@@ -476,8 +471,7 @@ export class BottomMenuMainPage extends MainPage {
 
 	async navigateToQuestionsAndAnswersPageBottomMenu(): Promise<void> {
 		await test.step('Navigate to Questions and Answers page through bottom menu', async () => {
-			const {questionsAndAnswersLink} =
-				BottomMenuMainPage.menuLocators.additionalInformation
+			const {questionsAndAnswersLink} = this.menuLocators.additionalInformation
 			const {title} = BottomMenuMainPage.questionsAndAnswersPageLocators
 			await expect(
 				this.page
@@ -501,7 +495,7 @@ export class BottomMenuMainPage extends MainPage {
 	async navigateToInternationalConferencesPageBottomMenu(): Promise<void> {
 		await test.step('Navigate to International Conferences page through bottom menu', async () => {
 			const {internationalConferencesLink} =
-				BottomMenuMainPage.menuLocators.additionalInformation
+				this.menuLocators.additionalInformation
 			const {title} = BottomMenuMainPage.internationalConferencesPageLocators
 			await expect(
 				this.page
@@ -524,7 +518,7 @@ export class BottomMenuMainPage extends MainPage {
 
 	async navigateToAboutUsPageBottomMenu(): Promise<void> {
 		await test.step('Navigate to About Us page through bottom menu', async () => {
-			const {aboutUsLink} = BottomMenuMainPage.menuLocators.aboutITCB
+			const {aboutUsLink} = this.menuLocators.aboutITCB
 			await expect(
 				this.page.locator(aboutUsLink.parent).getByRole(aboutUsLink.role, {
 					name: aboutUsLink.name,
@@ -547,7 +541,7 @@ export class BottomMenuMainPage extends MainPage {
 
 	async navigateToBoardOfDirectorsPageBottomMenu(): Promise<void> {
 		await test.step('Navigate to Board of Directors page through bottom menu', async () => {
-			const {boardOfDirectorsLink} = BottomMenuMainPage.menuLocators.aboutITCB
+			const {boardOfDirectorsLink} = this.menuLocators.aboutITCB
 			const {boardOfDirectorsTitle} = BottomMenuMainPage.aboutUsPageLocators
 			await expect(
 				this.page
@@ -575,7 +569,7 @@ export class BottomMenuMainPage extends MainPage {
 
 	async navigateToAdvisoryBoardPageBottomMenu(): Promise<void> {
 		await test.step('Navigate to Advisory Board page through bottom menu', async () => {
-			const {advisoryBoardLink} = BottomMenuMainPage.menuLocators.aboutITCB
+			const {advisoryBoardLink} = this.menuLocators.aboutITCB
 			const {advisoryBoardTitle} =
 				BottomMenuMainPage.aboutUsPageLocators.advisoryBoardSection
 			await expect(
@@ -604,7 +598,7 @@ export class BottomMenuMainPage extends MainPage {
 
 	async navigateToOurPartnersPageBottomMenu(): Promise<void> {
 		await test.step('Navigate to Our Partners page through bottom menu', async () => {
-			const {ourPartnersLink} = BottomMenuMainPage.menuLocators.aboutITCB
+			const {ourPartnersLink} = this.menuLocators.aboutITCB
 			const {title} = BottomMenuMainPage.ourPartnersPageLocators
 			await expect(
 				this.page

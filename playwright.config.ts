@@ -20,7 +20,6 @@ export default defineConfig({
 		['list'],
 	],
 	use: {
-		// Only save traces on failure to reduce overhead and avoid ENOENT issues with parallel workers
 		trace: 'retain-on-failure',
 		screenshot: {
 			mode: 'only-on-failure',
