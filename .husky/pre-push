@@ -1,2 +1,2 @@
-# Run linting and formatting checks before pushing code
-npm run check
+# Run type checking and linting before pushing code
+npm run type-check && npm run check
