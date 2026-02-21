@@ -5,7 +5,7 @@ import {MainPage} from './MainPage'
 export class SlidersMainPage extends MainPage {
 	public static readonly slider1Title = {
 		role: 'heading',
-		name: 'עמותת ITCB מצדיעה לכל הנשים והגברים הפועלים למען ביטחון והגנת המדינה.',
+		name: 'חוגגים 10 שנים לתחרות הבדיקות של ישראל!',
 	} as const
 
 	public static readonly slider2Title = {
@@ -13,11 +13,15 @@ export class SlidersMainPage extends MainPage {
 		name: 'אנו גאים להציג את אפליקצית ®ISTQB למונחים המקצועיים מעולם בדיקות התוכנה בשפה העברית.',
 	} as const
 
-	public static readonly slider3Title =
-		'אם אתם מחפשים חשיפה אמיתית, ממוקדת ועתירת ערך – זה המקום.' as const
+	public static readonly slider3Title = {
+		role: 'heading' as const,
+		name: 'אנו גאים להציג את אפליקצית ®ISTQB למונחים המקצועיים מעולם בדיקות התוכנה בשפה העברית.',
+	}
 
-	public static readonly slider4Title =
-		'רוצים לסיים את 2025 עם תעודת ISTQB רשמית ולקדם את הקריירה בעולם הבדיקות?' as const
+	public static readonly slider4Title = {
+		role: 'heading' as const,
+		name: 'אצלנו תצליח בהייטק, זה בדוק!',
+	} as const
 
 	public static readonly slider5Title = {
 		role: 'heading',
@@ -47,7 +51,7 @@ export class SlidersMainPage extends MainPage {
 			}
 			await expect(slider).toBeVisible()
 			await expect(slider).toContainText(
-				'עמותת ITCB מצדיעה לכל הנשים והגברים הפועלים למען ביטחון והגנת המדינה.',
+				'חוגגים 10 שנים לתחרות הבדיקות של ישראל!',
 			)
 		})
 	}
@@ -80,8 +84,9 @@ export class SlidersMainPage extends MainPage {
 		await test.step('Verify Slide 3', async () => {
 			await this.page.goto(URLS.slide3)
 			await this.pressOkToCookies()
-			const slider3Text = SlidersMainPage.slider3Title
-			const slider3 = this.page.getByText(slider3Text).first()
+			const slider3 = this.page.getByRole(SlidersMainPage.slider3Title.role, {
+				name: SlidersMainPage.slider3Title.name,
+			})
 			await expect(slider3).toBeVisible({timeout: 60000})
 			const box3 = await slider3.boundingBox()
 			if (box3) {
@@ -93,7 +98,9 @@ export class SlidersMainPage extends MainPage {
 				await this.page.mouse.up()
 			}
 			await expect(slider3).toBeVisible()
-			await expect(slider3).toContainText(slider3Text)
+			await expect(slider3).toContainText(
+				'אנו גאים להציג את אפליקצית ®ISTQB למונחים המקצועיים מעולם בדיקות התוכנה בשפה העברית.',
+			)
 		})
 	}
 
@@ -101,8 +108,9 @@ export class SlidersMainPage extends MainPage {
 		await test.step('Verify Slide 4', async () => {
 			await this.page.goto(URLS.slide4)
 			await this.pressOkToCookies()
-			const slider4Text = SlidersMainPage.slider4Title
-			const slider4 = this.page.getByText(slider4Text).first()
+			const slider4 = this.page.getByRole(SlidersMainPage.slider4Title.role, {
+				name: SlidersMainPage.slider4Title.name,
+			})
 			await expect(slider4).toBeVisible({timeout: 60000})
 			const box4 = await slider4.boundingBox()
 			if (box4) {
@@ -114,7 +122,7 @@ export class SlidersMainPage extends MainPage {
 				await this.page.mouse.up()
 			}
 			await expect(slider4).toBeVisible()
-			await expect(slider4).toContainText(slider4Text)
+			await expect(slider4).toContainText('אצלנו תצליח בהייטק, זה בדוק!')
 		})
 	}
 
