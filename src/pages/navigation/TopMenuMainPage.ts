@@ -2,7 +2,7 @@ import {expect, type Page, test} from '@playwright/test'
 import {MainPage} from '../main-content/MainPage'
 
 export class TopMenuMainPage extends MainPage {
-	public static readonly menuLocators = {
+	public readonly menuLocators = {
 		whyISTQB: {
 			button: {
 				parent: '#navbarScroll',

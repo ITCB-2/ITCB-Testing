@@ -3,7 +3,7 @@ import {URLS} from '../../data/urls'
 import {MainPage} from '../main-content/MainPage'
 
 export class BottomMenuMainPage extends MainPage {
-	public static readonly menuLocators = {
+	public readonly menuLocators = {
 		whyISTQB: {
 			decisionMakersSharingLink: {
 				role: 'link',
