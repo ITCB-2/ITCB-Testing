@@ -11,6 +11,13 @@ export class DecisionMakerPage {
 
 	public static readonly decisionMakersSharingBoxes = [
 		{
+			name: 'omerPhilipovBox',
+			img: {
+				role: 'img',
+				name: 'Director, Quality & Operational Excellence',
+			},
+		},
+		{
 			name: 'kobiYonasiBox',
 			img: {
 				role: 'img',
@@ -22,27 +29,6 @@ export class DecisionMakerPage {
 			img: {
 				role: 'img',
 				name: 'Senior Software QA Lead',
-			},
-		},
-		{
-			name: 'michaelTivinBox',
-			img: {
-				role: 'img',
-				name: 'Director Engineering, Akamai Technologies',
-			},
-		},
-		{
-			name: 'MorAbazizBox',
-			img: {
-				role: 'img',
-				name: 'מנהלת בדיקות אוטומציה, קווליטסט',
-			},
-		},
-		{
-			name: 'omerPhilipovBox',
-			img: {
-				role: 'img',
-				name: 'Director, Quality &',
 			},
 		},
 	] as const

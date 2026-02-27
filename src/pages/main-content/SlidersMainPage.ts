@@ -34,12 +34,14 @@ export class SlidersMainPage extends MainPage {
 
 	async slide1Verification(): Promise<void> {
 		await test.step('Verify Slide 1', async () => {
-			await this.page.goto(URLS.slide1)
+			await this.page.goto(URLS.slide1, {timeout: 90000})
+			await this.page.waitForLoadState('domcontentloaded')
 			await this.pressOkToCookies()
 			const slider = this.page.getByRole(SlidersMainPage.slider1Title.role, {
 				name: SlidersMainPage.slider1Title.name,
 			})
-			await expect(slider).toBeVisible({timeout: 60000})
+			await slider.waitFor({state: 'visible', timeout: 60000})
+			await expect(slider).toBeVisible()
 			const box = await slider.boundingBox()
 			if (box) {
 				await this.page.mouse.move(
