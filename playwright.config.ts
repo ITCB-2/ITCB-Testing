@@ -2,6 +2,7 @@ import {defineConfig, devices} from '@playwright/test'
 
 export default defineConfig({
 	testDir: './src/tests',
+	outputDir: 'test-results',
 	timeout: 60 * 1000,
 	fullyParallel: true,
 	forbidOnly: !!process.env.CI,
@@ -19,7 +20,7 @@ export default defineConfig({
 		['list'],
 	],
 	use: {
-		trace: 'on',
+		trace: 'retain-on-failure',
 		screenshot: {
 			mode: 'only-on-failure',
 			fullPage: true,

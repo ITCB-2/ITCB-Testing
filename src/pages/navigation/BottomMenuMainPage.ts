@@ -1,34 +1,197 @@
 import {expect, type Page, test} from '@playwright/test'
 import {URLS} from '../../data/urls'
-import {ABOUT_US_PAGE_LOCATORS} from '../../locators/content-pages/About_Us'
-import {DECISION_MAKERS_SHARING_PAGE_LOCATORS} from '../../locators/content-pages/Decision_Makers_Sharing'
-import {EVENTS_SUMMARIES_PAGE_LOCATORS} from '../../locators/content-pages/Events_Summaries'
-import {HOW_TO_PREPARE_TO_ISTQB_PAGE_LOCATOR} from '../../locators/content-pages/How_To_Prepare_To_ISTQB'
-import {IMPORTANT_FACTS_PAGE_LOCATORS} from '../../locators/content-pages/Important_Facts'
-import {INTERNATIONAL_CONFERENCES_PAGE_LOCATORS} from '../../locators/content-pages/International_Conferences'
-import {ITCB_MAGAZINE_PAGE_LOCATORS} from '../../locators/content-pages/ITCB_Magazine'
-import {MEMBERS_OF_COMMUNITY_SHARING_PAGE_LOCATORS} from '../../locators/content-pages/Members_Of_Community_Sharing'
-import {OUR_CERTIFICATIONS_PAGE_LOCATOR} from '../../locators/content-pages/Our_Certification'
-import {OUR_PARTNERS_PAGE_LOCATORS} from '../../locators/content-pages/Our_Partners'
-import {PODCASTS_PAGE_LOCATORS} from '../../locators/content-pages/Podcasts'
-import {QUESTIONS_AND_ANSWERS_PAGE_LOCATORS} from '../../locators/content-pages/Questions_And_Answers'
-import {SYLLABUS_INFO_PAGE_LOCATORS} from '../../locators/content-pages/Syllabus_Info'
-import {TERMS_GLOSSARY_PAGE_LOCATORS} from '../../locators/content-pages/Terms_Glossary'
-import {TIPS_PAGE_LOCATORS} from '../../locators/content-pages/Tips'
-import {USEFUL_LINKS_LOCATORS} from '../../locators/content-pages/Useful_Links'
-import {BOTTOM_MENU_MAIN_PAGE_LOCATORS} from '../../locators/navigation/Bottom_Main_Menu'
 import {MainPage} from '../main-content/MainPage'
 
 export class BottomMenuMainPage extends MainPage {
+	public readonly menuLocators = {
+		whyISTQB: {
+			decisionMakersSharingLink: {
+				role: 'link',
+				name: 'מקבלי החלטות משתפים',
+				parent: 'footer',
+			},
+			membersOfCommunitySharingLink: {
+				role: 'link',
+				name: 'חברי הקהילה משתפים',
+				parent: 'footer',
+			},
+			ourCertificationsLink: {
+				role: 'link',
+				name: 'ההסמכות שלנו',
+				parent: 'footer',
+			},
+			howToPrepareToISTQBTestLink: {
+				role: 'link',
+				name: 'איך להתכונן למבחן ISTQB®',
+				parent: 'footer',
+			},
+		},
+		ISTQBContent: {
+			termsGlossaryLink: {
+				role: 'link',
+				name: 'מילון מונחים',
+				parent: 'footer',
+			},
+			syllabusInfoLink: {
+				role: 'link',
+				name: 'כל מה שרציתם לדעת על סילבוס CTFL',
+				parent: 'footer',
+			},
+		},
+		testingInIsrael: {
+			usefulLinksLink: {
+				role: 'link',
+				name: 'קישורים שימושיים',
+				parent: 'footer',
+			},
+			ITCBMagazineLink: {
+				role: 'link',
+				name: 'מגזין "עולם הבדיקות"',
+				parent: 'footer',
+			},
+			podcastsLink: {
+				role: 'link',
+				name: 'פודקאסטים',
+				parent: 'footer',
+			},
+			eventsSummariesLink: {
+				role: 'link',
+				name: 'סיכומי אירועים',
+				parent: 'footer',
+			},
+			tipsLink: {
+				role: 'link',
+				name: 'טיפים',
+				parent: 'footer',
+			},
+		},
+		additionalInformation: {
+			importantFactsLink: {
+				role: 'link',
+				name: 'עובדות שחשוב שתדעו',
+				parent: 'footer',
+			},
+			questionsAndAnswersLink: {
+				role: 'link',
+				name: 'שאלות ותשובות',
+				parent: 'footer',
+			},
+			internationalConferencesLink: {
+				role: 'link',
+				name: 'כנסים בינלאומיים',
+				parent: 'footer',
+			},
+		},
+		aboutITCB: {
+			aboutUsLink: {
+				role: 'link',
+				name: 'קצת עלינו',
+				parent: 'footer',
+			},
+			boardOfDirectorsLink: {
+				role: 'link',
+				name: 'הוועד המנהל',
+				parent: 'footer',
+			},
+			advisoryBoardLink: {
+				role: 'link',
+				name: 'הוועד המייעץ',
+				parent: 'footer',
+			},
+			ourPartnersLink: {
+				role: 'link',
+				name: 'השותפים שלנו',
+				parent: 'footer',
+			},
+		},
+	} as const
+
+	public static readonly aboutUsPageLocators = {
+		mainTitle: {role: 'heading', name: 'אודות ®ITCB'},
+		boardOfDirectorsTitle: {role: 'heading', name: 'הוועד המנהל'},
+		advisoryBoardSection: {
+			advisoryBoardTitle: {role: 'heading', name: 'הוועד המייעץ'},
+			michalTalTitle: {role: 'heading', name: 'מיכל טל'},
+		},
+	} as const
+
+	public static readonly decisionMakersSharingPageLocators = {
+		title: {role: 'heading', name: 'מקבלי ההחלטות משתפים'},
+	} as const
+
+	public static readonly eventsSummariesPageLocators = {
+		title: {role: 'heading', name: 'סיכומי אירועים'},
+	} as const
+
+	public static readonly howToPrepareToIstqbPageLocator = {
+		title: {role: 'heading', name: 'איך להתכונן למבחן ISTQB'},
+	} as const
+
+	public static readonly importantFactsPageLocators = {
+		title: {role: 'heading', name: 'עובדות שחשוב שתדעו'},
+	} as const
+
+	public static readonly internationalConferencesPageLocators = {
+		title: {
+			role: 'heading',
+			name: 'כנסים בינלאומיים',
+		},
+	} as const
+
+	public static readonly itcbMagazinePageLocators = {
+		viewAllMagazineIssuesLink: {role: 'link', name: 'הצג את כל גליונות המגזין'},
+	} as const
+
+	public static readonly membersOfCommunitySharingPageLocators = {
+		title: {role: 'heading', name: 'חברי הקהילה משתפים'},
+	} as const
+
+	public static readonly ourCertificationsPageLocator = {
+		title: {role: 'heading', name: 'ההסמכות שלנו, הקריירה שלך'},
+	} as const
+
+	public static readonly ourPartnersPageLocators = {
+		title: {role: 'heading', name: 'מרכזי הדרכה מוסמכים'},
+	} as const
+
+	public static readonly podcastsPageLocators = {
+		officialPodcastLink: {role: 'link', name: 'דף הפודקאסט הרישמי שלנו'},
+	} as const
+
+	public static readonly questionsAndAnswersPageLocators = {
+		title: {role: 'heading', name: 'שאלות ותשובות'},
+	} as const
+
+	public static readonly syllabusInfoPageLocators = {
+		title: {role: 'heading', name: 'כל מה שרציתם לדעת על סילבוס CTFL 4.0'},
+	} as const
+
+	public static readonly termsGlossaryPageLocators = {
+		ISTQBGlossaryAdvancedSearchTitle: {
+			role: 'heading',
+			name: 'מילון המונחים של ISTQB - תכונות חיפוש מתקדמות',
+		},
+	} as const
+
+	public static readonly tipsPageLocators = {
+		title: {
+			role: 'heading',
+			name: 'טיפים לבודקי תכנה - כאן תמצאו טיפים שנכתבו ע"י חברי קהילת הבדיקות בישראל בכדי לח',
+		},
+	} as const
+
+	public static readonly usefulLinksLocators = {
+		title: {role: 'heading', name: 'קישורים שימושיים'},
+	} as const
+
 	constructor(page: Page) {
 		super(page)
 	}
 
 	async navigateToDecisionMakersSharingPageBottomMenu(): Promise<void> {
 		await test.step('Navigate to Decision Makers Sharing Page through bottom menu', async () => {
-			const {decisionMakersSharingLink} =
-				BOTTOM_MENU_MAIN_PAGE_LOCATORS.whyISTQB
-			const {title} = DECISION_MAKERS_SHARING_PAGE_LOCATORS
+			const {decisionMakersSharingLink} = this.menuLocators.whyISTQB
+			const {title} = BottomMenuMainPage.decisionMakersSharingPageLocators
 			await expect(
 				this.page
 					.locator(decisionMakersSharingLink.parent)
@@ -50,9 +213,8 @@ export class BottomMenuMainPage extends MainPage {
 
 	async navigateToMembersOfCommunitySharingPageBottomMenu(): Promise<void> {
 		await test.step('Navigate to Members of Community Sharing Page through bottom menu', async () => {
-			const {membersOfCommunitySharingLink} =
-				BOTTOM_MENU_MAIN_PAGE_LOCATORS.whyISTQB
-			const {title} = MEMBERS_OF_COMMUNITY_SHARING_PAGE_LOCATORS
+			const {membersOfCommunitySharingLink} = this.menuLocators.whyISTQB
+			const {title} = BottomMenuMainPage.membersOfCommunitySharingPageLocators
 			await expect(
 				this.page
 					.locator(membersOfCommunitySharingLink.parent)
@@ -74,8 +236,8 @@ export class BottomMenuMainPage extends MainPage {
 
 	async navigateToOurCertificationsPageBottomMenu(): Promise<void> {
 		await test.step('Navigate to Our Certifications Page through bottom menu', async () => {
-			const {ourCertificationsLink} = BOTTOM_MENU_MAIN_PAGE_LOCATORS.whyISTQB
-			const {title} = OUR_CERTIFICATIONS_PAGE_LOCATOR
+			const {ourCertificationsLink} = this.menuLocators.whyISTQB
+			const {title} = BottomMenuMainPage.ourCertificationsPageLocator
 			await expect(
 				this.page
 					.locator(ourCertificationsLink.parent)
@@ -97,9 +259,8 @@ export class BottomMenuMainPage extends MainPage {
 
 	async navigateToHowToPrepareToISTQBTestPageBottomMenu(): Promise<void> {
 		await test.step('Navigate to How To Prepare To ISTQB Test Page through bottom menu', async () => {
-			const {howToPrepareToISTQBTestLink} =
-				BOTTOM_MENU_MAIN_PAGE_LOCATORS.whyISTQB
-			const {title} = HOW_TO_PREPARE_TO_ISTQB_PAGE_LOCATOR
+			const {howToPrepareToISTQBTestLink} = this.menuLocators.whyISTQB
+			const {title} = BottomMenuMainPage.howToPrepareToIstqbPageLocator
 			await expect(
 				this.page
 					.locator(howToPrepareToISTQBTestLink.parent)
@@ -122,8 +283,9 @@ export class BottomMenuMainPage extends MainPage {
 
 	async navigateToTermsGlossaryPageBottomMenu(): Promise<void> {
 		await test.step('Navigate to Terms Glossary page through bottom menu', async () => {
-			const {termsGlossaryLink} = BOTTOM_MENU_MAIN_PAGE_LOCATORS.ISTQBContent
-			const {ISTQBGlossaryAdvancedSearchTitle} = TERMS_GLOSSARY_PAGE_LOCATORS
+			const {termsGlossaryLink} = this.menuLocators.ISTQBContent
+			const {ISTQBGlossaryAdvancedSearchTitle} =
+				BottomMenuMainPage.termsGlossaryPageLocators
 			await expect(
 				this.page
 					.locator(termsGlossaryLink.parent)
@@ -147,8 +309,8 @@ export class BottomMenuMainPage extends MainPage {
 
 	async navigateToSyllabusInfoPageBottomMenu(): Promise<void> {
 		await test.step('Navigate to Syllabus Info page through bottom menu', async () => {
-			const {syllabusInfoLink} = BOTTOM_MENU_MAIN_PAGE_LOCATORS.ISTQBContent
-			const {title} = SYLLABUS_INFO_PAGE_LOCATORS
+			const {syllabusInfoLink} = this.menuLocators.ISTQBContent
+			const {title} = BottomMenuMainPage.syllabusInfoPageLocators
 			await expect(
 				this.page
 					.locator(syllabusInfoLink.parent)
@@ -170,8 +332,8 @@ export class BottomMenuMainPage extends MainPage {
 
 	async navigateToUsefulLinksPageBottomMenu(): Promise<void> {
 		await test.step('Navigate to Useful Links page through bottom menu', async () => {
-			const {usefulLinksLink} = BOTTOM_MENU_MAIN_PAGE_LOCATORS.testingInIsrael
-			const {title} = USEFUL_LINKS_LOCATORS
+			const {usefulLinksLink} = this.menuLocators.testingInIsrael
+			const {title} = BottomMenuMainPage.usefulLinksLocators
 			await expect(
 				this.page
 					.locator(usefulLinksLink.parent)
@@ -193,8 +355,9 @@ export class BottomMenuMainPage extends MainPage {
 
 	async navigateToITCBMagazinePageBottomMenu(): Promise<void> {
 		await test.step('Navigate to ITCB Magazine page through bottom menu', async () => {
-			const {ITCBMagazineLink} = BOTTOM_MENU_MAIN_PAGE_LOCATORS.testingInIsrael
-			const {viewAllMagazineIssuesLink} = ITCB_MAGAZINE_PAGE_LOCATORS
+			const {ITCBMagazineLink} = this.menuLocators.testingInIsrael
+			const {viewAllMagazineIssuesLink} =
+				BottomMenuMainPage.itcbMagazinePageLocators
 			await expect(
 				this.page
 					.locator(ITCBMagazineLink.parent)
@@ -218,16 +381,18 @@ export class BottomMenuMainPage extends MainPage {
 
 	async navigateToPodcastsPageBottomMenu(): Promise<void> {
 		await test.step('Navigate to Podcasts page through bottom menu', async () => {
-			const {podcastsLink} = BOTTOM_MENU_MAIN_PAGE_LOCATORS.testingInIsrael
-			const {officialPodcastLink} = PODCASTS_PAGE_LOCATORS
+			const {podcastsLink} = this.menuLocators.testingInIsrael
+			const {officialPodcastLink} = BottomMenuMainPage.podcastsPageLocators
 			await expect(
-				this.page
-					.locator(podcastsLink.parent)
-					.getByRole(podcastsLink.role, {name: podcastsLink.name}),
+				this.page.locator(podcastsLink.parent).getByRole(podcastsLink.role, {
+					name: podcastsLink.name,
+				}),
 			).toBeVisible()
 			await this.page
 				.locator(podcastsLink.parent)
-				.getByRole(podcastsLink.role, {name: podcastsLink.name})
+				.getByRole(podcastsLink.role, {
+					name: podcastsLink.name,
+				})
 				.click()
 			await expect(
 				this.page.getByRole(officialPodcastLink.role, {
@@ -239,9 +404,8 @@ export class BottomMenuMainPage extends MainPage {
 
 	async navigateToEventsSummariesPageBottomMenu(): Promise<void> {
 		await test.step('Navigate to Events Summaries page through bottom menu', async () => {
-			const {eventsSummariesLink} =
-				BOTTOM_MENU_MAIN_PAGE_LOCATORS.testingInIsrael
-			const {title} = EVENTS_SUMMARIES_PAGE_LOCATORS
+			const {eventsSummariesLink} = this.menuLocators.testingInIsrael
+			const {title} = BottomMenuMainPage.eventsSummariesPageLocators
 			await expect(
 				this.page
 					.locator(eventsSummariesLink.parent)
@@ -263,30 +427,29 @@ export class BottomMenuMainPage extends MainPage {
 
 	async navigateToTipsPageBottomMenu(): Promise<void> {
 		await test.step('Navigate to Tips page through bottom menu', async () => {
-			const {tipsLink} = BOTTOM_MENU_MAIN_PAGE_LOCATORS.testingInIsrael
-			const {title} = TIPS_PAGE_LOCATORS
+			const {tipsLink} = this.menuLocators.testingInIsrael
+			const {title} = BottomMenuMainPage.tipsPageLocators
 			await expect(
-				this.page
-					.locator(tipsLink.parent)
-					.getByRole(tipsLink.role, {name: tipsLink.name}),
+				this.page.locator(tipsLink.parent).getByRole(tipsLink.role, {
+					name: tipsLink.name,
+				}),
 			).toBeVisible()
 			await this.page
 				.locator(tipsLink.parent)
-				.getByRole(tipsLink.role, {name: tipsLink.name})
+				.getByRole(tipsLink.role, {
+					name: tipsLink.name,
+				})
 				.click()
 			await expect(
 				this.page.getByRole(title.role, {name: title.name}),
-			).toContainText(
-				'טיפים לבודקי תכנה - כאן תמצאו טיפים שנכתבו ע"י חברי קהילת הבדיקות בישראל בכדי לח',
-			)
+			).toContainText('טיפים לבודקי תכנה')
 		})
 	}
 
 	async navigateToImportantFactsPageBottomMenu(): Promise<void> {
 		await test.step('Navigate to Important Facts page through bottom menu', async () => {
-			const {importantFactsLink} =
-				BOTTOM_MENU_MAIN_PAGE_LOCATORS.additionalInformation
-			const {title} = IMPORTANT_FACTS_PAGE_LOCATORS
+			const {importantFactsLink} = this.menuLocators.additionalInformation
+			const {title} = BottomMenuMainPage.importantFactsPageLocators
 			await expect(
 				this.page
 					.locator(importantFactsLink.parent)
@@ -308,9 +471,8 @@ export class BottomMenuMainPage extends MainPage {
 
 	async navigateToQuestionsAndAnswersPageBottomMenu(): Promise<void> {
 		await test.step('Navigate to Questions and Answers page through bottom menu', async () => {
-			const {questionsAndAnswersLink} =
-				BOTTOM_MENU_MAIN_PAGE_LOCATORS.additionalInformation
-			const {title} = QUESTIONS_AND_ANSWERS_PAGE_LOCATORS
+			const {questionsAndAnswersLink} = this.menuLocators.additionalInformation
+			const {title} = BottomMenuMainPage.questionsAndAnswersPageLocators
 			await expect(
 				this.page
 					.locator(questionsAndAnswersLink.parent)
@@ -333,8 +495,8 @@ export class BottomMenuMainPage extends MainPage {
 	async navigateToInternationalConferencesPageBottomMenu(): Promise<void> {
 		await test.step('Navigate to International Conferences page through bottom menu', async () => {
 			const {internationalConferencesLink} =
-				BOTTOM_MENU_MAIN_PAGE_LOCATORS.additionalInformation
-			const {title} = INTERNATIONAL_CONFERENCES_PAGE_LOCATORS
+				this.menuLocators.additionalInformation
+			const {title} = BottomMenuMainPage.internationalConferencesPageLocators
 			await expect(
 				this.page
 					.locator(internationalConferencesLink.parent)
@@ -356,15 +518,17 @@ export class BottomMenuMainPage extends MainPage {
 
 	async navigateToAboutUsPageBottomMenu(): Promise<void> {
 		await test.step('Navigate to About Us page through bottom menu', async () => {
-			const {aboutUsLink} = BOTTOM_MENU_MAIN_PAGE_LOCATORS.aboutITCB
+			const {aboutUsLink} = this.menuLocators.aboutITCB
 			await expect(
-				this.page
-					.locator(aboutUsLink.parent)
-					.getByRole(aboutUsLink.role, {name: aboutUsLink.name}),
+				this.page.locator(aboutUsLink.parent).getByRole(aboutUsLink.role, {
+					name: aboutUsLink.name,
+				}),
 			).toBeVisible()
 			await this.page
 				.locator(aboutUsLink.parent)
-				.getByRole(aboutUsLink.role, {name: aboutUsLink.name})
+				.getByRole(aboutUsLink.role, {
+					name: aboutUsLink.name,
+				})
 				.click()
 			const pageContent = this.page.getByText('ITCB® - Israel Testing')
 			const escaped = URLS.aboutUs
@@ -377,8 +541,8 @@ export class BottomMenuMainPage extends MainPage {
 
 	async navigateToBoardOfDirectorsPageBottomMenu(): Promise<void> {
 		await test.step('Navigate to Board of Directors page through bottom menu', async () => {
-			const {boardOfDirectorsLink} = BOTTOM_MENU_MAIN_PAGE_LOCATORS.aboutITCB
-			const {boardOfDirectorsTitle} = ABOUT_US_PAGE_LOCATORS
+			const {boardOfDirectorsLink} = this.menuLocators.aboutITCB
+			const {boardOfDirectorsTitle} = BottomMenuMainPage.aboutUsPageLocators
 			await expect(
 				this.page
 					.locator(boardOfDirectorsLink.parent)
@@ -386,23 +550,18 @@ export class BottomMenuMainPage extends MainPage {
 						name: boardOfDirectorsLink.name,
 					}),
 			).toBeVisible()
-
 			const pagePromise = this.page.context().waitForEvent('page')
-
 			await this.page
 				.locator(boardOfDirectorsLink.parent)
 				.getByRole(boardOfDirectorsLink.role, {
 					name: boardOfDirectorsLink.name,
 				})
 				.click()
-
 			const newPage = await pagePromise
 			await newPage.waitForLoadState()
-
 			const locator = newPage.getByRole(boardOfDirectorsTitle.role, {
 				name: boardOfDirectorsTitle.name,
 			})
-
 			await expect(locator).toBeVisible({timeout: 10000})
 			await expect(locator).toContainText('הוועד המנהל')
 		})
@@ -410,9 +569,9 @@ export class BottomMenuMainPage extends MainPage {
 
 	async navigateToAdvisoryBoardPageBottomMenu(): Promise<void> {
 		await test.step('Navigate to Advisory Board page through bottom menu', async () => {
-			const {advisoryBoardLink} = BOTTOM_MENU_MAIN_PAGE_LOCATORS.aboutITCB
-			const {advisoryBoardTitle} = ABOUT_US_PAGE_LOCATORS.advisoryBoardSection
-
+			const {advisoryBoardLink} = this.menuLocators.aboutITCB
+			const {advisoryBoardTitle} =
+				BottomMenuMainPage.aboutUsPageLocators.advisoryBoardSection
 			await expect(
 				this.page
 					.locator(advisoryBoardLink.parent)
@@ -420,23 +579,18 @@ export class BottomMenuMainPage extends MainPage {
 						name: advisoryBoardLink.name,
 					}),
 			).toBeVisible()
-
 			const pagePromise = this.page.context().waitForEvent('page')
-
 			await this.page
 				.locator(advisoryBoardLink.parent)
 				.getByRole(advisoryBoardLink.role, {
 					name: advisoryBoardLink.name,
 				})
 				.click()
-
 			const newPage = await pagePromise
 			await newPage.waitForLoadState()
-
 			const locator = newPage.getByRole(advisoryBoardTitle.role, {
 				name: advisoryBoardTitle.name,
 			})
-
 			await expect(locator).toBeVisible({timeout: 10000})
 			await expect(locator).toContainText('הוועד המייעץ')
 		})
@@ -444,8 +598,8 @@ export class BottomMenuMainPage extends MainPage {
 
 	async navigateToOurPartnersPageBottomMenu(): Promise<void> {
 		await test.step('Navigate to Our Partners page through bottom menu', async () => {
-			const {ourPartnersLink} = BOTTOM_MENU_MAIN_PAGE_LOCATORS.aboutITCB
-			const {title} = OUR_PARTNERS_PAGE_LOCATORS
+			const {ourPartnersLink} = this.menuLocators.aboutITCB
+			const {title} = BottomMenuMainPage.ourPartnersPageLocators
 			await expect(
 				this.page
 					.locator(ourPartnersLink.parent)
