@@ -3,27 +3,27 @@ import {URLS} from '../../data/urls'
 import {MainPage} from './MainPage'
 
 export class SlidersMainPage extends MainPage {
-	public static readonly slider1Title = {
+	public readonly slider1Title = {
 		role: 'heading',
 		name: 'חוגגים 10 שנים לתחרות הבדיקות של ישראל!',
 	} as const
 
-	public static readonly slider2Title = {
+	public readonly slider2Title = {
 		role: 'heading',
-		name: 'אנו גאים להציג את אפליקצית ®ISTQB למונחים המקצועיים מעולם בדיקות התוכנה בשפה העברית.',
+		name: 'אנו גאים להציג את אפליקציית ®ISTQB למונחים המקצועיים מעולם בדיקות התוכנה בשפה העברית.',
 	} as const
 
-	public static readonly slider3Title = {
+	public readonly slider3Title = {
 		role: 'heading' as const,
-		name: 'אנו גאים להציג את אפליקצית ®ISTQB למונחים המקצועיים מעולם בדיקות התוכנה בשפה העברית.',
+		name: 'אנו גאים להציג את אפליקציית ®ISTQB למונחים המקצועיים מעולם בדיקות התוכנה בשפה העברית.',
 	}
 
-	public static readonly slider4Title = {
+	public readonly slider4Title = {
 		role: 'heading' as const,
 		name: 'אצלנו תצליח בהייטק, זה בדוק!',
 	} as const
 
-	public static readonly slider5Title = {
+	public readonly slider5Title = {
 		role: 'heading',
 		name: 'אצלנו תצליח בהייטק, זה בדוק!',
 	} as const
@@ -37,8 +37,8 @@ export class SlidersMainPage extends MainPage {
 			await this.page.goto(URLS.slide1, {timeout: 90000})
 			await this.page.waitForLoadState('domcontentloaded')
 			await this.pressOkToCookies()
-			const slider = this.page.getByRole(SlidersMainPage.slider1Title.role, {
-				name: SlidersMainPage.slider1Title.name,
+			const slider = this.page.getByRole(this.slider1Title.role, {
+				name: this.slider1Title.name,
 			})
 			await slider.waitFor({state: 'visible', timeout: 60000})
 			await expect(slider).toBeVisible()
@@ -62,8 +62,8 @@ export class SlidersMainPage extends MainPage {
 		await test.step('Verify Slide 2', async () => {
 			await this.page.goto(URLS.slide2)
 			await this.pressOkToCookies()
-			const slider2 = this.page.getByRole(SlidersMainPage.slider2Title.role, {
-				name: SlidersMainPage.slider2Title.name,
+			const slider2 = this.page.getByRole(this.slider2Title.role, {
+				name: this.slider2Title.name,
 			})
 			await expect(slider2).toBeVisible({timeout: 60000})
 			const box2 = await slider2.boundingBox()
@@ -86,8 +86,8 @@ export class SlidersMainPage extends MainPage {
 		await test.step('Verify Slide 3', async () => {
 			await this.page.goto(URLS.slide3)
 			await this.pressOkToCookies()
-			const slider3 = this.page.getByRole(SlidersMainPage.slider3Title.role, {
-				name: SlidersMainPage.slider3Title.name,
+			const slider3 = this.page.getByRole(this.slider3Title.role, {
+				name: this.slider3Title.name,
 			})
 			await expect(slider3).toBeVisible({timeout: 60000})
 			const box3 = await slider3.boundingBox()
@@ -110,8 +110,8 @@ export class SlidersMainPage extends MainPage {
 		await test.step('Verify Slide 4', async () => {
 			await this.page.goto(URLS.slide4)
 			await this.pressOkToCookies()
-			const slider4 = this.page.getByRole(SlidersMainPage.slider4Title.role, {
-				name: SlidersMainPage.slider4Title.name,
+			const slider4 = this.page.getByRole(this.slider4Title.role, {
+				name: this.slider4Title.name,
 			})
 			await expect(slider4).toBeVisible({timeout: 60000})
 			const box4 = await slider4.boundingBox()
@@ -132,8 +132,8 @@ export class SlidersMainPage extends MainPage {
 		await test.step('Verify Slide 5', async () => {
 			await this.page.goto(URLS.slide5)
 			await this.pressOkToCookies()
-			const slider5 = this.page.getByRole(SlidersMainPage.slider5Title.role, {
-				name: SlidersMainPage.slider5Title.name,
+			const slider5 = this.page.getByRole(this.slider5Title.role, {
+				name: this.slider5Title.name,
 			})
 			await expect(slider5).toBeVisible({timeout: 60000})
 			const box5 = await slider5.boundingBox()
