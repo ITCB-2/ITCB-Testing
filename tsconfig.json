@@ -40,6 +40,6 @@
 		"forceConsistentCasingInFileNames": true
 	},
 	/* File Specification */
-	"include": ["src/**/*", "playwright.config.ts"],
+	"include": ["src_c/**/*", "playwright.config.ts"],
 	"exclude": ["node_modules", "dist", "test-results", "playwright-report"]
 }

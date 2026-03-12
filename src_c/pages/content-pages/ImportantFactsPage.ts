@@ -1,0 +1,48 @@
+import {expect, type Page, test} from '@playwright/test'
+import type {FactName} from '../../types/boxNameTypes'
+
+export class ImportantFactsPage {
+	protected page: Page
+
+	public static readonly title = {
+		role: 'heading',
+		name: 'עובדות שחשוב שתדעו',
+	} as const
+
+	public static readonly facts = [
+		{
+			locator:
+				'p:has-text("ISTQB® - International Software Testing Qualification Board")',
+			text: 'ISTQB® - International Software Testing Qualification Board',
+			name: 'fact-1',
+		},
+		{
+			locator: 'p:has-text("תוכנה בדוקה כהלכה היא התחייבות לאיכות ולמצוינות")',
+			text: 'תוכנה בדוקה כהלכה היא התחייבות לאיכות ולמצוינות',
+			name: 'fact-2',
+		},
+		{
+			locator: 'p:has-text("להסמכה שלנו 3 רמות: בסיסית, מתקדמת ולמומחים")',
+			text: 'להסמכה שלנו 3 רמות: בסיסית, מתקדמת ולמומחים',
+			name: 'fact-3',
+		},
+		{
+			locator:
+				'p:has-text("גם אם אין לך רקע בתחום, בעזרת מבחן ההסמכה שלנו דלתות עולם ההייטק")',
+			text: 'גם אם אין לך רקע בתחום, בעזרת מבחן ההסמכה שלנו דלתות עולם ההייטק',
+			name: 'fact-4',
+		},
+	] as const
+
+	constructor(page: Page) {
+		this.page = page
+	}
+
+	async validateImportantFact(factName: FactName): Promise<void> {
+		await test.step(`Validate Important Fact ${factName}`, async () => {
+			const fact = ImportantFactsPage.facts.find((f) => f.name === factName)
+			if (!fact) throw new Error(`Fact not found: ${factName}`)
+			await expect(this.page.locator(fact.locator)).toContainText(fact.text)
+		})
+	}
+}
