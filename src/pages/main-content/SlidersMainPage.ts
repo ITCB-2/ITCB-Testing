@@ -14,12 +14,12 @@ export class SlidersMainPage extends MainPage {
 	} as const
 
 	public readonly slider3Title = {
-		role: 'heading' as const,
+		role: 'heading',
 		name: 'אנו גאים להציג את אפליקציית ®ISTQB למונחים המקצועיים מעולם בדיקות התוכנה בשפה העברית.',
-	}
+	} as const
 
 	public readonly slider4Title = {
-		role: 'heading' as const,
+		role: 'heading',
 		name: 'אצלנו תצליח בהייטק, זה בדוק!',
 	} as const
 
