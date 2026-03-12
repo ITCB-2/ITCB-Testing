@@ -59,7 +59,7 @@ export class MainPage {
 
 	async openMainPage(): Promise<void> {
 		await test.step('Open Main Page', async () => {
-			await this.page.goto(BASE_URL, {timeout: 90000})
+			await this.page.goto(BASE_URL)
 			await this.pressOkToCookies()
 			await expect(
 				this.page.getByRole(MainPage.importantFactsTitle.role, {

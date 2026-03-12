@@ -34,7 +34,7 @@ export class SlidersMainPage extends MainPage {
 
 	async slide1Verification(): Promise<void> {
 		await test.step('Verify Slide 1', async () => {
-			await this.page.goto(URLS.slide1, {timeout: 90000})
+			await this.page.goto(URLS.slide1)
 			await this.page.waitForLoadState('domcontentloaded')
 			await this.pressOkToCookies()
 			const slider = this.page.getByRole(this.slider1Title.role, {
