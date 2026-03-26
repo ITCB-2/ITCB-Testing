@@ -51,7 +51,7 @@ jobs:
     needs: cleanup-storage
     timeout-minutes: ${{ inputs.timeout_minutes}}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Create playwright-report directory
         run: mkdir -p playwright-report
@@ -65,7 +65,7 @@ jobs:
 
       - name: Upload Playwright Report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: playwright-report-${{ inputs.test_type }}-${{ github.run_number }}
           path: playwright-report/
