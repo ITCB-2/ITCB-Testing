@@ -25,7 +25,7 @@ Purpose: Make agents instantly productive in this Playwright + TypeScript test f
 - Tests: place under `src/tests/**`, name with `.spec.ts`.
 - Steps: group meaningful actions with `test.step(...)` from `@playwright/test` inside page methods where helpful.
 - Tags: classify suites with `@sanity` or `@nightly` in describe titles to enable targeted runs (see commands below).
-- Lint/format: Biome.js is enforced; formatting violations fail CI. Follow rules in `biome.json` (tests have relaxed rules).
+- Quality gate: TypeScript type-checking is enforced in CI and pre-commit.
 - Locator resolution (from code):
   - For string locators: `page.locator(selector)`.
   - For role locators: `page.getByRole(role, { name })`, with optional parent via `page.locator(parent).getByRole(role, { name })`.
@@ -81,10 +81,7 @@ test.describe('Main Page @sanity', () => {
 - Chromium only: `npm run test:chrome`
 - Debug inspector: `npm run test:debug`
 - Report viewer: `npm run report`
-- Quality gates: `npm run check` (lint + format check + `tsc`)
-- Auto-fix: `npm run fix`
-- Lint only: `npm run lint:check`
-- Format check: `npm run format:check`
+- Quality gates: `npm run check` (`tsc --noEmit`)
 
 Notes
 

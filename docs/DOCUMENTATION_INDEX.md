@@ -126,7 +126,6 @@ Regular documentation health checks:
 ### **Framework Documentation**
 
 - **[Playwright Docs](https://playwright.dev/)** - Official testing framework guide
-- **[Biome.js Docs](https://biomejs.dev/)** - Code quality and formatting tool
 - **[TypeScript Handbook](https://www.typescriptlang.org/docs/)** - Language reference
 
 ### **Project Resources**

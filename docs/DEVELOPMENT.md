@@ -28,7 +28,7 @@ npx playwright install
 echo "BASE_URL=https://www.itcb.org.il" > .env
 
 # 5. Verify installation
-npm run check
+npm run quality:check
 npm run test:sanity
 ```
 
@@ -54,12 +54,10 @@ Every development session should start with quality checks:
 
 ```bash
 # 1. Quality validation
-npm run check              # Full quality check (lint + format + tsc)
-npm run fix                # Auto-fix all formatting & linting issues
+npm run quality:check      # Type-check + format check + lint
 
 # 2. Development tools
 npm run test:debug         # Step-by-step test debugging
-npm run test:headed        # Watch tests execute in browser
 npm run codegen           # Generate test code using Playwright
 npm run report            # View test results in browser
 ```
@@ -68,20 +66,17 @@ npm run report            # View test results in browser
 
 Every commit automatically runs:
 
-- ✅ **Biome.js** (zero warnings enforced)
 - ✅ **TypeScript** compilation check
-- ✅ **Staged files** formatting fix
+- ✅ **lint-staged** checks for staged files (ESLint + Prettier)
 
 ### **🎯 Development Commands Reference**
 
-| **Command**           | **Purpose**                 | **When to Use**                         |
-| --------------------- | --------------------------- | --------------------------------------- |
-| `npm run check`       | Full quality validation     | Before starting work, before commits    |
-| `npm run fix`         | Auto-fix formatting/linting | When quality check fails                |
-| `npm run test:debug`  | Interactive test debugging  | When tests fail or need investigation   |
-| `npm run test:headed` | Visual test execution       | Understanding test flow, debugging UI   |
-| `npm run codegen`     | Generate test code          | Creating new tests, learning patterns   |
-| `npm run report`      | View test results           | After running tests, analyzing failures |
+| **Command**             | **Purpose**                | **When to Use**                         |
+| ----------------------- | -------------------------- | --------------------------------------- |
+| `npm run quality:check` | Full quality validation    | Before starting work, before commits    |
+| `npm run test:debug`    | Interactive test debugging | When tests fail or need investigation   |
+| `npm run codegen`       | Generate test code         | Creating new tests, learning patterns   |
+| `npm run report`        | View test results          | After running tests, analyzing failures |
 
 ## 📋 Naming Conventions & Standards
 
@@ -299,12 +294,11 @@ async performCriticalAction(): Promise<void> {
 
 ### **🔧 Code Quality Standards**
 
-#### **Biome.js Best Practices**
+#### **TypeScript Quality Best Practices**
 
-- 🔒 **Zero warnings policy**: All Biome.js rules must pass
-- 📝 **Consistent formatting**: Automatic formatting with Biome.js
-- ⚡ **Fast execution**: Combined linting and formatting in one tool
-- 🛡️ **TypeScript integration**: Built-in TypeScript support
+- 🔒 **Fail fast on type and lint errors**: Keep `npm run quality:check` green before commit
+- 📝 **Prefer explicit types in shared contracts**: Improves maintainability
+- ⚡ **Fast feedback loop**: Run `npm run type-check` frequently while coding
 
 ### **🌍 Environment Management**
 
@@ -336,7 +330,7 @@ const baseUrl = process.env.BASE_URL // Avoid; use src/data/urls.ts
    git checkout -b feature/user-authentication-tests
 
    # Run quality check
-   npm run check
+   npm run quality:check
    ```
 
 2. **🛠️ Development Phase**
@@ -344,15 +338,14 @@ const baseUrl = process.env.BASE_URL // Avoid; use src/data/urls.ts
    ```bash
    # Develop with continuous validation
    npm run test:debug     # Test specific functionality
-   npm run test:headed    # Visual validation
-   npm run fix           # Fix any quality issues
+   npm run type-check    # Verify quality continuously
    ```
 
 3. **✅ Validation Phase**
 
    ```bash
    # Final validation before commit
-   npm run check         # Full quality check
+   npm run quality:check # Full quality check
    npm run test:sanity   # Ensure core functionality intact
 
    # Commit (triggers pre-commit hooks automatically)
@@ -389,7 +382,6 @@ const baseUrl = process.env.BASE_URL // Avoid; use src/data/urls.ts
 For GitHub Actions workflows to function properly, configure these repository-level secrets:
 
 1. **`BASE_URL`** - Target application URL for testing
-
    - Go to: Repository Settings → Secrets and variables → Actions
    - Add new repository secret: `BASE_URL=https://www.itcb.org.il`
    - Used by: Sanity tests, Nightly nightly tests

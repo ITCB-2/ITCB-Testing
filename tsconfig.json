@@ -20,8 +20,8 @@
 		"outDir": "dist",
 		"rootDir": ".",
 		"isolatedModules": true,
-		"verbatimModuleSyntax": true,
-		"erasableSyntaxOnly": true,
+		"verbatimModuleSyntax": false,
+		"erasableSyntaxOnly": false,
 
 		/* Type Checking */
 		"strict": true,
@@ -40,6 +40,6 @@
 		"forceConsistentCasingInFileNames": true
 	},
 	/* File Specification */
-	"include": ["src/**/*", "playwright.config.ts"],
+	"include": ["src/**/*", "playwright.config.ts", "eslint.config.ts"],
 	"exclude": ["node_modules", "dist", "test-results", "playwright-report"]
 }

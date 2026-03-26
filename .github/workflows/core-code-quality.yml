@@ -8,7 +8,7 @@ on:
 
 jobs:
   quality:
-    name: Biome Quality Check
+    name: Full Project Quality Check
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -18,13 +18,17 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Setup Biome
-        uses: biomejs/setup-biome@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          version: latest
+          node-version: 24
+          cache: npm
 
-      - name: Run Biome
-        run: biome ci .
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Full project quality check (type-check, format, lint)
+        run: npm run quality:check
 
   summary:
     name: Add Results Summary
@@ -37,6 +41,6 @@ jobs:
         run: |
           echo "✅ Code Quality Check Completed" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "🛡️ Quality Gates: Biome (Linting + Formatting)" >> $GITHUB_STEP_SUMMARY
+          echo "🛡️ Quality Gates: TypeScript check, Prettier check, ESLint" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "⏰ Check completed at: $(date)" >> $GITHUB_STEP_SUMMARY

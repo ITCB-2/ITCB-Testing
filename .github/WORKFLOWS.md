@@ -36,7 +36,6 @@ pull_request: [main, master, develop]
 
 **🔍 Quality Gates**:
 
-- **Biome**: Combined linting and formatting with zero-warning policy
 - **TypeScript**: Type checking and compilation
 
 **⚙️ Configuration**:
@@ -63,6 +62,7 @@ artifact: test-results (failure cases only)
 **⚙️ Trigger**: Called by specific test workflows (Sanity, nightly, Future tests)
 
 **🐳 Docker (CI only)**: In CI, tests run **only inside Docker**:
+
 1. **Build**: `docker compose build`
 2. **Run**: `docker compose run --rm test-runner <test_command>` (e.g. `npm run test:sanity` or `npm run test:nightly`)
 
@@ -358,7 +358,6 @@ Continuous Storage Management
 ### **Required Repository Secrets**
 
 1. **`BASE_URL`**
-
    - **Purpose**: Target application URL
    - **Example**: `https://www.itcb.org.il`
    - **Used by**: Sanity & nightly tests
@@ -434,31 +433,25 @@ All workflows support manual triggering via GitHub Actions UI:
 ### **Common Issues**
 
 1. **Code Quality workflow fails**
-
-   - Check Biome configuration and fix linting/formatting errors
-   - Run `npm run check` locally to identify issues
+   - Run `npm run quality:check` locally to identify issues
    - Verify TypeScript compilation with `npm run type-check`
    - Ensure all dependencies are properly installed
 
 2. **Workflow fails with "Environment variable not set"**
-
    - Check that required repository secrets are configured
    - Verify secret names match exactly (case-sensitive)
 
 3. **Reports not deploying**
-
    - Ensure GitHub Pages is enabled
    - Check deploy-reports workflow logs
    - Verify test workflows completed successfully
 
 4. **Slack notifications not working**
-
    - Verify `SLACK_WEBHOOK_URL` secret is set
    - Check Slack webhook URL is valid
    - Ensure channel permissions are correct
 
 5. **Storage quota exceeded**
-
    - Run manual artifact cleanup workflow
    - Check cleanup workflow logs
    - Verify retention settings are appropriate

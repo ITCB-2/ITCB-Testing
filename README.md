@@ -16,7 +16,7 @@
 
 - **Page Object Model (POM)** with TypeScript and dependency injection
 - **Automatic Fallback Locators** with intelligent element resolution
-- **Quality-First Development** with pre-commit hooks and zero-warning policy
+- **Quality-First Development** with TypeScript, Prettier, ESLint, and pre-commit hooks
 - **Smart Test Classification** using `@sanity` and `@nightly` tags
 - **Intelligent Retry Logic** - Critical tests get automatic retries in CI
 - **Automated CI/CD Pipeline** with scheduled testing and rich reporting
@@ -49,8 +49,8 @@ npm run test:sanity
 
 ```bash
 # Quality & Development
-npm run check        # Code quality validation
-npm run fix          # Auto-fix formatting/linting
+npm run quality:check # Type-check + Prettier check + ESLint
+npm run quality:fix   # Type-check + Prettier write + ESLint fix
 npm run codegen      # Generate test code
 
 # Testing
@@ -70,7 +70,6 @@ Tests run directly on your machine with Playwright. No Docker required.
 npm test              # Run all tests
 npm run test:sanity   # Fast critical tests (~5 min)
 npm run test:nightly  # Full suite
-npm run test:headed   # With browser UI
 npm run test:debug    # Debug mode
 npm run report        # View HTML report
 ```
@@ -169,7 +168,6 @@ The retry system automatically detects:
 
 - **🎭 [Playwright](https://playwright.dev/)** - Modern web testing framework
 - **📘 [TypeScript](https://www.typescriptlang.org/)** - Type-safe JavaScript
-- **🔧 [Biome](https://biomejs.dev/)** - Code quality and formatting
 - **🎣 [Husky](https://typicode.github.io/husky/)** - Git hooks for quality gates
 - **⚡ [GitHub Actions](https://github.com/features/actions)** - CI/CD automation
 

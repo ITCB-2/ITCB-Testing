@@ -43,7 +43,7 @@ npm run test:sanity
 npm run test:nightly
 ```
 
-**Note**: Chrome-specific variants (`test:sanity:chrome`, `test:nightly:chrome`) will also get retries since they use the same `TEST_TAGS`, but these are typically used for local debugging rather than CI.
+**Note**: If you run browser-specific commands through Playwright CLI (for example with `--project=chromium`) and still set `TEST_TAGS` to `@sanity`/`@nightly` in CI, the same retry logic applies.
 
 ### Example Scenarios
 

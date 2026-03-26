@@ -85,16 +85,16 @@ npx playwright install chromium # Install specific browser
 - Run tests in parallel: `fullyParallel: true`
 - Optimize page object methods
 - Reduce unnecessary waits
-- Use `test:chrome` for single browser testing
+- Use `npx playwright test --project=chromium` for single-browser testing
 
 ### Code Quality Issues
 
-**Problem**: Biome.js conflicts
+**Problem**: Type-check failures in quality checks
 **Solution**:
 
 ```bash
-npm run fix                     # Auto-fix formatting
-npm run check                  # Check for remaining issues
+npm run quality:check          # Run full quality gate
+npm run type-check             # Show TypeScript errors directly
 ```
 
 **Problem**: TypeScript compilation errors
@@ -131,7 +131,7 @@ npm run check                  # Check for remaining issues
 
 ### Browser Debugging
 
-1. Run tests in headed mode: `test:headed`
+1. Run tests in headed mode: `npx playwright test --headed`
 2. Use browser developer tools
 3. Take screenshots: `await page.screenshot()`
 4. Record videos for failed tests

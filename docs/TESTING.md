@@ -69,41 +69,31 @@ test('should validate main page content @sanity', async ({mainPage}) => {
 npm test                       # Run all tests (full suite)
 npm run test:sanity           # Critical functionality only (⚡ fast)
 npm run test:nightly       # Comprehensive validation
-npm run test:chrome           # Single browser (Chromium only)
 
 # 🔍 Development & Debugging
 npm run test:debug            # Interactive debugging mode
-npm run test:headed           # Visual execution (see browser)
 npm run codegen              # Auto-generate test code
 npm run report               # Open interactive HTML report
-
-# 📊 Targeted Test Execution
-npm run test:sanity:chrome    # Fast sanity tests in Chrome only
-npm run test:nightly:chrome # nightly tests in Chrome only
 ```
 
 ### **Test Execution Strategy**
 
-| **Command**            | **Use Case**                      | **Duration** | **Best For**         |
-| ---------------------- | --------------------------------- | ------------ | -------------------- |
-| `npm test`             | Full validation before deployment | 30-45 min    | Release preparation  |
-| `npm run test:sanity`  | Quick feedback during development | 5-10 min     | Active development   |
-| `npm run test:nightly` | Comprehensive feature validation  | 30-45 min    | Feature completion   |
-| `npm run test:debug`   | Investigation and troubleshooting | Variable     | Debugging failures   |
-| `npm run test:headed`  | Understanding test flow           | Variable     | Learning/development |
+| **Command**            | **Use Case**                      | **Duration** | **Best For**        |
+| ---------------------- | --------------------------------- | ------------ | ------------------- |
+| `npm test`             | Full validation before deployment | 30-45 min    | Release preparation |
+| `npm run test:sanity`  | Quick feedback during development | 5-10 min     | Active development  |
+| `npm run test:nightly` | Comprehensive feature validation  | 30-45 min    | Feature completion  |
+| `npm run test:debug`   | Investigation and troubleshooting | Variable     | Debugging failures  |
 
 ### **Advanced Execution Options**
 
 #### **Browser-Specific Testing**
 
 ```bash
-# Single browser execution (faster for development)
-npm run test:chrome           # Chromium only
-npm run test:firefox          # Firefox only
-npm run test:safari           # Safari only (macOS)
-
-# Tag + Browser combination
-npm run test:sanity:chrome    # Sanity tests in Chrome only
+# Single-browser execution (use Playwright CLI directly)
+npx playwright test --project=chromium  # Chromium only
+npx playwright test --project=firefox   # Firefox only
+npx playwright test --project=webkit    # WebKit
 ```
 
 #### **Environment-Specific Testing**
@@ -193,8 +183,7 @@ src/tests/
 
 #### **🔧 Quality Gates**
 
-- ✅ **Automated Code Quality**: Biome.js + TypeScript validation
-- ✅ **Zero Warnings Policy**: Builds fail on any linting warnings
+- ✅ **Automated Code Quality**: TypeScript validation in CI
 - ✅ **Pre-commit Hooks**: Local quality checks before commits
 
 #### **🧪 Test Execution Optimization**
@@ -260,7 +249,6 @@ workflow_dispatch:
 #### **Classification Guidelines**
 
 1. **@sanity**: Critical functionality that MUST work for basic system operation
-
    - Maximum 15-20 minutes total execution time
    - Core user journeys only
    - High-value, high-frequency functionality
@@ -316,7 +304,6 @@ test('should perform user action @sanity', async ({somePage}) => {
 
 ```bash
 npm run test:debug          # Playwright Inspector
-npm run test:headed         # Visual browser execution
 npm run codegen            # Generate test code
 ```
 
