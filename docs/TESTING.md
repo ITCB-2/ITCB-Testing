@@ -120,7 +120,7 @@ npx playwright test --grep "@sanity"
 
 ### **Directory Structure & Coverage**
 
-```
+```text
 src/tests/
 ├── 📂 main-content/          # @sanity tests
 │   ├── main-page-validate-content.spec.ts

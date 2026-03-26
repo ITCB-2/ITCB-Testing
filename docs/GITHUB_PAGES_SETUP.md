@@ -40,13 +40,11 @@ This repository is configured to automatically deploy the latest Playwright HTML
 To enable this functionality, the repository administrator needs to:
 
 1. **Enable GitHub Pages**:
-
    - Go to repository Settings → Pages
    - Set Source to "GitHub Actions"
    - Ensure the repository has GitHub Pages enabled
 
 2. **Required Permissions**:
-
    - The workflows have the necessary permissions configured
    - `GITHUB_TOKEN` automatically has the required access
 
@@ -58,7 +56,6 @@ To enable this functionality, the repository administrator needs to:
 ### 🔧 Workflow Files Created/Modified
 
 1. **Modified File**: `.github/workflows/deploy-reports.yml`
-
    - Handles automatic deployment of Playwright HTML report directly to GitHub Pages root
    - Triggers after test workflows complete
    - Deploys the latest report without any custom landing page or fallback HTML pages
@@ -117,7 +114,7 @@ When reports cannot be deployed:
 
 ### 📁 File Structure
 
-```
+```text
 ├── .github/workflows/
 │   ├── core-deploy-reports.yml      # Modified: Direct Playwright report deployment
 │   ├── tests-sanity.yml             # Modified: Added report deployment

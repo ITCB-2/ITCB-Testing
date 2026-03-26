@@ -8,7 +8,7 @@ The ITCB Testing Framework uses GitHub Actions to provide a comprehensive CI/CD 
 
 ## 🏗️ Workflow Architecture
 
-```
+```text
 MODULAR WORKFLOW ARCHITECTURE:
 Developer Push/PR → Code Quality Check → Pass/Fail → Merge Allowed/Blocked
 
@@ -325,7 +325,7 @@ api_integration: GitHub REST API with pagination
 
 ### **Daily Schedule (UTC)**
 
-```
+```text
 01:00 - Enhanced Artifact Cleanup (dual-policy: 30-day + latest-5)
 02:00 - nightly Tests + Report Deployment
 04:00 - Sanity Tests
@@ -343,7 +343,7 @@ api_integration: GitHub REST API with pagination
 
 ### **Workflow Dependencies**
 
-```
+```text
 Enhanced Artifact Cleanup (01:00 UTC)
      ↓
 Code Quality Check (on PR/push) → Merge Protection

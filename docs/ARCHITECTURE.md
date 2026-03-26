@@ -21,8 +21,8 @@ All page objects automatically injected via custom fixtures in `src/fixtures/tes
 
 ```typescript
 const test = base.extend<PageFixtures>({
-  mainPage: async ({page}, use) => await use(new MainPage(page)),
-  topMenuMainPage: async ({page}, use) => await use(new TopMenuMainPage(page)),
+	mainPage: async ({page}, use) => await use(new MainPage(page)),
+	topMenuMainPage: async ({page}, use) => await use(new TopMenuMainPage(page)),
 })
 ```
 
