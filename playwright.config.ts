@@ -1,7 +1,7 @@
 import {defineConfig, devices} from '@playwright/test'
 
 export default defineConfig({
-	testDir: './src/tests',
+	testDir: './src',
 	outputDir: 'test-results',
 	timeout: 60 * 1000,
 	fullyParallel: true,
@@ -20,6 +20,7 @@ export default defineConfig({
 		['list'],
 	],
 	use: {
+		baseURL: 'https://www.itcb.org.il',
 		trace: 'retain-on-failure',
 		screenshot: {
 			mode: 'only-on-failure',

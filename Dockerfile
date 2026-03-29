@@ -1,5 +1,5 @@
 # Use the official Playwright Docker image (Ubuntu Noble with browsers pre-installed)
-FROM mcr.microsoft.com/playwright:v1.56.1-noble
+FROM mcr.microsoft.com/playwright:v1.58.2-noble
 
 # Install Node.js 24
 RUN apt-get update && apt-get install -y curl && \
