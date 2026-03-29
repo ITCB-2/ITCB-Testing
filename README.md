@@ -176,3 +176,5 @@ The retry system automatically detects:
 **💙 Built with passion for quality by the ITCB Testing Team**
 
 📫 **Questions or suggestions?** [Open an issue](https://github.com/ITCB-2/ITCB-Testing/issues) or contribute to make testing better!
+
+<!-- CODEOWNERS apply only to paths touched in the PR; commits with no file changes do not request code owner review. -->
